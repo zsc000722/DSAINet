@@ -1,0 +1,17 @@
+# data / cache
+data/
+
+# logs / outputs
+log/
+weight/
+*.pth
+*.pt
+*.ckpt
+
+# python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
