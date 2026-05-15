@@ -1,0 +1,1433 @@
+c==== Experiment Config ====
+model:
+  C1:
+  - 15
+  - 31
+  - 63
+  - 125
+  C2: 15
+  D: 2
+  F:
+  - 9
+  - 9
+  - 9
+  - 9
+  P1: 8
+  P2: 7
+  Pc: 0.3
+  Pt: 0.5
+  ff_ratio: 1
+  layers: 2
+  name: MSVTNet
+  nhead: 8c
+train:
+  batch_size: 32
+  epochs: 100
+  lr: 0.001
+  norm: Z_Score
+  optimizer: adam
+  seed: 0
+  weight_decay: 0.0001
+==========================
+========== Start LOSO Training ==========
+====== Subject 1/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 1 | Early Stopping: Best Epoch 1/100
+Sub 1 | All Epoch: Best Epoch 1/100
+Sub 1 | Epoch 1/100 | train Loss: 1.4207 | train Accuracy: 0.2695 | valid Loss: 1.3677 | valid Accuracy: 0.2985 | test Accuracy: 0.2604 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 2/100
+Sub 1 | All Epoch: Best Epoch 2/100
+Sub 1 | Epoch 2/100 | train Loss: 1.3775 | train Accuracy: 0.2928 | valid Loss: 1.3625 | valid Accuracy: 0.3082 | test Accuracy: 0.2847 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 3/100
+Sub 1 | All Epoch: Best Epoch 3/100
+Sub 1 | Epoch 3/100 | train Loss: 1.3644 | train Accuracy: 0.3114 | valid Loss: 1.3590 | valid Accuracy: 0.3244 | test Accuracy: 0.3038 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 4/100
+Sub 1 | Epoch 4/100 | train Loss: 1.3452 | train Accuracy: 0.3379 | valid Loss: 1.3364 | valid Accuracy: 0.3718 | test Accuracy: 0.2830 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 5/100
+Sub 1 | All Epoch: Best Epoch 5/100c
+Sub 1 | Epoch 5/100 | train Loss: 1.3216 | train Accuracy: 0.3596 | valid Loss: 1.2850 | valid Accuracy: 0.3987 | test Accuracy: 0.3333 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 6/100
+Sub 1 | All Epoch: Best Epoch 6/100
+Sub 1 | Epoch 6/100 | train Loss: 1.2968 | train Accuracy: 0.3982 | valid Loss: 1.2644 | valid Accuracy: 0.4235 | test Accuracy: 0.3576 | patient: 0
+Sub 1 | Epoch 7/100 | train Loss: 1.2778 | train Accuracy: 0.4064 | valid Loss: 1.3015 | valid Accuracy: 0.4095 | test Accuracy: 0.3472 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 8/100
+Sub 1 | All Epoch: Best Epoch 8/100
+Sub 1 | Epoch 8/100 | train Loss: 1.2609 | train Accuracy: 0.4194 | valid Loss: 1.2255 | valid Accuracy: 0.4795 | test Accuracy: 0.4271 | patient: 0
+Sub 1 | Epoch 9/100 | train Loss: 1.2308 | train Accuracy: 0.4395 | valid Loss: 1.2125 | valid Accuracy: 0.4623 | test Accuracy: 0.3872 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 10/100
+Sub 1 | Epoch 10/100 | train Loss: 1.2312 | train Accuracy: 0.4417 | valid Loss: 1.1913 | valid Accuracy: 0.4795 | test Accuracy: 0.4253 | patient: 0
+Sub 1 | All Epoch: Best Epoch 11/100
+Sub 1 | Epoch 11/100 | train Loss: 1.1889 | train Accuracy: 0.4742 | valid Loss: 1.2374 | valid Accuracy: 0.4774 | test Accuracy: 0.4306 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 12/100
+Sub 1 | All Epoch: Best Epoch 12/100
+Sub 1 | Epoch 12/100 | train Loss: 1.1643 | train Accuracy: 0.4861 | valid Loss: 1.1401 | valid Accuracy: 0.5420 | test Accuracy: 0.4948 | patient: 0
+Sub 1 | All Epoch: Best Epoch 13/100
+Sub 1 | Epoch 13/100 | train Loss: 1.1560 | train Accuracy: 0.4976 | valid Loss: 1.1552 | valid Accuracy: 0.5302 | test Accuracy: 0.5260 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 14/100
+Sub 1 | Epoch 14/100 | train Loss: 1.1205 | train Accuracy: 0.5105 | valid Loss: 1.1194 | valid Accuracy: 0.5657 | test Accuracy: 0.5174 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 15/100
+Sub 1 | All Epoch: Best Epoch 15/100
+Sub 1 | Epoch 15/100 | train Loss: 1.1025 | train Accuracy: 0.5298 | valid Loss: 1.0323 | valid Accuracy: 0.6121 | test Accuracy: 0.5590 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 16/100
+Sub 1 | All Epoch: Best Epoch 16/100
+Sub 1 | Epoch 16/100 | train Loss: 1.0673 | train Accuracy: 0.5546 | valid Loss: 0.9785 | valid Accuracy: 0.6218 | test Accuracy: 0.5955 | patient: 0
+Sub 1 | Epoch 17/100 | train Loss: 1.0480 | train Accuracy: 0.5618 | valid Loss: 1.0605 | valid Accuracy: 0.6013 | test Accuracy: 0.5451 | patient: 1
+Sub 1 | Epoch 18/100 | train Loss: 1.0391 | train Accuracy: 0.5685 | valid Loss: 1.0233 | valid Accuracy: 0.6002 | test Accuracy: 0.5451 | patient: 2
+Sub 1 | Epoch 19/100 | train Loss: 1.0135 | train Accuracy: 0.5757 | valid Loss: 1.0102 | valid Accuracy: 0.6131 | test Accuracy: 0.5868 | patient: 3
+Sub 1 | Early Stopping: Best Epoch 20/100
+Sub 1 | Epoch 20/100 | train Loss: 0.9868 | train Accuracy: 0.5923 | valid Loss: 0.9872 | valid Accuracy: 0.6261 | test Accuracy: 0.5781 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 21/100
+Sub 1 | Epoch 21/100 | train Loss: 0.9687 | train Accuracy: 0.6054 | valid Loss: 0.9590 | valid Accuracy: 0.6325 | test Accuracy: 0.5260 | patient: 0
+Sub 1 | Epoch 22/100 | train Loss: 0.9550 | train Accuracy: 0.6114 | valid Loss: 0.9518 | valid Accuracy: 0.6272 | test Accuracy: 0.5764 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 23/100
+Sub 1 | Epoch 23/100 | train Loss: 0.9337 | train Accuracy: 0.6251 | valid Loss: 0.9050 | valid Accuracy: 0.6466 | test Accuracy: 0.5469 | patient: 0
+Sub 1 | Epoch 24/100 | train Loss: 0.9160 | train Accuracy: 0.6306 | valid Loss: 0.9512 | valid Accuracy: 0.6455 | test Accuracy: 0.5208 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 25/100
+Sub 1 | Epoch 25/100 | train Loss: 0.9278 | train Accuracy: 0.6268 | valid Loss: 0.9353 | valid Accuracy: 0.6519 | test Accuracy: 0.5521 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 26/100
+Sub 1 | Epoch 26/100 | train Loss: 0.9058 | train Accuracy: 0.6439 | valid Loss: 0.8885 | valid Accuracy: 0.6670 | test Accuracy: 0.5660 | patient: 0
+Sub 1 | Epoch 27/100 | train Loss: 0.9061 | train Accuracy: 0.6363 | valid Loss: 0.9382 | valid Accuracy: 0.6627 | test Accuracy: 0.5469 | patient: 1
+Sub 1 | Epoch 28/100 | train Loss: 0.8915 | train Accuracy: 0.6399 | valid Loss: 0.9357 | valid Accuracy: 0.6455 | test Accuracy: 0.5642 | patient: 2
+Sub 1 | Epoch 29/100 | train Loss: 0.8761 | train Accuracy: 0.6481 | valid Loss: 0.9244 | valid Accuracy: 0.6573 | test Accuracy: 0.5573 | patient: 3
+Sub 1 | Epoch 30/100 | train Loss: 0.8891 | train Accuracy: 0.6454 | valid Loss: 0.9052 | valid Accuracy: 0.6573 | test Accuracy: 0.5816 | patient: 4
+Sub 1 | Early Stopping: Best Epoch 31/100
+Sub 1 | Epoch 31/100 | train Loss: 0.8695 | train Accuracy: 0.6499 | valid Loss: 0.8845 | valid Accuracy: 0.6724 | test Accuracy: 0.5694 | patient: 0
+Sub 1 | Epoch 32/100 | train Loss: 0.8563 | train Accuracy: 0.6564 | valid Loss: 0.9030 | valid Accuracy: 0.6670 | test Accuracy: 0.5399 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 33/100
+Sub 1 | Epoch 33/100 | train Loss: 0.8538 | train Accuracy: 0.6628 | valid Loss: 0.8434 | valid Accuracy: 0.6972 | test Accuracy: 0.5833 | patient: 0
+Sub 1 | All Epoch: Best Epoch 34/100
+Sub 1 | Epoch 34/100 | train Loss: 0.8560 | train Accuracy: 0.6620 | valid Loss: 0.8323 | valid Accuracy: 0.6832 | test Accuracy: 0.6007 | patient: 1
+Sub 1 | Epoch 35/100 | train Loss: 0.8498 | train Accuracy: 0.6645 | valid Loss: 0.8440 | valid Accuracy: 0.6746 | test Accuracy: 0.5399 | patient: 2
+Sub 1 | Early Stopping: Best Epoch 36/100
+Sub 1 | Epoch 36/100 | train Loss: 0.8459 | train Accuracy: 0.6644 | valid Loss: 0.8145 | valid Accuracy: 0.6994 | test Accuracy: 0.5503 | patient: 0
+Sub 1 | Epoch 37/100 | train Loss: 0.8390 | train Accuracy: 0.6678 | valid Loss: 0.8366 | valid Accuracy: 0.6886 | test Accuracy: 0.5816 | patient: 1
+Sub 1 | Epoch 38/100 | train Loss: 0.8380 | train Accuracy: 0.6677 | valid Loss: 0.8706 | valid Accuracy: 0.6886 | test Accuracy: 0.5573 | patient: 2
+Sub 1 | Epoch 39/100 | train Loss: 0.8186 | train Accuracy: 0.6802 | valid Loss: 0.8406 | valid Accuracy: 0.6886 | test Accuracy: 0.5642 | patient: 3
+Sub 1 | Epoch 40/100 | train Loss: 0.8244 | train Accuracy: 0.6785 | valid Loss: 0.8864 | valid Accuracy: 0.6746 | test Accuracy: 0.5434 | patient: 4
+Sub 1 | Epoch 41/100 | train Loss: 0.8096 | train Accuracy: 0.6806 | valid Loss: 0.8349 | valid Accuracy: 0.6918 | test Accuracy: 0.5868 | patient: 5
+Sub 1 | Early Stopping: Best Epoch 42/100
+Sub 1 | All Epoch: Best Epoch 42/100
+Sub 1 | Epoch 42/100 | train Loss: 0.8175 | train Accuracy: 0.6796 | valid Loss: 0.8431 | valid Accuracy: 0.7069 | test Accuracy: 0.6094 | patient: 0
+Sub 1 | Epoch 43/100 | train Loss: 0.8069 | train Accuracy: 0.6857 | valid Loss: 0.8779 | valid Accuracy: 0.6767 | test Accuracy: 0.5469 | patient: 1
+Sub 1 | Epoch 44/100 | train Loss: 0.8067 | train Accuracy: 0.6827 | valid Loss: 0.8471 | valid Accuracy: 0.6864 | test Accuracy: 0.5538 | patient: 2
+Sub 1 | Epoch 45/100 | train Loss: 0.7928 | train Accuracy: 0.6886 | valid Loss: 0.8233 | valid Accuracy: 0.7037 | test Accuracy: 0.5747 | patient: 3
+Sub 1 | Early Stopping: Best Epoch 46/100
+Sub 1 | Epoch 46/100 | train Loss: 0.7786 | train Accuracy: 0.6937 | valid Loss: 0.8178 | valid Accuracy: 0.7101 | test Accuracy: 0.5938 | patient: 0
+Sub 1 | Epoch 47/100 | train Loss: 0.7932 | train Accuracy: 0.6882 | valid Loss: 0.9064 | valid Accuracy: 0.6907 | test Accuracy: 0.6024 | patient: 1
+Sub 1 | All Epoch: Best Epoch 48/100
+Sub 1 | Epoch 48/100 | train Loss: 0.7957 | train Accuracy: 0.6906 | valid Loss: 0.7468 | valid Accuracy: 0.6972 | test Accuracy: 0.6198 | patient: 2
+Sub 1 | Epoch 49/100 | train Loss: 0.7995 | train Accuracy: 0.6840 | valid Loss: 0.7942 | valid Accuracy: 0.7058 | test Accuracy: 0.5903 | patient: 3
+Sub 1 | Epoch 50/100 | train Loss: 0.7831 | train Accuracy: 0.6924 | valid Loss: 0.8352 | valid Accuracy: 0.7026 | test Accuracy: 0.5712 | patient: 4
+Sub 1 | Early Stopping: Best Epoch 51/100
+Sub 1 | Epoch 51/100 | train Loss: 0.7873 | train Accuracy: 0.6898 | valid Loss: 0.7447 | valid Accuracy: 0.7144 | test Accuracy: 0.6024 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 52/100
+Sub 1 | Epoch 52/100 | train Loss: 0.7891 | train Accuracy: 0.6931 | valid Loss: 0.7374 | valid Accuracy: 0.7317 | test Accuracy: 0.5920 | patient: 0
+Sub 1 | Epoch 53/100 | train Loss: 0.7801 | train Accuracy: 0.6906 | valid Loss: 0.7927 | valid Accuracy: 0.7155 | test Accuracy: 0.5955 | patient: 1
+Sub 1 | Epoch 54/100 | train Loss: 0.7620 | train Accuracy: 0.6959 | valid Loss: 0.8070 | valid Accuracy: 0.7263 | test Accuracy: 0.6059 | patient: 2
+Sub 1 | Early Stopping: Best Epoch 55/100
+Sub 1 | All Epoch: Best Epoch 55/100
+Sub 1 | Epoch 55/100 | train Loss: 0.7605 | train Accuracy: 0.7034 | valid Loss: 0.7411 | valid Accuracy: 0.7328 | test Accuracy: 0.6198 | patient: 0
+Sub 1 | Epoch 56/100 | train Loss: 0.7479 | train Accuracy: 0.7031 | valid Loss: 0.7962 | valid Accuracy: 0.7317 | test Accuracy: 0.5972 | patient: 1
+Sub 1 | Epoch 57/100 | train Loss: 0.7752 | train Accuracy: 0.6973 | valid Loss: 0.8128 | valid Accuracy: 0.7188 | test Accuracy: 0.6198 | patient: 2
+Sub 1 | All Epoch: Best Epoch 58/100
+Sub 1 | Epoch 58/100 | train Loss: 0.7519 | train Accuracy: 0.7117 | valid Loss: 0.8003 | valid Accuracy: 0.7188 | test Accuracy: 0.6215 | patient: 3
+Sub 1 | Epoch 59/100 | train Loss: 0.7525 | train Accuracy: 0.7022 | valid Loss: 0.7467 | valid Accuracy: 0.7295 | test Accuracy: 0.6181 | patient: 4
+Sub 1 | Early Stopping: Best Epoch 60/100
+Sub 1 | Epoch 60/100 | train Loss: 0.7382 | train Accuracy: 0.7037 | valid Loss: 0.7537 | valid Accuracy: 0.7371 | test Accuracy: 0.6007 | patient: 0
+Sub 1 | Epoch 61/100 | train Loss: 0.7646 | train Accuracy: 0.7024 | valid Loss: 0.8025 | valid Accuracy: 0.7306 | test Accuracy: 0.6094 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 62/100
+Sub 1 | All Epoch: Best Epoch 62/100
+Sub 1 | Epoch 62/100 | train Loss: 0.7305 | train Accuracy: 0.7149 | valid Loss: 0.7976 | valid Accuracy: 0.7403 | test Accuracy: 0.6267 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 63/100
+Sub 1 | All Epoch: Best Epoch 63/100
+Sub 1 | Epoch 63/100 | train Loss: 0.7458 | train Accuracy: 0.7076 | valid Loss: 0.7679 | valid Accuracy: 0.7435 | test Accuracy: 0.6267 | patient: 0
+Sub 1 | Epoch 64/100 | train Loss: 0.7365 | train Accuracy: 0.7154 | valid Loss: 0.7925 | valid Accuracy: 0.7188 | test Accuracy: 0.6042 | patient: 1
+Sub 1 | Epoch 65/100 | train Loss: 0.7348 | train Accuracy: 0.7154 | valid Loss: 0.7922 | valid Accuracy: 0.7123 | test Accuracy: 0.6181 | patient: 2
+Sub 1 | Epoch 66/100 | train Loss: 0.7436 | train Accuracy: 0.7061 | valid Loss: 0.7953 | valid Accuracy: 0.7274 | test Accuracy: 0.6146 | patient: 3
+Sub 1 | All Epoch: Best Epoch 67/100
+Sub 1 | Epoch 67/100 | train Loss: 0.7260 | train Accuracy: 0.7168 | valid Loss: 0.7568 | valid Accuracy: 0.7252 | test Accuracy: 0.6319 | patient: 4
+Sub 1 | Epoch 68/100 | train Loss: 0.7383 | train Accuracy: 0.7098 | valid Loss: 0.7356 | valid Accuracy: 0.7403 | test Accuracy: 0.5920 | patient: 5
+Sub 1 | Epoch 69/100 | train Loss: 0.7438 | train Accuracy: 0.7158 | valid Loss: 0.7367 | valid Accuracy: 0.7371 | test Accuracy: 0.5938 | patient: 6
+Sub 1 | Epoch 70/100 | train Loss: 0.7390 | train Accuracy: 0.7163 | valid Loss: 0.7742 | valid Accuracy: 0.7177 | test Accuracy: 0.6146 | patient: 7
+Sub 1 | Epoch 71/100 | train Loss: 0.7310 | train Accuracy: 0.7164 | valid Loss: 0.7703 | valid Accuracy: 0.7231 | test Accuracy: 0.5764 | patient: 8
+Sub 1 | Early Stopping: Best Epoch 72/100
+Sub 1 | Epoch 72/100 | train Loss: 0.7227 | train Accuracy: 0.7177 | valid Loss: 0.7151 | valid Accuracy: 0.7478 | test Accuracy: 0.6181 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 73/100
+Sub 1 | Epoch 73/100 | train Loss: 0.7163 | train Accuracy: 0.7268 | valid Loss: 0.6917 | valid Accuracy: 0.7489 | test Accuracy: 0.6181 | patient: 0
+Sub 1 | Early Stopping: Best Epoch 74/100
+Sub 1 | Epoch 74/100 | train Loss: 0.7291 | train Accuracy: 0.7208 | valid Loss: 0.7236 | valid Accuracy: 0.7532 | test Accuracy: 0.6042 | patient: 0
+Sub 1 | Epoch 75/100 | train Loss: 0.7152 | train Accuracy: 0.7291 | valid Loss: 0.7544 | valid Accuracy: 0.7381 | test Accuracy: 0.6285 | patient: 1
+Sub 1 | Early Stopping: Best Epoch 76/100
+Sub 1 | Epoch 76/100 | train Loss: 0.7085 | train Accuracy: 0.7247 | valid Loss: 0.6981 | valid Accuracy: 0.7619 | test Accuracy: 0.6146 | patient: 0
+Sub 1 | Epoch 77/100 | train Loss: 0.7090 | train Accuracy: 0.7276 | valid Loss: 0.8076 | valid Accuracy: 0.7414 | test Accuracy: 0.6024 | patient: 1
+Sub 1 | Epoch 78/100 | train Loss: 0.6988 | train Accuracy: 0.7291 | valid Loss: 0.7328 | valid Accuracy: 0.7478 | test Accuracy: 0.5851 | patient: 2
+Sub 1 | Epoch 79/100 | train Loss: 0.7019 | train Accuracy: 0.7288 | valid Loss: 0.7356 | valid Accuracy: 0.7532 | test Accuracy: 0.6111 | patient: 3
+Sub 1 | All Epoch: Best Epoch 80/100
+Sub 1 | Epoch 80/100 | train Loss: 0.7129 | train Accuracy: 0.7230 | valid Loss: 0.7374 | valid Accuracy: 0.7457 | test Accuracy: 0.6406 | patient: 4
+Sub 1 | Epoch 81/100 | train Loss: 0.7197 | train Accuracy: 0.7228 | valid Loss: 0.6859 | valid Accuracy: 0.7328 | test Accuracy: 0.5851 | patient: 5
+Sub 1 | Epoch 82/100 | train Loss: 0.7121 | train Accuracy: 0.7261 | valid Loss: 0.7035 | valid Accuracy: 0.7425 | test Accuracy: 0.6059 | patient: 6
+Sub 1 | Epoch 83/100 | train Loss: 0.7162 | train Accuracy: 0.7260 | valid Loss: 0.7231 | valid Accuracy: 0.7425 | test Accuracy: 0.6128 | patient: 7
+Sub 1 | Epoch 84/100 | train Loss: 0.7165 | train Accuracy: 0.7189 | valid Loss: 0.7143 | valid Accuracy: 0.7500 | test Accuracy: 0.6267 | patient: 8
+Sub 1 | Epoch 85/100 | train Loss: 0.7155 | train Accuracy: 0.7240 | valid Loss: 0.6984 | valid Accuracy: 0.7619 | test Accuracy: 0.6181 | patient: 9
+Sub 1 | Epoch 86/100 | train Loss: 0.7077 | train Accuracy: 0.7285 | valid Loss: 0.6745 | valid Accuracy: 0.7489 | test Accuracy: 0.5972 | patient: 10
+Sub 1 | Epoch 87/100 | train Loss: 0.6959 | train Accuracy: 0.7330 | valid Loss: 0.7192 | valid Accuracy: 0.7500 | test Accuracy: 0.6042 | patient: 11
+Sub 1 | Epoch 88/100 | train Loss: 0.6924 | train Accuracy: 0.7322 | valid Loss: 0.7128 | valid Accuracy: 0.7522 | test Accuracy: 0.6389 | patient: 12
+Sub 1 | All Epoch: Best Epoch 89/100
+Sub 1 | Epoch 89/100 | train Loss: 0.7024 | train Accuracy: 0.7274 | valid Loss: 0.7208 | valid Accuracy: 0.7457 | test Accuracy: 0.6510 | patient: 13
+Sub 1 | Epoch 90/100 | train Loss: 0.6935 | train Accuracy: 0.7338 | valid Loss: 0.6996 | valid Accuracy: 0.7500 | test Accuracy: 0.6389 | patient: 14
+Sub 1 | Epoch 91/100 | train Loss: 0.6953 | train Accuracy: 0.7340 | valid Loss: 0.6503 | valid Accuracy: 0.7522 | test Accuracy: 0.6406 | patient: 15
+Sub 1 | Early Stopping: Best Epoch 92/100
+Sub 1 | Epoch 92/100 | train Loss: 0.6959 | train Accuracy: 0.7300 | valid Loss: 0.6493 | valid Accuracy: 0.7683 | test Accuracy: 0.6319 | patient: 0
+Sub 1 | Epoch 93/100 | train Loss: 0.6999 | train Accuracy: 0.7323 | valid Loss: 0.6957 | valid Accuracy: 0.7619 | test Accuracy: 0.6250 | patient: 1
+Sub 1 | Epoch 94/100 | train Loss: 0.6861 | train Accuracy: 0.7311 | valid Loss: 0.7122 | valid Accuracy: 0.7565 | test Accuracy: 0.6198 | patient: 2
+Sub 1 | Epoch 95/100 | train Loss: 0.7006 | train Accuracy: 0.7294 | valid Loss: 0.7340 | valid Accuracy: 0.7554 | test Accuracy: 0.6285 | patient: 3
+Sub 1 | Early Stopping: Best Epoch 96/100
+Sub 1 | Epoch 96/100 | train Loss: 0.6940 | train Accuracy: 0.7336 | valid Loss: 0.6331 | valid Accuracy: 0.7748 | test Accuracy: 0.6319 | patient: 0
+Sub 1 | All Epoch: Best Epoch 97/100
+Sub 1 | Epoch 97/100 | train Loss: 0.6933 | train Accuracy: 0.7367 | valid Loss: 0.7113 | valid Accuracy: 0.7619 | test Accuracy: 0.6562 | patient: 1
+Sub 1 | Epoch 98/100 | train Loss: 0.6859 | train Accuracy: 0.7364 | valid Loss: 0.7532 | valid Accuracy: 0.7425 | test Accuracy: 0.6285 | patient: 2
+Sub 1 | Epoch 99/100 | train Loss: 0.6910 | train Accuracy: 0.7317 | valid Loss: 0.6579 | valid Accuracy: 0.7629 | test Accuracy: 0.6233 | patient: 3
+Sub 1 | Epoch 100/100 | train Loss: 0.6735 | train Accuracy: 0.7409 | valid Loss: 0.7057 | valid Accuracy: 0.7608 | test Accuracy: 0.6267 | patient: 4
+Early Stopping Best Epoch: 96 | Test Subject 1 | Accuracy: 0.6319 | Kappa: 0.5093 | F1: 0.6199
+All Best Epoch: 97 | Test Subject 1 | Accuracy: 0.6562 | Kappa: 0.5417 | F1: 0.6473
+====== Subject 2/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 2 | Early Stopping: Best Epoch 1/100
+Sub 2 | All Epoch: Best Epoch 1/100
+Sub 2 | Epoch 1/100 | train Loss: 1.4189 | train Accuracy: 0.2811 | valid Loss: 1.4139 | valid Accuracy: 0.2953 | test Accuracy: 0.2431 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 2/100
+Sub 2 | Epoch 2/100 | train Loss: 1.3695 | train Accuracy: 0.3103 | valid Loss: 1.3506 | valid Accuracy: 0.3114 | test Accuracy: 0.2396 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 3/100
+Sub 2 | All Epoch: Best Epoch 3/100
+Sub 2 | Epoch 3/100 | train Loss: 1.3305 | train Accuracy: 0.3459 | valid Loss: 1.3833 | valid Accuracy: 0.3966 | test Accuracy: 0.2535 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 4/100
+Sub 2 | All Epoch: Best Epoch 4/100
+Sub 2 | Epoch 4/100 | train Loss: 1.3030 | train Accuracy: 0.3777 | valid Loss: 1.2963 | valid Accuracy: 0.4009 | test Accuracy: 0.2587 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 5/100
+Sub 2 | All Epoch: Best Epoch 5/100
+Sub 2 | Epoch 5/100 | train Loss: 1.2700 | train Accuracy: 0.4064 | valid Loss: 1.2499 | valid Accuracy: 0.4828 | test Accuracy: 0.2969 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 6/100
+Sub 2 | All Epoch: Best Epoch 6/100
+Sub 2 | Epoch 6/100 | train Loss: 1.2353 | train Accuracy: 0.4466 | valid Loss: 1.1712 | valid Accuracy: 0.5183 | test Accuracy: 0.3125 | patient: 0
+Sub 2 | Epoch 7/100 | train Loss: 1.2062 | train Accuracy: 0.4674 | valid Loss: 1.1347 | valid Accuracy: 0.5151 | test Accuracy: 0.2934 | patient: 1
+Sub 2 | Early Stopping: Best Epoch 8/100
+Sub 2 | Epoch 8/100 | train Loss: 1.1796 | train Accuracy: 0.4789 | valid Loss: 1.1355 | valid Accuracy: 0.5269 | test Accuracy: 0.2691 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 9/100
+Sub 2 | Epoch 9/100 | train Loss: 1.1655 | train Accuracy: 0.4883 | valid Loss: 1.1145 | valid Accuracy: 0.5442 | test Accuracy: 0.3021 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 10/100
+Sub 2 | Epoch 10/100 | train Loss: 1.1414 | train Accuracy: 0.5012 | valid Loss: 1.0414 | valid Accuracy: 0.5614 | test Accuracy: 0.3003 | patient: 0
+Sub 2 | Epoch 11/100 | train Loss: 1.1121 | train Accuracy: 0.5147 | valid Loss: 1.0765 | valid Accuracy: 0.5571 | test Accuracy: 0.2708 | patient: 1
+Sub 2 | Early Stopping: Best Epoch 12/100
+Sub 2 | All Epoch: Best Epoch 12/100
+Sub 2 | Epoch 12/100 | train Loss: 1.0967 | train Accuracy: 0.5304 | valid Loss: 0.9821 | valid Accuracy: 0.6131 | test Accuracy: 0.3212 | patient: 0
+Sub 2 | Epoch 13/100 | train Loss: 1.0723 | train Accuracy: 0.5433 | valid Loss: 0.9792 | valid Accuracy: 0.6013 | test Accuracy: 0.3056 | patient: 1
+Sub 2 | Early Stopping: Best Epoch 14/100
+Sub 2 | Epoch 14/100 | train Loss: 1.0370 | train Accuracy: 0.5598 | valid Loss: 0.9752 | valid Accuracy: 0.6131 | test Accuracy: 0.2951 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 15/100
+Sub 2 | All Epoch: Best Epoch 15/100
+Sub 2 | Epoch 15/100 | train Loss: 1.0313 | train Accuracy: 0.5711 | valid Loss: 0.9417 | valid Accuracy: 0.6487 | test Accuracy: 0.3368 | patient: 0
+Sub 2 | All Epoch: Best Epoch 16/100
+Sub 2 | Epoch 16/100 | train Loss: 1.0024 | train Accuracy: 0.5870 | valid Loss: 0.9714 | valid Accuracy: 0.6336 | test Accuracy: 0.3524 | patient: 1
+Sub 2 | All Epoch: Best Epoch 17/100
+Sub 2 | Epoch 17/100 | train Loss: 0.9790 | train Accuracy: 0.5995 | valid Loss: 0.9336 | valid Accuracy: 0.6164 | test Accuracy: 0.4132 | patient: 2
+Sub 2 | Epoch 18/100 | train Loss: 0.9553 | train Accuracy: 0.6178 | valid Loss: 0.9625 | valid Accuracy: 0.6261 | test Accuracy: 0.3559 | patient: 3
+Sub 2 | Epoch 19/100 | train Loss: 0.9375 | train Accuracy: 0.6198 | valid Loss: 0.9765 | valid Accuracy: 0.6185 | test Accuracy: 0.3368 | patient: 4
+Sub 2 | Early Stopping: Best Epoch 20/100
+Sub 2 | Epoch 20/100 | train Loss: 0.9077 | train Accuracy: 0.6322 | valid Loss: 0.9245 | valid Accuracy: 0.6541 | test Accuracy: 0.3628 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 21/100
+Sub 2 | Epoch 21/100 | train Loss: 0.9091 | train Accuracy: 0.6357 | valid Loss: 0.8881 | valid Accuracy: 0.6778 | test Accuracy: 0.3663 | patient: 0
+Sub 2 | Epoch 22/100 | train Loss: 0.8978 | train Accuracy: 0.6409 | valid Loss: 0.9495 | valid Accuracy: 0.6670 | test Accuracy: 0.4097 | patient: 1
+Sub 2 | Epoch 23/100 | train Loss: 0.8808 | train Accuracy: 0.6482 | valid Loss: 0.9076 | valid Accuracy: 0.6627 | test Accuracy: 0.3351 | patient: 2
+Sub 2 | Epoch 24/100 | train Loss: 0.8375 | train Accuracy: 0.6711 | valid Loss: 0.9296 | valid Accuracy: 0.6767 | test Accuracy: 0.3802 | patient: 3
+Sub 2 | Early Stopping: Best Epoch 25/100
+Sub 2 | Epoch 25/100 | train Loss: 0.8494 | train Accuracy: 0.6610 | valid Loss: 0.8858 | valid Accuracy: 0.6853 | test Accuracy: 0.3733 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 26/100
+Sub 2 | Epoch 26/100 | train Loss: 0.8478 | train Accuracy: 0.6615 | valid Loss: 0.8380 | valid Accuracy: 0.7177 | test Accuracy: 0.4028 | patient: 0
+Sub 2 | Epoch 27/100 | train Loss: 0.8409 | train Accuracy: 0.6668 | valid Loss: 0.7983 | valid Accuracy: 0.7166 | test Accuracy: 0.3958 | patient: 1
+Sub 2 | Epoch 28/100 | train Loss: 0.8116 | train Accuracy: 0.6799 | valid Loss: 0.7654 | valid Accuracy: 0.7155 | test Accuracy: 0.3628 | patient: 2
+Sub 2 | Epoch 29/100 | train Loss: 0.8098 | train Accuracy: 0.6815 | valid Loss: 0.8269 | valid Accuracy: 0.7047 | test Accuracy: 0.3698 | patient: 3
+Sub 2 | Epoch 30/100 | train Loss: 0.7989 | train Accuracy: 0.6819 | valid Loss: 0.8948 | valid Accuracy: 0.6800 | test Accuracy: 0.3420 | patient: 4
+Sub 2 | Epoch 31/100 | train Loss: 0.8142 | train Accuracy: 0.6840 | valid Loss: 0.8161 | valid Accuracy: 0.7069 | test Accuracy: 0.3906 | patient: 5
+Sub 2 | Early Stopping: Best Epoch 32/100
+Sub 2 | Epoch 32/100 | train Loss: 0.7890 | train Accuracy: 0.6890 | valid Loss: 0.7722 | valid Accuracy: 0.7252 | test Accuracy: 0.3958 | patient: 0
+Sub 2 | Epoch 33/100 | train Loss: 0.7834 | train Accuracy: 0.6902 | valid Loss: 0.8211 | valid Accuracy: 0.7015 | test Accuracy: 0.3698 | patient: 1
+Sub 2 | Epoch 34/100 | train Loss: 0.7723 | train Accuracy: 0.6931 | valid Loss: 0.7985 | valid Accuracy: 0.7101 | test Accuracy: 0.3819 | patient: 2
+Sub 2 | Early Stopping: Best Epoch 35/100
+Sub 2 | Epoch 35/100 | train Loss: 0.7768 | train Accuracy: 0.6967 | valid Loss: 0.7579 | valid Accuracy: 0.7435 | test Accuracy: 0.3906 | patient: 0
+Sub 2 | All Epoch: Best Epoch 36/100
+Sub 2 | Epoch 36/100 | train Loss: 0.7661 | train Accuracy: 0.7010 | valid Loss: 0.8808 | valid Accuracy: 0.7144 | test Accuracy: 0.4219 | patient: 1
+Sub 2 | Epoch 37/100 | train Loss: 0.7644 | train Accuracy: 0.6993 | valid Loss: 0.9542 | valid Accuracy: 0.6649 | test Accuracy: 0.3767 | patient: 2
+Sub 2 | Epoch 38/100 | train Loss: 0.7601 | train Accuracy: 0.6996 | valid Loss: 0.8675 | valid Accuracy: 0.7080 | test Accuracy: 0.3490 | patient: 3
+Sub 2 | Epoch 39/100 | train Loss: 0.7579 | train Accuracy: 0.7068 | valid Loss: 0.7927 | valid Accuracy: 0.7112 | test Accuracy: 0.3316 | patient: 4
+Sub 2 | Epoch 40/100 | train Loss: 0.7288 | train Accuracy: 0.7167 | valid Loss: 0.7609 | valid Accuracy: 0.7284 | test Accuracy: 0.3611 | patient: 5
+Sub 2 | Epoch 41/100 | train Loss: 0.7349 | train Accuracy: 0.7141 | valid Loss: 0.7641 | valid Accuracy: 0.7306 | test Accuracy: 0.3507 | patient: 6
+Sub 2 | Epoch 42/100 | train Loss: 0.7401 | train Accuracy: 0.7088 | valid Loss: 0.8318 | valid Accuracy: 0.7026 | test Accuracy: 0.3455 | patient: 7
+Sub 2 | Epoch 43/100 | train Loss: 0.7342 | train Accuracy: 0.7114 | valid Loss: 0.8227 | valid Accuracy: 0.7252 | test Accuracy: 0.3750 | patient: 8
+Sub 2 | Epoch 44/100 | train Loss: 0.7292 | train Accuracy: 0.7132 | valid Loss: 0.7593 | valid Accuracy: 0.7317 | test Accuracy: 0.3906 | patient: 9
+Sub 2 | Epoch 45/100 | train Loss: 0.7309 | train Accuracy: 0.7145 | valid Loss: 0.7935 | valid Accuracy: 0.7209 | test Accuracy: 0.3490 | patient: 10
+Sub 2 | Epoch 46/100 | train Loss: 0.7262 | train Accuracy: 0.7178 | valid Loss: 0.7855 | valid Accuracy: 0.7231 | test Accuracy: 0.3681 | patient: 11
+Sub 2 | Early Stopping: Best Epoch 47/100
+Sub 2 | Epoch 47/100 | train Loss: 0.7377 | train Accuracy: 0.7094 | valid Loss: 0.6880 | valid Accuracy: 0.7543 | test Accuracy: 0.3941 | patient: 0
+Sub 2 | Epoch 48/100 | train Loss: 0.7270 | train Accuracy: 0.7126 | valid Loss: 0.7591 | valid Accuracy: 0.7328 | test Accuracy: 0.3750 | patient: 1
+Sub 2 | Epoch 49/100 | train Loss: 0.7140 | train Accuracy: 0.7183 | valid Loss: 0.7266 | valid Accuracy: 0.7371 | test Accuracy: 0.3420 | patient: 2
+Sub 2 | Epoch 50/100 | train Loss: 0.7100 | train Accuracy: 0.7257 | valid Loss: 0.8298 | valid Accuracy: 0.7252 | test Accuracy: 0.3351 | patient: 3
+Sub 2 | Epoch 51/100 | train Loss: 0.7207 | train Accuracy: 0.7145 | valid Loss: 0.7878 | valid Accuracy: 0.7381 | test Accuracy: 0.3906 | patient: 4
+Sub 2 | Epoch 52/100 | train Loss: 0.7049 | train Accuracy: 0.7262 | valid Loss: 0.7295 | valid Accuracy: 0.7435 | test Accuracy: 0.3733 | patient: 5
+Sub 2 | Epoch 53/100 | train Loss: 0.7107 | train Accuracy: 0.7224 | valid Loss: 0.7426 | valid Accuracy: 0.7489 | test Accuracy: 0.3872 | patient: 6
+Sub 2 | Epoch 54/100 | train Loss: 0.7005 | train Accuracy: 0.7281 | valid Loss: 0.7535 | valid Accuracy: 0.7489 | test Accuracy: 0.3889 | patient: 7
+Sub 2 | Early Stopping: Best Epoch 55/100
+Sub 2 | Epoch 55/100 | train Loss: 0.7040 | train Accuracy: 0.7226 | valid Loss: 0.7158 | valid Accuracy: 0.7554 | test Accuracy: 0.3854 | patient: 0
+Sub 2 | Early Stopping: Best Epoch 56/100
+Sub 2 | Epoch 56/100 | train Loss: 0.6882 | train Accuracy: 0.7359 | valid Loss: 0.7480 | valid Accuracy: 0.7619 | test Accuracy: 0.3698 | patient: 0
+Sub 2 | Epoch 57/100 | train Loss: 0.6927 | train Accuracy: 0.7288 | valid Loss: 0.6925 | valid Accuracy: 0.7511 | test Accuracy: 0.4045 | patient: 1
+Sub 2 | Epoch 58/100 | train Loss: 0.6863 | train Accuracy: 0.7360 | valid Loss: 0.7552 | valid Accuracy: 0.7403 | test Accuracy: 0.3681 | patient: 2
+Sub 2 | Early Stopping: Best Epoch 59/100
+Sub 2 | Epoch 59/100 | train Loss: 0.6822 | train Accuracy: 0.7387 | valid Loss: 0.6486 | valid Accuracy: 0.7834 | test Accuracy: 0.3872 | patient: 0
+Sub 2 | Epoch 60/100 | train Loss: 0.6947 | train Accuracy: 0.7338 | valid Loss: 0.7001 | valid Accuracy: 0.7565 | test Accuracy: 0.3733 | patient: 1
+Sub 2 | Epoch 61/100 | train Loss: 0.6985 | train Accuracy: 0.7329 | valid Loss: 0.6918 | valid Accuracy: 0.7651 | test Accuracy: 0.4149 | patient: 2
+Sub 2 | Epoch 62/100 | train Loss: 0.6824 | train Accuracy: 0.7340 | valid Loss: 0.7184 | valid Accuracy: 0.7500 | test Accuracy: 0.3576 | patient: 3
+Sub 2 | Epoch 63/100 | train Loss: 0.6934 | train Accuracy: 0.7304 | valid Loss: 0.7173 | valid Accuracy: 0.7478 | test Accuracy: 0.4028 | patient: 4
+Sub 2 | Epoch 64/100 | train Loss: 0.6828 | train Accuracy: 0.7363 | valid Loss: 0.7395 | valid Accuracy: 0.7543 | test Accuracy: 0.3438 | patient: 5
+Sub 2 | Epoch 65/100 | train Loss: 0.6660 | train Accuracy: 0.7387 | valid Loss: 0.7870 | valid Accuracy: 0.7381 | test Accuracy: 0.3490 | patient: 6
+Sub 2 | Epoch 66/100 | train Loss: 0.6843 | train Accuracy: 0.7367 | valid Loss: 0.8038 | valid Accuracy: 0.7317 | test Accuracy: 0.3976 | patient: 7
+Sub 2 | Epoch 67/100 | train Loss: 0.6631 | train Accuracy: 0.7451 | valid Loss: 0.7337 | valid Accuracy: 0.7651 | test Accuracy: 0.3351 | patient: 8
+Sub 2 | Epoch 68/100 | train Loss: 0.6723 | train Accuracy: 0.7394 | valid Loss: 0.7062 | valid Accuracy: 0.7586 | test Accuracy: 0.3628 | patient: 9
+Sub 2 | Epoch 69/100 | train Loss: 0.6642 | train Accuracy: 0.7469 | valid Loss: 0.7083 | valid Accuracy: 0.7759 | test Accuracy: 0.3385 | patient: 10
+Sub 2 | Epoch 70/100 | train Loss: 0.6800 | train Accuracy: 0.7374 | valid Loss: 0.7926 | valid Accuracy: 0.7500 | test Accuracy: 0.3663 | patient: 11
+Sub 2 | Epoch 71/100 | train Loss: 0.6769 | train Accuracy: 0.7338 | valid Loss: 0.7598 | valid Accuracy: 0.7586 | test Accuracy: 0.3490 | patient: 12
+Sub 2 | Epoch 72/100 | train Loss: 0.6547 | train Accuracy: 0.7493 | valid Loss: 0.6841 | valid Accuracy: 0.7716 | test Accuracy: 0.3837 | patient: 13
+Sub 2 | Epoch 73/100 | train Loss: 0.6618 | train Accuracy: 0.7466 | valid Loss: 0.7458 | valid Accuracy: 0.7640 | test Accuracy: 0.3559 | patient: 14
+Sub 2 | Epoch 74/100 | train Loss: 0.6681 | train Accuracy: 0.7385 | valid Loss: 0.7335 | valid Accuracy: 0.7629 | test Accuracy: 0.3906 | patient: 15
+Sub 2 | Epoch 75/100 | train Loss: 0.6748 | train Accuracy: 0.7353 | valid Loss: 0.6734 | valid Accuracy: 0.7759 | test Accuracy: 0.3889 | patient: 16
+Sub 2 | Epoch 76/100 | train Loss: 0.6612 | train Accuracy: 0.7446 | valid Loss: 0.6547 | valid Accuracy: 0.7662 | test Accuracy: 0.3906 | patient: 17
+Sub 2 | Epoch 77/100 | train Loss: 0.6486 | train Accuracy: 0.7493 | valid Loss: 0.7211 | valid Accuracy: 0.7349 | test Accuracy: 0.3455 | patient: 18
+Sub 2 | Epoch 78/100 | train Loss: 0.6478 | train Accuracy: 0.7549 | valid Loss: 0.6698 | valid Accuracy: 0.7672 | test Accuracy: 0.4045 | patient: 19
+Sub 2 | Epoch 79/100 | train Loss: 0.6630 | train Accuracy: 0.7467 | valid Loss: 0.7045 | valid Accuracy: 0.7769 | test Accuracy: 0.3976 | patient: 20
+Sub 2 | Epoch 80/100 | train Loss: 0.6460 | train Accuracy: 0.7497 | valid Loss: 0.7402 | valid Accuracy: 0.7435 | test Accuracy: 0.3924 | patient: 21
+Sub 2 | Epoch 81/100 | train Loss: 0.6578 | train Accuracy: 0.7510 | valid Loss: 0.6651 | valid Accuracy: 0.7748 | test Accuracy: 0.3819 | patient: 22
+Sub 2 | Epoch 82/100 | train Loss: 0.6574 | train Accuracy: 0.7489 | valid Loss: 0.6767 | valid Accuracy: 0.7737 | test Accuracy: 0.3646 | patient: 23
+Sub 2 | Epoch 83/100 | train Loss: 0.6479 | train Accuracy: 0.7539 | valid Loss: 0.6314 | valid Accuracy: 0.7791 | test Accuracy: 0.4028 | patient: 24
+Sub 2 | Epoch 84/100 | train Loss: 0.6385 | train Accuracy: 0.7548 | valid Loss: 0.7290 | valid Accuracy: 0.7629 | test Accuracy: 0.3333 | patient: 25
+Sub 2 | Epoch 85/100 | train Loss: 0.6438 | train Accuracy: 0.7463 | valid Loss: 0.6479 | valid Accuracy: 0.7823 | test Accuracy: 0.3576 | patient: 26
+Sub 2 | Epoch 86/100 | train Loss: 0.6442 | train Accuracy: 0.7489 | valid Loss: 0.6695 | valid Accuracy: 0.7737 | test Accuracy: 0.3715 | patient: 27
+Sub 2 | Epoch 87/100 | train Loss: 0.6396 | train Accuracy: 0.7478 | valid Loss: 0.6485 | valid Accuracy: 0.7726 | test Accuracy: 0.3698 | patient: 28
+Sub 2 | Early Stopping: Best Epoch 88/100
+Sub 2 | Epoch 88/100 | train Loss: 0.6431 | train Accuracy: 0.7511 | valid Loss: 0.6558 | valid Accuracy: 0.7877 | test Accuracy: 0.3507 | patient: 0
+Sub 2 | Epoch 89/100 | train Loss: 0.6381 | train Accuracy: 0.7567 | valid Loss: 0.7021 | valid Accuracy: 0.7683 | test Accuracy: 0.3628 | patient: 1
+Sub 2 | Epoch 90/100 | train Loss: 0.6489 | train Accuracy: 0.7488 | valid Loss: 0.6513 | valid Accuracy: 0.7748 | test Accuracy: 0.3368 | patient: 2
+Sub 2 | Epoch 91/100 | train Loss: 0.6476 | train Accuracy: 0.7491 | valid Loss: 0.6892 | valid Accuracy: 0.7532 | test Accuracy: 0.3819 | patient: 3
+Sub 2 | Epoch 92/100 | train Loss: 0.6449 | train Accuracy: 0.7538 | valid Loss: 0.6817 | valid Accuracy: 0.7651 | test Accuracy: 0.3663 | patient: 4
+Sub 2 | Epoch 93/100 | train Loss: 0.6392 | train Accuracy: 0.7569 | valid Loss: 0.6796 | valid Accuracy: 0.7726 | test Accuracy: 0.3941 | patient: 5
+Sub 2 | Epoch 94/100 | train Loss: 0.6094 | train Accuracy: 0.7721 | valid Loss: 0.6765 | valid Accuracy: 0.7629 | test Accuracy: 0.3785 | patient: 6
+Sub 2 | Epoch 95/100 | train Loss: 0.6309 | train Accuracy: 0.7605 | valid Loss: 0.7062 | valid Accuracy: 0.7608 | test Accuracy: 0.3767 | patient: 7
+Sub 2 | Early Stopping: Best Epoch 96/100
+Sub 2 | Epoch 96/100 | train Loss: 0.6413 | train Accuracy: 0.7568 | valid Loss: 0.6203 | valid Accuracy: 0.7899 | test Accuracy: 0.3837 | patient: 0
+Sub 2 | Epoch 97/100 | train Loss: 0.6161 | train Accuracy: 0.7636 | valid Loss: 0.7059 | valid Accuracy: 0.7651 | test Accuracy: 0.3872 | patient: 1
+Sub 2 | Epoch 98/100 | train Loss: 0.6251 | train Accuracy: 0.7618 | valid Loss: 0.6318 | valid Accuracy: 0.7823 | test Accuracy: 0.3594 | patient: 2
+Sub 2 | Epoch 99/100 | train Loss: 0.6087 | train Accuracy: 0.7688 | valid Loss: 0.7540 | valid Accuracy: 0.7468 | test Accuracy: 0.3490 | patient: 3
+Sub 2 | Epoch 100/100 | train Loss: 0.6203 | train Accuracy: 0.7635 | valid Loss: 0.6727 | valid Accuracy: 0.7812 | test Accuracy: 0.3802 | patient: 4
+Early Stopping Best Epoch: 96 | Test Subject 2 | Accuracy: 0.3837 | Kappa: 0.1782 | F1: 0.3484
+All Best Epoch: 36 | Test Subject 2 | Accuracy: 0.4219 | Kappa: 0.2292 | F1: 0.3662
+====== Subject 3/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 3 | Early Stopping: Best Epoch 1/100
+Sub 3 | All Epoch: Best Epoch 1/100
+Sub 3 | Epoch 1/100 | train Loss: 1.4226 | train Accuracy: 0.2772 | valid Loss: 1.3835 | valid Accuracy: 0.2909 | test Accuracy: 0.3785 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 2/100
+Sub 3 | All Epoch: Best Epoch 2/100
+Sub 3 | Epoch 2/100 | train Loss: 1.3799 | train Accuracy: 0.3003 | valid Loss: 1.3855 | valid Accuracy: 0.2985 | test Accuracy: 0.4410 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 3/100
+Sub 3 | All Epoch: Best Epoch 3/100
+Sub 3 | Epoch 3/100 | train Loss: 1.3520 | train Accuracy: 0.3345 | valid Loss: 1.2846 | valid Accuracy: 0.3922 | test Accuracy: 0.5365 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 4/100
+Sub 3 | All Epoch: Best Epoch 4/100
+Sub 3 | Epoch 4/100 | train Loss: 1.3157 | train Accuracy: 0.3768 | valid Loss: 1.2988 | valid Accuracy: 0.3955 | test Accuracy: 0.5781 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 5/100
+Sub 3 | All Epoch: Best Epoch 5/100
+Sub 3 | Epoch 5/100 | train Loss: 1.2907 | train Accuracy: 0.3883 | valid Loss: 1.2635 | valid Accuracy: 0.4461 | test Accuracy: 0.6319 | patient: 0
+Sub 3 | All Epoch: Best Epoch 6/100
+Sub 3 | Epoch 6/100 | train Loss: 1.2676 | train Accuracy: 0.4167 | valid Loss: 1.3006 | valid Accuracy: 0.4235 | test Accuracy: 0.6458 | patient: 1
+Sub 3 | Epoch 7/100 | train Loss: 1.2575 | train Accuracy: 0.4209 | valid Loss: 1.3669 | valid Accuracy: 0.4246 | test Accuracy: 0.5573 | patient: 2
+Sub 3 | Early Stopping: Best Epoch 8/100
+Sub 3 | All Epoch: Best Epoch 8/100
+Sub 3 | Epoch 8/100 | train Loss: 1.2472 | train Accuracy: 0.4289 | valid Loss: 1.1797 | valid Accuracy: 0.4741 | test Accuracy: 0.6615 | patient: 0
+Sub 3 | All Epoch: Best Epoch 9/100
+Sub 3 | Epoch 9/100 | train Loss: 1.2268 | train Accuracy: 0.4473 | valid Loss: 1.2060 | valid Accuracy: 0.4591 | test Accuracy: 0.6736 | patient: 1
+Sub 3 | Epoch 10/100 | train Loss: 1.2198 | train Accuracy: 0.4497 | valid Loss: 1.1762 | valid Accuracy: 0.4634 | test Accuracy: 0.6528 | patient: 2
+Sub 3 | Early Stopping: Best Epoch 11/100
+Sub 3 | Epoch 11/100 | train Loss: 1.1955 | train Accuracy: 0.4668 | valid Loss: 1.1719 | valid Accuracy: 0.4946 | test Accuracy: 0.6389 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 12/100
+Sub 3 | Epoch 12/100 | train Loss: 1.1870 | train Accuracy: 0.4682 | valid Loss: 1.1199 | valid Accuracy: 0.5054 | test Accuracy: 0.6580 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 13/100
+Sub 3 | Epoch 13/100 | train Loss: 1.1639 | train Accuracy: 0.4838 | valid Loss: 1.0759 | valid Accuracy: 0.5517 | test Accuracy: 0.6441 | patient: 0
+Sub 3 | Epoch 14/100 | train Loss: 1.1312 | train Accuracy: 0.5048 | valid Loss: 1.1213 | valid Accuracy: 0.5226 | test Accuracy: 0.6458 | patient: 1
+Sub 3 | Early Stopping: Best Epoch 15/100
+Sub 3 | All Epoch: Best Epoch 15/100
+Sub 3 | Epoch 15/100 | train Loss: 1.1364 | train Accuracy: 0.5004 | valid Loss: 1.0377 | valid Accuracy: 0.5603 | test Accuracy: 0.6788 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 16/100
+Sub 3 | Epoch 16/100 | train Loss: 1.0962 | train Accuracy: 0.5246 | valid Loss: 1.0154 | valid Accuracy: 0.5841 | test Accuracy: 0.6545 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 17/100
+Sub 3 | All Epoch: Best Epoch 17/100
+Sub 3 | Epoch 17/100 | train Loss: 1.0784 | train Accuracy: 0.5424 | valid Loss: 1.0230 | valid Accuracy: 0.5938 | test Accuracy: 0.7222 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 18/100
+Sub 3 | Epoch 18/100 | train Loss: 1.0627 | train Accuracy: 0.5463 | valid Loss: 0.9867 | valid Accuracy: 0.5959 | test Accuracy: 0.7014 | patient: 0
+Sub 3 | Epoch 19/100 | train Loss: 1.0416 | train Accuracy: 0.5586 | valid Loss: 1.0307 | valid Accuracy: 0.5927 | test Accuracy: 0.6875 | patient: 1
+Sub 3 | Early Stopping: Best Epoch 20/100
+Sub 3 | Epoch 20/100 | train Loss: 1.0202 | train Accuracy: 0.5732 | valid Loss: 0.9724 | valid Accuracy: 0.6078 | test Accuracy: 0.7031 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 21/100
+Sub 3 | Epoch 21/100 | train Loss: 1.0092 | train Accuracy: 0.5859 | valid Loss: 0.9727 | valid Accuracy: 0.6088 | test Accuracy: 0.6979 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 22/100
+Sub 3 | Epoch 22/100 | train Loss: 0.9977 | train Accuracy: 0.5855 | valid Loss: 0.9162 | valid Accuracy: 0.6401 | test Accuracy: 0.7188 | patient: 0
+Sub 3 | Epoch 23/100 | train Loss: 0.9808 | train Accuracy: 0.5989 | valid Loss: 1.0014 | valid Accuracy: 0.6272 | test Accuracy: 0.7014 | patient: 1
+Sub 3 | Epoch 24/100 | train Loss: 0.9860 | train Accuracy: 0.5974 | valid Loss: 1.0008 | valid Accuracy: 0.6218 | test Accuracy: 0.7135 | patient: 2
+Sub 3 | Epoch 25/100 | train Loss: 0.9657 | train Accuracy: 0.6038 | valid Loss: 0.9916 | valid Accuracy: 0.6293 | test Accuracy: 0.7188 | patient: 3
+Sub 3 | All Epoch: Best Epoch 26/100
+Sub 3 | Epoch 26/100 | train Loss: 0.9549 | train Accuracy: 0.6054 | valid Loss: 0.9306 | valid Accuracy: 0.6347 | test Accuracy: 0.7222 | patient: 4
+Sub 3 | Epoch 27/100 | train Loss: 0.9563 | train Accuracy: 0.6133 | valid Loss: 1.0411 | valid Accuracy: 0.6272 | test Accuracy: 0.7101 | patient: 5
+Sub 3 | Early Stopping: Best Epoch 28/100
+Sub 3 | Epoch 28/100 | train Loss: 0.9229 | train Accuracy: 0.6321 | valid Loss: 0.9842 | valid Accuracy: 0.6433 | test Accuracy: 0.7031 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 29/100
+Sub 3 | All Epoch: Best Epoch 29/100
+Sub 3 | Epoch 29/100 | train Loss: 0.9310 | train Accuracy: 0.6155 | valid Loss: 0.9046 | valid Accuracy: 0.6519 | test Accuracy: 0.7309 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 30/100
+Sub 3 | Epoch 30/100 | train Loss: 0.9047 | train Accuracy: 0.6438 | valid Loss: 0.9396 | valid Accuracy: 0.6692 | test Accuracy: 0.7188 | patient: 0
+Sub 3 | Epoch 31/100 | train Loss: 0.9099 | train Accuracy: 0.6249 | valid Loss: 0.8794 | valid Accuracy: 0.6552 | test Accuracy: 0.7240 | patient: 1
+Sub 3 | Epoch 32/100 | train Loss: 0.9036 | train Accuracy: 0.6409 | valid Loss: 0.9047 | valid Accuracy: 0.6627 | test Accuracy: 0.7031 | patient: 2
+Sub 3 | Epoch 33/100 | train Loss: 0.8843 | train Accuracy: 0.6427 | valid Loss: 0.8833 | valid Accuracy: 0.6670 | test Accuracy: 0.7031 | patient: 3
+Sub 3 | Early Stopping: Best Epoch 34/100
+Sub 3 | Epoch 34/100 | train Loss: 0.8971 | train Accuracy: 0.6353 | valid Loss: 0.9415 | valid Accuracy: 0.6746 | test Accuracy: 0.7083 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 35/100
+Sub 3 | All Epoch: Best Epoch 35/100
+Sub 3 | Epoch 35/100 | train Loss: 0.8831 | train Accuracy: 0.6440 | valid Loss: 0.8887 | valid Accuracy: 0.6756 | test Accuracy: 0.7326 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 36/100
+Sub 3 | All Epoch: Best Epoch 36/100
+Sub 3 | Epoch 36/100 | train Loss: 0.8825 | train Accuracy: 0.6467 | valid Loss: 0.9088 | valid Accuracy: 0.6897 | test Accuracy: 0.7378 | patient: 0
+Sub 3 | Epoch 37/100 | train Loss: 0.8723 | train Accuracy: 0.6481 | valid Loss: 0.9215 | valid Accuracy: 0.6832 | test Accuracy: 0.7170 | patient: 1
+Sub 3 | All Epoch: Best Epoch 38/100
+Sub 3 | Epoch 38/100 | train Loss: 0.8735 | train Accuracy: 0.6524 | valid Loss: 0.9128 | valid Accuracy: 0.6821 | test Accuracy: 0.7448 | patient: 2
+Sub 3 | Early Stopping: Best Epoch 39/100
+Sub 3 | Epoch 39/100 | train Loss: 0.8549 | train Accuracy: 0.6548 | valid Loss: 0.8761 | valid Accuracy: 0.6929 | test Accuracy: 0.7396 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 40/100
+Sub 3 | Epoch 40/100 | train Loss: 0.8561 | train Accuracy: 0.6601 | valid Loss: 0.8673 | valid Accuracy: 0.7015 | test Accuracy: 0.7413 | patient: 0
+Sub 3 | Epoch 41/100 | train Loss: 0.8436 | train Accuracy: 0.6659 | valid Loss: 0.8681 | valid Accuracy: 0.6907 | test Accuracy: 0.7292 | patient: 1
+Sub 3 | Early Stopping: Best Epoch 42/100
+Sub 3 | Epoch 42/100 | train Loss: 0.8384 | train Accuracy: 0.6707 | valid Loss: 0.8621 | valid Accuracy: 0.7047 | test Accuracy: 0.7361 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 43/100
+Sub 3 | All Epoch: Best Epoch 43/100
+Sub 3 | Epoch 43/100 | train Loss: 0.8298 | train Accuracy: 0.6659 | valid Loss: 0.8329 | valid Accuracy: 0.7134 | test Accuracy: 0.7465 | patient: 0
+Sub 3 | Epoch 44/100 | train Loss: 0.8304 | train Accuracy: 0.6715 | valid Loss: 0.8849 | valid Accuracy: 0.6929 | test Accuracy: 0.6910 | patient: 1
+Sub 3 | Epoch 45/100 | train Loss: 0.8234 | train Accuracy: 0.6749 | valid Loss: 0.9233 | valid Accuracy: 0.6897 | test Accuracy: 0.6858 | patient: 2
+Sub 3 | Early Stopping: Best Epoch 46/100
+Sub 3 | All Epoch: Best Epoch 46/100
+Sub 3 | Epoch 46/100 | train Loss: 0.8291 | train Accuracy: 0.6670 | valid Loss: 0.8083 | valid Accuracy: 0.7338 | test Accuracy: 0.7569 | patient: 0
+Sub 3 | Epoch 47/100 | train Loss: 0.8205 | train Accuracy: 0.6749 | valid Loss: 0.8353 | valid Accuracy: 0.6983 | test Accuracy: 0.7326 | patient: 1
+Sub 3 | Epoch 48/100 | train Loss: 0.8140 | train Accuracy: 0.6813 | valid Loss: 0.8764 | valid Accuracy: 0.6961 | test Accuracy: 0.7361 | patient: 2
+Sub 3 | All Epoch: Best Epoch 49/100
+Sub 3 | Epoch 49/100 | train Loss: 0.7935 | train Accuracy: 0.6874 | valid Loss: 0.8029 | valid Accuracy: 0.7231 | test Accuracy: 0.7622 | patient: 3
+Sub 3 | Epoch 50/100 | train Loss: 0.8118 | train Accuracy: 0.6789 | valid Loss: 0.7965 | valid Accuracy: 0.7188 | test Accuracy: 0.7257 | patient: 4
+Sub 3 | Epoch 51/100 | train Loss: 0.8057 | train Accuracy: 0.6870 | valid Loss: 0.8659 | valid Accuracy: 0.7091 | test Accuracy: 0.7413 | patient: 5
+Sub 3 | All Epoch: Best Epoch 52/100
+Sub 3 | Epoch 52/100 | train Loss: 0.8081 | train Accuracy: 0.6776 | valid Loss: 0.8177 | valid Accuracy: 0.7284 | test Accuracy: 0.7743 | patient: 6
+Sub 3 | Epoch 53/100 | train Loss: 0.7884 | train Accuracy: 0.6925 | valid Loss: 0.8871 | valid Accuracy: 0.7026 | test Accuracy: 0.7465 | patient: 7
+Sub 3 | Epoch 54/100 | train Loss: 0.7913 | train Accuracy: 0.6883 | valid Loss: 0.7920 | valid Accuracy: 0.7241 | test Accuracy: 0.7604 | patient: 8
+Sub 3 | Epoch 55/100 | train Loss: 0.7692 | train Accuracy: 0.6927 | valid Loss: 0.9177 | valid Accuracy: 0.6940 | test Accuracy: 0.6927 | patient: 9
+Sub 3 | Early Stopping: Best Epoch 56/100
+Sub 3 | Epoch 56/100 | train Loss: 0.7816 | train Accuracy: 0.6894 | valid Loss: 0.7866 | valid Accuracy: 0.7338 | test Accuracy: 0.7483 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 57/100
+Sub 3 | Epoch 57/100 | train Loss: 0.7744 | train Accuracy: 0.7011 | valid Loss: 0.8043 | valid Accuracy: 0.7360 | test Accuracy: 0.7378 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 58/100
+Sub 3 | Epoch 58/100 | train Loss: 0.7771 | train Accuracy: 0.6952 | valid Loss: 0.7910 | valid Accuracy: 0.7360 | test Accuracy: 0.7448 | patient: 0
+Sub 3 | Epoch 59/100 | train Loss: 0.7836 | train Accuracy: 0.6908 | valid Loss: 0.8116 | valid Accuracy: 0.7209 | test Accuracy: 0.7326 | patient: 1
+Sub 3 | Epoch 60/100 | train Loss: 0.7606 | train Accuracy: 0.7018 | valid Loss: 0.8020 | valid Accuracy: 0.7252 | test Accuracy: 0.7396 | patient: 2
+Sub 3 | Early Stopping: Best Epoch 61/100
+Sub 3 | Epoch 61/100 | train Loss: 0.7842 | train Accuracy: 0.6857 | valid Loss: 0.7610 | valid Accuracy: 0.7381 | test Accuracy: 0.7483 | patient: 0
+Sub 3 | Epoch 62/100 | train Loss: 0.7573 | train Accuracy: 0.7029 | valid Loss: 0.7848 | valid Accuracy: 0.7306 | test Accuracy: 0.7240 | patient: 1
+Sub 3 | Epoch 63/100 | train Loss: 0.7733 | train Accuracy: 0.6999 | valid Loss: 0.7663 | valid Accuracy: 0.7317 | test Accuracy: 0.7413 | patient: 2
+Sub 3 | All Epoch: Best Epoch 64/100
+Sub 3 | Epoch 64/100 | train Loss: 0.7577 | train Accuracy: 0.7110 | valid Loss: 0.7696 | valid Accuracy: 0.7274 | test Accuracy: 0.7778 | patient: 3
+Sub 3 | Early Stopping: Best Epoch 65/100
+Sub 3 | Epoch 65/100 | train Loss: 0.7651 | train Accuracy: 0.6997 | valid Loss: 0.7175 | valid Accuracy: 0.7425 | test Accuracy: 0.7691 | patient: 0
+Sub 3 | Epoch 66/100 | train Loss: 0.7616 | train Accuracy: 0.7053 | valid Loss: 0.8080 | valid Accuracy: 0.7263 | test Accuracy: 0.7309 | patient: 1
+Sub 3 | Early Stopping: Best Epoch 67/100
+Sub 3 | Epoch 67/100 | train Loss: 0.7595 | train Accuracy: 0.6981 | valid Loss: 0.7370 | valid Accuracy: 0.7500 | test Accuracy: 0.7604 | patient: 0
+Sub 3 | All Epoch: Best Epoch 68/100
+Sub 3 | Epoch 68/100 | train Loss: 0.7552 | train Accuracy: 0.7043 | valid Loss: 0.7137 | valid Accuracy: 0.7435 | test Accuracy: 0.7951 | patient: 1
+Sub 3 | Early Stopping: Best Epoch 69/100
+Sub 3 | Epoch 69/100 | train Loss: 0.7189 | train Accuracy: 0.7166 | valid Loss: 0.6916 | valid Accuracy: 0.7565 | test Accuracy: 0.7812 | patient: 0
+Sub 3 | Early Stopping: Best Epoch 70/100
+Sub 3 | All Epoch: Best Epoch 70/100
+Sub 3 | Epoch 70/100 | train Loss: 0.7499 | train Accuracy: 0.7056 | valid Loss: 0.6829 | valid Accuracy: 0.7629 | test Accuracy: 0.7969 | patient: 0
+Sub 3 | All Epoch: Best Epoch 71/100
+Sub 3 | Epoch 71/100 | train Loss: 0.7383 | train Accuracy: 0.7148 | valid Loss: 0.7452 | valid Accuracy: 0.7543 | test Accuracy: 0.8090 | patient: 1
+Sub 3 | Epoch 72/100 | train Loss: 0.7380 | train Accuracy: 0.7126 | valid Loss: 0.7627 | valid Accuracy: 0.7328 | test Accuracy: 0.7517 | patient: 2
+Sub 3 | Epoch 73/100 | train Loss: 0.7302 | train Accuracy: 0.7144 | valid Loss: 0.7041 | valid Accuracy: 0.7478 | test Accuracy: 0.7587 | patient: 3
+Sub 3 | Epoch 74/100 | train Loss: 0.7240 | train Accuracy: 0.7175 | valid Loss: 0.7473 | valid Accuracy: 0.7500 | test Accuracy: 0.7760 | patient: 4
+Sub 3 | Epoch 75/100 | train Loss: 0.7304 | train Accuracy: 0.7160 | valid Loss: 0.7432 | valid Accuracy: 0.7457 | test Accuracy: 0.7361 | patient: 5
+Sub 3 | Early Stopping: Best Epoch 76/100
+Sub 3 | Epoch 76/100 | train Loss: 0.7278 | train Accuracy: 0.7193 | valid Loss: 0.6475 | valid Accuracy: 0.7705 | test Accuracy: 0.7726 | patient: 0
+Sub 3 | Epoch 77/100 | train Loss: 0.7331 | train Accuracy: 0.7160 | valid Loss: 0.7131 | valid Accuracy: 0.7597 | test Accuracy: 0.7830 | patient: 1
+Sub 3 | Epoch 78/100 | train Loss: 0.7299 | train Accuracy: 0.7197 | valid Loss: 0.6736 | valid Accuracy: 0.7565 | test Accuracy: 0.7934 | patient: 2
+Sub 3 | Epoch 79/100 | train Loss: 0.7118 | train Accuracy: 0.7230 | valid Loss: 0.7250 | valid Accuracy: 0.7511 | test Accuracy: 0.7622 | patient: 3
+Sub 3 | Epoch 80/100 | train Loss: 0.7212 | train Accuracy: 0.7204 | valid Loss: 0.7540 | valid Accuracy: 0.7457 | test Accuracy: 0.7656 | patient: 4
+Sub 3 | Epoch 81/100 | train Loss: 0.7209 | train Accuracy: 0.7132 | valid Loss: 0.6829 | valid Accuracy: 0.7489 | test Accuracy: 0.7778 | patient: 5
+Sub 3 | Epoch 82/100 | train Loss: 0.7162 | train Accuracy: 0.7200 | valid Loss: 0.6709 | valid Accuracy: 0.7608 | test Accuracy: 0.7639 | patient: 6
+Sub 3 | Epoch 83/100 | train Loss: 0.7169 | train Accuracy: 0.7216 | valid Loss: 0.6500 | valid Accuracy: 0.7575 | test Accuracy: 0.7917 | patient: 7
+Sub 3 | Epoch 84/100 | train Loss: 0.7145 | train Accuracy: 0.7227 | valid Loss: 0.7490 | valid Accuracy: 0.7522 | test Accuracy: 0.7552 | patient: 8
+Sub 3 | Epoch 85/100 | train Loss: 0.7145 | train Accuracy: 0.7205 | valid Loss: 0.7394 | valid Accuracy: 0.7457 | test Accuracy: 0.7483 | patient: 9
+Sub 3 | Epoch 86/100 | train Loss: 0.7085 | train Accuracy: 0.7274 | valid Loss: 0.6852 | valid Accuracy: 0.7662 | test Accuracy: 0.7726 | patient: 10
+Sub 3 | Epoch 87/100 | train Loss: 0.7180 | train Accuracy: 0.7205 | valid Loss: 0.7125 | valid Accuracy: 0.7629 | test Accuracy: 0.7847 | patient: 11
+Sub 3 | Epoch 88/100 | train Loss: 0.7068 | train Accuracy: 0.7251 | valid Loss: 0.6849 | valid Accuracy: 0.7683 | test Accuracy: 0.7674 | patient: 12
+Sub 3 | Epoch 89/100 | train Loss: 0.7129 | train Accuracy: 0.7201 | valid Loss: 0.7224 | valid Accuracy: 0.7597 | test Accuracy: 0.7517 | patient: 13
+Sub 3 | Epoch 90/100 | train Loss: 0.6978 | train Accuracy: 0.7306 | valid Loss: 0.7179 | valid Accuracy: 0.7672 | test Accuracy: 0.7865 | patient: 14
+Sub 3 | Epoch 91/100 | train Loss: 0.7026 | train Accuracy: 0.7265 | valid Loss: 0.6834 | valid Accuracy: 0.7608 | test Accuracy: 0.7917 | patient: 15
+Sub 3 | Epoch 92/100 | train Loss: 0.7067 | train Accuracy: 0.7245 | valid Loss: 0.6704 | valid Accuracy: 0.7662 | test Accuracy: 0.7708 | patient: 16
+Sub 3 | Early Stopping: Best Epoch 93/100
+Sub 3 | Epoch 93/100 | train Loss: 0.6910 | train Accuracy: 0.7257 | valid Loss: 0.6539 | valid Accuracy: 0.7834 | test Accuracy: 0.7917 | patient: 0
+Sub 3 | Epoch 94/100 | train Loss: 0.6903 | train Accuracy: 0.7315 | valid Loss: 0.6895 | valid Accuracy: 0.7651 | test Accuracy: 0.7656 | patient: 1
+Sub 3 | Epoch 95/100 | train Loss: 0.7059 | train Accuracy: 0.7179 | valid Loss: 0.6648 | valid Accuracy: 0.7608 | test Accuracy: 0.7726 | patient: 2
+Sub 3 | Epoch 96/100 | train Loss: 0.7048 | train Accuracy: 0.7240 | valid Loss: 0.6592 | valid Accuracy: 0.7748 | test Accuracy: 0.7674 | patient: 3
+Sub 3 | Epoch 97/100 | train Loss: 0.6939 | train Accuracy: 0.7364 | valid Loss: 0.7111 | valid Accuracy: 0.7759 | test Accuracy: 0.7986 | patient: 4
+Sub 3 | Epoch 98/100 | train Loss: 0.6819 | train Accuracy: 0.7336 | valid Loss: 0.6513 | valid Accuracy: 0.7759 | test Accuracy: 0.7917 | patient: 5
+Sub 3 | Epoch 99/100 | train Loss: 0.6803 | train Accuracy: 0.7345 | valid Loss: 0.6573 | valid Accuracy: 0.7575 | test Accuracy: 0.8056 | patient: 6
+Sub 3 | Epoch 100/100 | train Loss: 0.6839 | train Accuracy: 0.7356 | valid Loss: 0.6375 | valid Accuracy: 0.7705 | test Accuracy: 0.7847 | patient: 7
+Early Stopping Best Epoch: 93 | Test Subject 3 | Accuracy: 0.7917 | Kappa: 0.7222 | F1: 0.7910
+All Best Epoch: 71 | Test Subject 3 | Accuracy: 0.8090 | Kappa: 0.7454 | F1: 0.8101
+====== Subject 4/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 4 | Early Stopping: Best Epoch 1/100
+Sub 4 | All Epoch: Best Epoch 1/100
+Sub 4 | Epoch 1/100 | train Loss: 1.4282 | train Accuracy: 0.2607 | valid Loss: 1.4319 | valid Accuracy: 0.3071 | test Accuracy: 0.2500 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 2/100
+Sub 4 | All Epoch: Best Epoch 2/100
+Sub 4 | Epoch 2/100 | train Loss: 1.3646 | train Accuracy: 0.3170 | valid Loss: 1.3839 | valid Accuracy: 0.3416 | test Accuracy: 0.2951 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 3/100
+Sub 4 | All Epoch: Best Epoch 3/100
+Sub 4 | Epoch 3/100 | train Loss: 1.3183 | train Accuracy: 0.3666 | valid Loss: 1.3649 | valid Accuracy: 0.3901 | test Accuracy: 0.3073 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 4/100
+Sub 4 | Epoch 4/100 | train Loss: 1.2705 | train Accuracy: 0.4147 | valid Loss: 1.2812 | valid Accuracy: 0.4343 | test Accuracy: 0.2882 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 5/100
+Sub 4 | All Epoch: Best Epoch 5/100
+Sub 4 | Epoch 5/100 | train Loss: 1.2430 | train Accuracy: 0.4336 | valid Loss: 1.2303 | valid Accuracy: 0.4569 | test Accuracy: 0.3472 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 6/100
+Sub 4 | Epoch 6/100 | train Loss: 1.2130 | train Accuracy: 0.4531 | valid Loss: 1.2129 | valid Accuracy: 0.4677 | test Accuracy: 0.3056 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 7/100
+Sub 4 | All Epoch: Best Epoch 7/100
+Sub 4 | Epoch 7/100 | train Loss: 1.1921 | train Accuracy: 0.4675 | valid Loss: 1.1553 | valid Accuracy: 0.5011 | test Accuracy: 0.3472 | patient: 0
+Sub 4 | All Epoch: Best Epoch 8/100
+Sub 4 | Epoch 8/100 | train Loss: 1.1822 | train Accuracy: 0.4742 | valid Loss: 1.1500 | valid Accuracy: 0.4914 | test Accuracy: 0.4149 | patient: 1
+Sub 4 | Epoch 9/100 | train Loss: 1.1653 | train Accuracy: 0.4882 | valid Loss: 1.1523 | valid Accuracy: 0.4871 | test Accuracy: 0.2899 | patient: 2
+Sub 4 | All Epoch: Best Epoch 10/100
+Sub 4 | Epoch 10/100 | train Loss: 1.1453 | train Accuracy: 0.4969 | valid Loss: 1.1286 | valid Accuracy: 0.4946 | test Accuracy: 0.4375 | patient: 3
+Sub 4 | Early Stopping: Best Epoch 11/100
+Sub 4 | Epoch 11/100 | train Loss: 1.1230 | train Accuracy: 0.5114 | valid Loss: 1.0977 | valid Accuracy: 0.5194 | test Accuracy: 0.3576 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 12/100
+Sub 4 | Epoch 12/100 | train Loss: 1.1215 | train Accuracy: 0.5072 | valid Loss: 1.0396 | valid Accuracy: 0.5647 | test Accuracy: 0.3941 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 13/100
+Sub 4 | Epoch 13/100 | train Loss: 1.1018 | train Accuracy: 0.5302 | valid Loss: 0.9898 | valid Accuracy: 0.5700 | test Accuracy: 0.3594 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 14/100
+Sub 4 | All Epoch: Best Epoch 14/100
+Sub 4 | Epoch 14/100 | train Loss: 1.0575 | train Accuracy: 0.5447 | valid Loss: 0.9689 | valid Accuracy: 0.5938 | test Accuracy: 0.4462 | patient: 0
+Sub 4 | Epoch 15/100 | train Loss: 1.0439 | train Accuracy: 0.5599 | valid Loss: 1.0509 | valid Accuracy: 0.5862 | test Accuracy: 0.3663 | patient: 1
+Sub 4 | Epoch 16/100 | train Loss: 1.0253 | train Accuracy: 0.5615 | valid Loss: 0.9589 | valid Accuracy: 0.5862 | test Accuracy: 0.3490 | patient: 2
+Sub 4 | Early Stopping: Best Epoch 17/100
+Sub 4 | Epoch 17/100 | train Loss: 0.9974 | train Accuracy: 0.5781 | valid Loss: 0.9499 | valid Accuracy: 0.6379 | test Accuracy: 0.3872 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 18/100
+Sub 4 | Epoch 18/100 | train Loss: 0.9834 | train Accuracy: 0.5909 | valid Loss: 0.9131 | valid Accuracy: 0.6498 | test Accuracy: 0.4028 | patient: 0
+Sub 4 | Epoch 19/100 | train Loss: 0.9751 | train Accuracy: 0.5952 | valid Loss: 0.9754 | valid Accuracy: 0.6487 | test Accuracy: 0.4080 | patient: 1
+Sub 4 | Early Stopping: Best Epoch 20/100
+Sub 4 | Epoch 20/100 | train Loss: 0.9562 | train Accuracy: 0.6110 | valid Loss: 0.9000 | valid Accuracy: 0.6670 | test Accuracy: 0.3819 | patient: 0
+Sub 4 | Epoch 21/100 | train Loss: 0.9435 | train Accuracy: 0.6096 | valid Loss: 0.9001 | valid Accuracy: 0.6498 | test Accuracy: 0.3576 | patient: 1
+Sub 4 | Epoch 22/100 | train Loss: 0.9244 | train Accuracy: 0.6300 | valid Loss: 0.8952 | valid Accuracy: 0.6562 | test Accuracy: 0.3924 | patient: 2
+Sub 4 | Early Stopping: Best Epoch 23/100
+Sub 4 | Epoch 23/100 | train Loss: 0.9105 | train Accuracy: 0.6242 | valid Loss: 0.8892 | valid Accuracy: 0.6703 | test Accuracy: 0.3663 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 24/100
+Sub 4 | Epoch 24/100 | train Loss: 0.9020 | train Accuracy: 0.6367 | valid Loss: 0.8217 | valid Accuracy: 0.6940 | test Accuracy: 0.4010 | patient: 0
+Sub 4 | Epoch 25/100 | train Loss: 0.8785 | train Accuracy: 0.6493 | valid Loss: 0.8196 | valid Accuracy: 0.6800 | test Accuracy: 0.4010 | patient: 1
+Sub 4 | Epoch 26/100 | train Loss: 0.8704 | train Accuracy: 0.6573 | valid Loss: 0.9051 | valid Accuracy: 0.6422 | test Accuracy: 0.3455 | patient: 2
+Sub 4 | Epoch 27/100 | train Loss: 0.8608 | train Accuracy: 0.6560 | valid Loss: 0.9486 | valid Accuracy: 0.6519 | test Accuracy: 0.3733 | patient: 3
+Sub 4 | Epoch 28/100 | train Loss: 0.8454 | train Accuracy: 0.6613 | valid Loss: 0.9218 | valid Accuracy: 0.6778 | test Accuracy: 0.3976 | patient: 4
+Sub 4 | Epoch 29/100 | train Loss: 0.8499 | train Accuracy: 0.6626 | valid Loss: 0.8454 | valid Accuracy: 0.6832 | test Accuracy: 0.4288 | patient: 5
+Sub 4 | Epoch 30/100 | train Loss: 0.8398 | train Accuracy: 0.6652 | valid Loss: 0.8790 | valid Accuracy: 0.6810 | test Accuracy: 0.3976 | patient: 6
+Sub 4 | Early Stopping: Best Epoch 31/100
+Sub 4 | All Epoch: Best Epoch 31/100
+Sub 4 | Epoch 31/100 | train Loss: 0.8243 | train Accuracy: 0.6728 | valid Loss: 0.7861 | valid Accuracy: 0.6950 | test Accuracy: 0.4705 | patient: 0
+Sub 4 | Epoch 32/100 | train Loss: 0.8268 | train Accuracy: 0.6757 | valid Loss: 0.7806 | valid Accuracy: 0.6940 | test Accuracy: 0.4219 | patient: 1
+Sub 4 | Epoch 33/100 | train Loss: 0.8067 | train Accuracy: 0.6760 | valid Loss: 0.8722 | valid Accuracy: 0.6897 | test Accuracy: 0.4115 | patient: 2
+Sub 4 | Early Stopping: Best Epoch 34/100
+Sub 4 | Epoch 34/100 | train Loss: 0.8035 | train Accuracy: 0.6837 | valid Loss: 0.7854 | valid Accuracy: 0.7188 | test Accuracy: 0.4497 | patient: 0
+Sub 4 | Epoch 35/100 | train Loss: 0.7935 | train Accuracy: 0.6933 | valid Loss: 0.8134 | valid Accuracy: 0.7144 | test Accuracy: 0.4236 | patient: 1
+Sub 4 | Epoch 36/100 | train Loss: 0.7837 | train Accuracy: 0.6932 | valid Loss: 0.8181 | valid Accuracy: 0.6983 | test Accuracy: 0.4149 | patient: 2
+Sub 4 | Epoch 37/100 | train Loss: 0.7791 | train Accuracy: 0.6905 | valid Loss: 0.8207 | valid Accuracy: 0.7069 | test Accuracy: 0.4635 | patient: 3
+Sub 4 | Early Stopping: Best Epoch 38/100
+Sub 4 | Epoch 38/100 | train Loss: 0.7693 | train Accuracy: 0.6921 | valid Loss: 0.7495 | valid Accuracy: 0.7198 | test Accuracy: 0.4392 | patient: 0
+Sub 4 | Epoch 39/100 | train Loss: 0.7860 | train Accuracy: 0.6928 | valid Loss: 0.8906 | valid Accuracy: 0.7015 | test Accuracy: 0.4253 | patient: 1
+Sub 4 | Early Stopping: Best Epoch 40/100
+Sub 4 | Epoch 40/100 | train Loss: 0.7665 | train Accuracy: 0.7005 | valid Loss: 0.7875 | valid Accuracy: 0.7263 | test Accuracy: 0.4444 | patient: 0
+Sub 4 | Epoch 41/100 | train Loss: 0.7516 | train Accuracy: 0.7060 | valid Loss: 0.8480 | valid Accuracy: 0.6929 | test Accuracy: 0.4045 | patient: 1
+Sub 4 | Early Stopping: Best Epoch 42/100
+Sub 4 | Epoch 42/100 | train Loss: 0.7595 | train Accuracy: 0.6995 | valid Loss: 0.7800 | valid Accuracy: 0.7306 | test Accuracy: 0.4566 | patient: 0
+Sub 4 | Epoch 43/100 | train Loss: 0.7538 | train Accuracy: 0.7077 | valid Loss: 0.8469 | valid Accuracy: 0.7123 | test Accuracy: 0.4601 | patient: 1
+Sub 4 | Early Stopping: Best Epoch 44/100
+Sub 4 | Epoch 44/100 | train Loss: 0.7484 | train Accuracy: 0.7060 | valid Loss: 0.8774 | valid Accuracy: 0.7371 | test Accuracy: 0.4514 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 45/100
+Sub 4 | Epoch 45/100 | train Loss: 0.7417 | train Accuracy: 0.7101 | valid Loss: 0.7476 | valid Accuracy: 0.7381 | test Accuracy: 0.4010 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 46/100
+Sub 4 | Epoch 46/100 | train Loss: 0.7387 | train Accuracy: 0.7096 | valid Loss: 0.7592 | valid Accuracy: 0.7414 | test Accuracy: 0.4271 | patient: 0
+Sub 4 | Early Stopping: Best Epoch 47/100
+Sub 4 | Epoch 47/100 | train Loss: 0.7430 | train Accuracy: 0.7057 | valid Loss: 0.7105 | valid Accuracy: 0.7543 | test Accuracy: 0.4618 | patient: 0
+Sub 4 | Epoch 48/100 | train Loss: 0.7355 | train Accuracy: 0.7151 | valid Loss: 0.7436 | valid Accuracy: 0.7371 | test Accuracy: 0.4514 | patient: 1
+Sub 4 | Epoch 49/100 | train Loss: 0.7370 | train Accuracy: 0.7139 | valid Loss: 0.7965 | valid Accuracy: 0.7284 | test Accuracy: 0.4705 | patient: 2
+Sub 4 | Epoch 50/100 | train Loss: 0.7185 | train Accuracy: 0.7192 | valid Loss: 0.7477 | valid Accuracy: 0.7403 | test Accuracy: 0.4514 | patient: 3
+Sub 4 | Epoch 51/100 | train Loss: 0.7358 | train Accuracy: 0.7143 | valid Loss: 0.7911 | valid Accuracy: 0.7231 | test Accuracy: 0.4115 | patient: 4
+Sub 4 | Epoch 52/100 | train Loss: 0.7072 | train Accuracy: 0.7216 | valid Loss: 0.7392 | valid Accuracy: 0.7435 | test Accuracy: 0.4653 | patient: 5
+Sub 4 | Early Stopping: Best Epoch 53/100
+Sub 4 | Epoch 53/100 | train Loss: 0.7167 | train Accuracy: 0.7204 | valid Loss: 0.7131 | valid Accuracy: 0.7640 | test Accuracy: 0.4358 | patient: 0
+Sub 4 | Epoch 54/100 | train Loss: 0.7104 | train Accuracy: 0.7291 | valid Loss: 0.6852 | valid Accuracy: 0.7586 | test Accuracy: 0.4167 | patient: 1
+Sub 4 | Early Stopping: Best Epoch 55/100
+Sub 4 | Epoch 55/100 | train Loss: 0.7076 | train Accuracy: 0.7276 | valid Loss: 0.6956 | valid Accuracy: 0.7726 | test Accuracy: 0.4653 | patient: 0
+Sub 4 | Epoch 56/100 | train Loss: 0.7098 | train Accuracy: 0.7253 | valid Loss: 0.7879 | valid Accuracy: 0.7489 | test Accuracy: 0.4462 | patient: 1
+Sub 4 | Epoch 57/100 | train Loss: 0.6985 | train Accuracy: 0.7303 | valid Loss: 0.7508 | valid Accuracy: 0.7651 | test Accuracy: 0.4549 | patient: 2
+Sub 4 | Epoch 58/100 | train Loss: 0.7075 | train Accuracy: 0.7253 | valid Loss: 0.7462 | valid Accuracy: 0.7522 | test Accuracy: 0.4115 | patient: 3
+Sub 4 | Early Stopping: Best Epoch 59/100
+Sub 4 | Epoch 59/100 | train Loss: 0.6873 | train Accuracy: 0.7389 | valid Loss: 0.6949 | valid Accuracy: 0.7748 | test Accuracy: 0.4618 | patient: 0
+Sub 4 | Epoch 60/100 | train Loss: 0.6915 | train Accuracy: 0.7332 | valid Loss: 0.7041 | valid Accuracy: 0.7608 | test Accuracy: 0.4618 | patient: 1
+Sub 4 | Epoch 61/100 | train Loss: 0.6779 | train Accuracy: 0.7413 | valid Loss: 0.7897 | valid Accuracy: 0.7511 | test Accuracy: 0.4288 | patient: 2
+Sub 4 | Epoch 62/100 | train Loss: 0.6868 | train Accuracy: 0.7338 | valid Loss: 0.6885 | valid Accuracy: 0.7640 | test Accuracy: 0.4479 | patient: 3
+Sub 4 | Epoch 63/100 | train Loss: 0.7013 | train Accuracy: 0.7246 | valid Loss: 0.6641 | valid Accuracy: 0.7694 | test Accuracy: 0.4670 | patient: 4
+Sub 4 | Epoch 64/100 | train Loss: 0.6911 | train Accuracy: 0.7356 | valid Loss: 0.6781 | valid Accuracy: 0.7619 | test Accuracy: 0.4184 | patient: 5
+Sub 4 | Epoch 65/100 | train Loss: 0.6844 | train Accuracy: 0.7405 | valid Loss: 0.7405 | valid Accuracy: 0.7414 | test Accuracy: 0.3924 | patient: 6
+Sub 4 | Epoch 66/100 | train Loss: 0.6853 | train Accuracy: 0.7361 | valid Loss: 0.6495 | valid Accuracy: 0.7716 | test Accuracy: 0.4583 | patient: 7
+Sub 4 | Early Stopping: Best Epoch 67/100
+Sub 4 | Epoch 67/100 | train Loss: 0.6701 | train Accuracy: 0.7405 | valid Loss: 0.6828 | valid Accuracy: 0.7748 | test Accuracy: 0.4427 | patient: 0
+Sub 4 | Epoch 68/100 | train Loss: 0.6721 | train Accuracy: 0.7405 | valid Loss: 0.7280 | valid Accuracy: 0.7619 | test Accuracy: 0.4097 | patient: 1
+Sub 4 | Epoch 69/100 | train Loss: 0.6717 | train Accuracy: 0.7394 | valid Loss: 0.7087 | valid Accuracy: 0.7597 | test Accuracy: 0.4080 | patient: 2
+Sub 4 | Early Stopping: Best Epoch 70/100
+Sub 4 | Epoch 70/100 | train Loss: 0.6599 | train Accuracy: 0.7462 | valid Loss: 0.6977 | valid Accuracy: 0.7759 | test Accuracy: 0.4306 | patient: 0
+Sub 4 | All Epoch: Best Epoch 71/100
+Sub 4 | Epoch 71/100 | train Loss: 0.6596 | train Accuracy: 0.7428 | valid Loss: 0.6896 | valid Accuracy: 0.7662 | test Accuracy: 0.4792 | patient: 1
+Sub 4 | Epoch 72/100 | train Loss: 0.6612 | train Accuracy: 0.7395 | valid Loss: 0.7512 | valid Accuracy: 0.7446 | test Accuracy: 0.4444 | patient: 2
+Sub 4 | Epoch 73/100 | train Loss: 0.6652 | train Accuracy: 0.7450 | valid Loss: 0.7190 | valid Accuracy: 0.7586 | test Accuracy: 0.4462 | patient: 3
+Sub 4 | Epoch 74/100 | train Loss: 0.6716 | train Accuracy: 0.7455 | valid Loss: 0.6692 | valid Accuracy: 0.7629 | test Accuracy: 0.4080 | patient: 4
+Sub 4 | Epoch 75/100 | train Loss: 0.6609 | train Accuracy: 0.7429 | valid Loss: 0.6861 | valid Accuracy: 0.7586 | test Accuracy: 0.4080 | patient: 5
+Sub 4 | Early Stopping: Best Epoch 76/100
+Sub 4 | Epoch 76/100 | train Loss: 0.6525 | train Accuracy: 0.7458 | valid Loss: 0.6416 | valid Accuracy: 0.7823 | test Accuracy: 0.4705 | patient: 0
+Sub 4 | Epoch 77/100 | train Loss: 0.6710 | train Accuracy: 0.7410 | valid Loss: 0.7541 | valid Accuracy: 0.7532 | test Accuracy: 0.4601 | patient: 1
+Sub 4 | Epoch 78/100 | train Loss: 0.6465 | train Accuracy: 0.7548 | valid Loss: 0.6751 | valid Accuracy: 0.7716 | test Accuracy: 0.4184 | patient: 2
+Sub 4 | Epoch 79/100 | train Loss: 0.6722 | train Accuracy: 0.7363 | valid Loss: 0.6580 | valid Accuracy: 0.7759 | test Accuracy: 0.4271 | patient: 3
+Sub 4 | Epoch 80/100 | train Loss: 0.6616 | train Accuracy: 0.7473 | valid Loss: 0.6377 | valid Accuracy: 0.7780 | test Accuracy: 0.4635 | patient: 4
+Sub 4 | Epoch 81/100 | train Loss: 0.6590 | train Accuracy: 0.7455 | valid Loss: 0.6298 | valid Accuracy: 0.7802 | test Accuracy: 0.4288 | patient: 5
+Sub 4 | Epoch 82/100 | train Loss: 0.6399 | train Accuracy: 0.7580 | valid Loss: 0.6892 | valid Accuracy: 0.7780 | test Accuracy: 0.4201 | patient: 6
+Sub 4 | Epoch 83/100 | train Loss: 0.6426 | train Accuracy: 0.7567 | valid Loss: 0.6985 | valid Accuracy: 0.7737 | test Accuracy: 0.4583 | patient: 7
+Sub 4 | Epoch 84/100 | train Loss: 0.6306 | train Accuracy: 0.7590 | valid Loss: 0.6303 | valid Accuracy: 0.7748 | test Accuracy: 0.4740 | patient: 8
+Sub 4 | Epoch 85/100 | train Loss: 0.6478 | train Accuracy: 0.7535 | valid Loss: 0.6483 | valid Accuracy: 0.7716 | test Accuracy: 0.4167 | patient: 9
+Sub 4 | Epoch 86/100 | train Loss: 0.6515 | train Accuracy: 0.7427 | valid Loss: 0.7151 | valid Accuracy: 0.7629 | test Accuracy: 0.4236 | patient: 10
+Sub 4 | Epoch 87/100 | train Loss: 0.6384 | train Accuracy: 0.7531 | valid Loss: 0.6706 | valid Accuracy: 0.7791 | test Accuracy: 0.4549 | patient: 11
+Sub 4 | Epoch 88/100 | train Loss: 0.6614 | train Accuracy: 0.7463 | valid Loss: 0.6514 | valid Accuracy: 0.7705 | test Accuracy: 0.4358 | patient: 12
+Sub 4 | Epoch 89/100 | train Loss: 0.6400 | train Accuracy: 0.7531 | valid Loss: 0.6487 | valid Accuracy: 0.7780 | test Accuracy: 0.4323 | patient: 13
+Sub 4 | Early Stopping: Best Epoch 90/100
+Sub 4 | All Epoch: Best Epoch 90/100
+Sub 4 | Epoch 90/100 | train Loss: 0.6312 | train Accuracy: 0.7558 | valid Loss: 0.6272 | valid Accuracy: 0.7834 | test Accuracy: 0.5000 | patient: 0
+Sub 4 | Epoch 91/100 | train Loss: 0.6404 | train Accuracy: 0.7564 | valid Loss: 0.6700 | valid Accuracy: 0.7651 | test Accuracy: 0.4792 | patient: 1
+Sub 4 | Epoch 92/100 | train Loss: 0.6322 | train Accuracy: 0.7620 | valid Loss: 0.6567 | valid Accuracy: 0.7769 | test Accuracy: 0.4184 | patient: 2
+Sub 4 | Epoch 93/100 | train Loss: 0.6209 | train Accuracy: 0.7582 | valid Loss: 0.6657 | valid Accuracy: 0.7726 | test Accuracy: 0.4844 | patient: 3
+Sub 4 | Epoch 94/100 | train Loss: 0.6273 | train Accuracy: 0.7584 | valid Loss: 0.6471 | valid Accuracy: 0.7812 | test Accuracy: 0.4635 | patient: 4
+Sub 4 | Early Stopping: Best Epoch 95/100
+Sub 4 | Epoch 95/100 | train Loss: 0.6386 | train Accuracy: 0.7516 | valid Loss: 0.6391 | valid Accuracy: 0.7866 | test Accuracy: 0.4479 | patient: 0
+Sub 4 | Epoch 96/100 | train Loss: 0.6283 | train Accuracy: 0.7576 | valid Loss: 0.6174 | valid Accuracy: 0.7791 | test Accuracy: 0.4670 | patient: 1
+Sub 4 | Epoch 97/100 | train Loss: 0.6407 | train Accuracy: 0.7561 | valid Loss: 0.6443 | valid Accuracy: 0.7726 | test Accuracy: 0.4861 | patient: 2
+Sub 4 | Early Stopping: Best Epoch 98/100
+Sub 4 | Epoch 98/100 | train Loss: 0.6249 | train Accuracy: 0.7605 | valid Loss: 0.6228 | valid Accuracy: 0.7974 | test Accuracy: 0.5000 | patient: 0
+Sub 4 | Epoch 99/100 | train Loss: 0.6069 | train Accuracy: 0.7731 | valid Loss: 0.6695 | valid Accuracy: 0.7866 | test Accuracy: 0.4566 | patient: 1
+Sub 4 | Epoch 100/100 | train Loss: 0.6152 | train Accuracy: 0.7632 | valid Loss: 0.6694 | valid Accuracy: 0.7694 | test Accuracy: 0.4722 | patient: 2
+Early Stopping Best Epoch: 98 | Test Subject 4 | Accuracy: 0.5000 | Kappa: 0.3333 | F1: 0.4906
+All Best Epoch: 90 | Test Subject 4 | Accuracy: 0.5000 | Kappa: 0.3333 | F1: 0.4771
+====== Subject 5/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 5 | Early Stopping: Best Epoch 1/100
+Sub 5 | All Epoch: Best Epoch 1/100
+Sub 5 | Epoch 1/100 | train Loss: 1.4237 | train Accuracy: 0.2717 | valid Loss: 1.3834 | valid Accuracy: 0.2856 | test Accuracy: 0.2639 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 2/100
+Sub 5 | Epoch 2/100 | train Loss: 1.3600 | train Accuracy: 0.3211 | valid Loss: 1.3342 | valid Accuracy: 0.3599 | test Accuracy: 0.2500 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 3/100
+Sub 5 | Epoch 3/100 | train Loss: 1.3146 | train Accuracy: 0.3666 | valid Loss: 1.2632 | valid Accuracy: 0.4116 | test Accuracy: 0.2500 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 4/100
+Sub 5 | Epoch 4/100 | train Loss: 1.2676 | train Accuracy: 0.4067 | valid Loss: 1.3145 | valid Accuracy: 0.4375 | test Accuracy: 0.2465 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 5/100
+Sub 5 | Epoch 5/100 | train Loss: 1.2341 | train Accuracy: 0.4417 | valid Loss: 1.2278 | valid Accuracy: 0.4688 | test Accuracy: 0.2535 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 6/100
+Sub 5 | All Epoch: Best Epoch 6/100
+Sub 5 | Epoch 6/100 | train Loss: 1.1987 | train Accuracy: 0.4647 | valid Loss: 1.1847 | valid Accuracy: 0.4957 | test Accuracy: 0.2795 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 7/100
+Sub 5 | Epoch 7/100 | train Loss: 1.1910 | train Accuracy: 0.4720 | valid Loss: 1.1558 | valid Accuracy: 0.4968 | test Accuracy: 0.2361 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 8/100
+Sub 5 | Epoch 8/100 | train Loss: 1.1468 | train Accuracy: 0.4959 | valid Loss: 1.2671 | valid Accuracy: 0.4978 | test Accuracy: 0.2795 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 9/100
+Sub 5 | Epoch 9/100 | train Loss: 1.1392 | train Accuracy: 0.4952 | valid Loss: 1.1846 | valid Accuracy: 0.5119 | test Accuracy: 0.2604 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 10/100
+Sub 5 | Epoch 10/100 | train Loss: 1.1121 | train Accuracy: 0.5135 | valid Loss: 1.1008 | valid Accuracy: 0.5216 | test Accuracy: 0.2795 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 11/100
+Sub 5 | Epoch 11/100 | train Loss: 1.0922 | train Accuracy: 0.5312 | valid Loss: 1.0785 | valid Accuracy: 0.5647 | test Accuracy: 0.2604 | patient: 0
+Sub 5 | Epoch 12/100 | train Loss: 1.0733 | train Accuracy: 0.5341 | valid Loss: 1.1154 | valid Accuracy: 0.5550 | test Accuracy: 0.2535 | patient: 1
+Sub 5 | Early Stopping: Best Epoch 13/100
+Sub 5 | Epoch 13/100 | train Loss: 1.0506 | train Accuracy: 0.5583 | valid Loss: 1.0647 | valid Accuracy: 0.5754 | test Accuracy: 0.2500 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 14/100
+Sub 5 | Epoch 14/100 | train Loss: 1.0303 | train Accuracy: 0.5624 | valid Loss: 1.0231 | valid Accuracy: 0.5884 | test Accuracy: 0.2569 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 15/100
+Sub 5 | All Epoch: Best Epoch 15/100
+Sub 5 | Epoch 15/100 | train Loss: 1.0097 | train Accuracy: 0.5777 | valid Loss: 0.9669 | valid Accuracy: 0.6153 | test Accuracy: 0.2951 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 16/100
+Sub 5 | All Epoch: Best Epoch 16/100
+Sub 5 | Epoch 16/100 | train Loss: 1.0034 | train Accuracy: 0.5796 | valid Loss: 0.9521 | valid Accuracy: 0.6272 | test Accuracy: 0.3003 | patient: 0
+Sub 5 | All Epoch: Best Epoch 17/100
+Sub 5 | Epoch 17/100 | train Loss: 0.9872 | train Accuracy: 0.5898 | valid Loss: 1.0235 | valid Accuracy: 0.6056 | test Accuracy: 0.3021 | patient: 1
+Sub 5 | Epoch 18/100 | train Loss: 0.9767 | train Accuracy: 0.5943 | valid Loss: 1.0256 | valid Accuracy: 0.6110 | test Accuracy: 0.2500 | patient: 2
+Sub 5 | Epoch 19/100 | train Loss: 0.9713 | train Accuracy: 0.5967 | valid Loss: 1.0456 | valid Accuracy: 0.6218 | test Accuracy: 0.2934 | patient: 3
+Sub 5 | Epoch 20/100 | train Loss: 0.9378 | train Accuracy: 0.6162 | valid Loss: 1.1306 | valid Accuracy: 0.5787 | test Accuracy: 0.2587 | patient: 4
+Sub 5 | All Epoch: Best Epoch 21/100
+Sub 5 | Epoch 21/100 | train Loss: 0.9139 | train Accuracy: 0.6272 | valid Loss: 1.0027 | valid Accuracy: 0.6185 | test Accuracy: 0.3438 | patient: 5
+Sub 5 | Epoch 22/100 | train Loss: 0.9348 | train Accuracy: 0.6213 | valid Loss: 1.0932 | valid Accuracy: 0.5862 | test Accuracy: 0.3351 | patient: 6
+Sub 5 | All Epoch: Best Epoch 23/100
+Sub 5 | Epoch 23/100 | train Loss: 0.9120 | train Accuracy: 0.6292 | valid Loss: 1.0743 | valid Accuracy: 0.6218 | test Accuracy: 0.3576 | patient: 7
+Sub 5 | Early Stopping: Best Epoch 24/100
+Sub 5 | All Epoch: Best Epoch 24/100
+Sub 5 | Epoch 24/100 | train Loss: 0.8943 | train Accuracy: 0.6302 | valid Loss: 0.9663 | valid Accuracy: 0.6390 | test Accuracy: 0.3733 | patient: 0
+Sub 5 | Epoch 25/100 | train Loss: 0.8983 | train Accuracy: 0.6389 | valid Loss: 1.0517 | valid Accuracy: 0.6142 | test Accuracy: 0.3212 | patient: 1
+Sub 5 | Epoch 26/100 | train Loss: 0.8810 | train Accuracy: 0.6423 | valid Loss: 1.0536 | valid Accuracy: 0.6131 | test Accuracy: 0.3628 | patient: 2
+Sub 5 | All Epoch: Best Epoch 27/100
+Sub 5 | Epoch 27/100 | train Loss: 0.8706 | train Accuracy: 0.6433 | valid Loss: 0.9677 | valid Accuracy: 0.6379 | test Accuracy: 0.4097 | patient: 3
+Sub 5 | Early Stopping: Best Epoch 28/100
+Sub 5 | Epoch 28/100 | train Loss: 0.8631 | train Accuracy: 0.6538 | valid Loss: 0.9945 | valid Accuracy: 0.6466 | test Accuracy: 0.4062 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 29/100
+Sub 5 | Epoch 29/100 | train Loss: 0.8572 | train Accuracy: 0.6546 | valid Loss: 0.9954 | valid Accuracy: 0.6498 | test Accuracy: 0.3976 | patient: 0
+Sub 5 | All Epoch: Best Epoch 30/100
+Sub 5 | Epoch 30/100 | train Loss: 0.8484 | train Accuracy: 0.6579 | valid Loss: 1.0605 | valid Accuracy: 0.6024 | test Accuracy: 0.4549 | patient: 1
+Sub 5 | Early Stopping: Best Epoch 31/100
+Sub 5 | Epoch 31/100 | train Loss: 0.8352 | train Accuracy: 0.6649 | valid Loss: 0.9091 | valid Accuracy: 0.6800 | test Accuracy: 0.4358 | patient: 0
+Sub 5 | Epoch 32/100 | train Loss: 0.8404 | train Accuracy: 0.6639 | valid Loss: 0.9881 | valid Accuracy: 0.6659 | test Accuracy: 0.3490 | patient: 1
+Sub 5 | Epoch 33/100 | train Loss: 0.8306 | train Accuracy: 0.6662 | valid Loss: 0.8801 | valid Accuracy: 0.6713 | test Accuracy: 0.4080 | patient: 2
+Sub 5 | Epoch 34/100 | train Loss: 0.8202 | train Accuracy: 0.6686 | valid Loss: 0.9383 | valid Accuracy: 0.6800 | test Accuracy: 0.3767 | patient: 3
+Sub 5 | Early Stopping: Best Epoch 35/100
+Sub 5 | Epoch 35/100 | train Loss: 0.8193 | train Accuracy: 0.6762 | valid Loss: 0.8233 | valid Accuracy: 0.6950 | test Accuracy: 0.4271 | patient: 0
+Sub 5 | Epoch 36/100 | train Loss: 0.8147 | train Accuracy: 0.6785 | valid Loss: 0.9512 | valid Accuracy: 0.6444 | test Accuracy: 0.4323 | patient: 1
+Sub 5 | All Epoch: Best Epoch 37/100
+Sub 5 | Epoch 37/100 | train Loss: 0.8029 | train Accuracy: 0.6791 | valid Loss: 0.8557 | valid Accuracy: 0.6940 | test Accuracy: 0.4601 | patient: 2
+Sub 5 | Early Stopping: Best Epoch 38/100
+Sub 5 | Epoch 38/100 | train Loss: 0.7996 | train Accuracy: 0.6829 | valid Loss: 0.8270 | valid Accuracy: 0.7037 | test Accuracy: 0.4549 | patient: 0
+Sub 5 | Early Stopping: Best Epoch 39/100
+Sub 5 | Epoch 39/100 | train Loss: 0.8013 | train Accuracy: 0.6848 | valid Loss: 0.7969 | valid Accuracy: 0.7188 | test Accuracy: 0.4514 | patient: 0
+Sub 5 | Epoch 40/100 | train Loss: 0.7835 | train Accuracy: 0.6875 | valid Loss: 0.8398 | valid Accuracy: 0.7166 | test Accuracy: 0.3976 | patient: 1
+Sub 5 | Epoch 41/100 | train Loss: 0.7857 | train Accuracy: 0.6959 | valid Loss: 0.8250 | valid Accuracy: 0.7112 | test Accuracy: 0.4201 | patient: 2
+Sub 5 | All Epoch: Best Epoch 42/100
+Sub 5 | Epoch 42/100 | train Loss: 0.7687 | train Accuracy: 0.6916 | valid Loss: 0.7737 | valid Accuracy: 0.7112 | test Accuracy: 0.4635 | patient: 3
+Sub 5 | Epoch 43/100 | train Loss: 0.7700 | train Accuracy: 0.6928 | valid Loss: 0.8364 | valid Accuracy: 0.7058 | test Accuracy: 0.4462 | patient: 4
+Sub 5 | Epoch 44/100 | train Loss: 0.7736 | train Accuracy: 0.6974 | valid Loss: 0.7858 | valid Accuracy: 0.7112 | test Accuracy: 0.4392 | patient: 5
+Sub 5 | Epoch 45/100 | train Loss: 0.7740 | train Accuracy: 0.6933 | valid Loss: 0.8515 | valid Accuracy: 0.6907 | test Accuracy: 0.3559 | patient: 6
+Sub 5 | Early Stopping: Best Epoch 46/100
+Sub 5 | Epoch 46/100 | train Loss: 0.7550 | train Accuracy: 0.6984 | valid Loss: 0.7207 | valid Accuracy: 0.7532 | test Accuracy: 0.4444 | patient: 0
+Sub 5 | Epoch 47/100 | train Loss: 0.7239 | train Accuracy: 0.7168 | valid Loss: 0.8353 | valid Accuracy: 0.7209 | test Accuracy: 0.4514 | patient: 1
+Sub 5 | All Epoch: Best Epoch 48/100
+Sub 5 | Epoch 48/100 | train Loss: 0.7389 | train Accuracy: 0.7130 | valid Loss: 0.8786 | valid Accuracy: 0.7155 | test Accuracy: 0.4705 | patient: 2
+Sub 5 | Epoch 49/100 | train Loss: 0.7427 | train Accuracy: 0.7015 | valid Loss: 0.7531 | valid Accuracy: 0.7403 | test Accuracy: 0.3976 | patient: 3
+Sub 5 | Epoch 50/100 | train Loss: 0.7105 | train Accuracy: 0.7182 | valid Loss: 0.8509 | valid Accuracy: 0.7328 | test Accuracy: 0.4410 | patient: 4
+Sub 5 | Epoch 51/100 | train Loss: 0.7206 | train Accuracy: 0.7249 | valid Loss: 0.7691 | valid Accuracy: 0.7435 | test Accuracy: 0.4479 | patient: 5
+Sub 5 | All Epoch: Best Epoch 52/100
+Sub 5 | Epoch 52/100 | train Loss: 0.7419 | train Accuracy: 0.7091 | valid Loss: 0.8105 | valid Accuracy: 0.7026 | test Accuracy: 0.4861 | patient: 6
+Sub 5 | Epoch 53/100 | train Loss: 0.7442 | train Accuracy: 0.7177 | valid Loss: 0.7159 | valid Accuracy: 0.7446 | test Accuracy: 0.3924 | patient: 7
+Sub 5 | Early Stopping: Best Epoch 54/100
+Sub 5 | Epoch 54/100 | train Loss: 0.7167 | train Accuracy: 0.7235 | valid Loss: 0.6872 | valid Accuracy: 0.7532 | test Accuracy: 0.4410 | patient: 0
+Sub 5 | Epoch 55/100 | train Loss: 0.7280 | train Accuracy: 0.7120 | valid Loss: 0.7482 | valid Accuracy: 0.7403 | test Accuracy: 0.4531 | patient: 1
+Sub 5 | Epoch 56/100 | train Loss: 0.7113 | train Accuracy: 0.7179 | valid Loss: 0.7450 | valid Accuracy: 0.7457 | test Accuracy: 0.4358 | patient: 2
+Sub 5 | Epoch 57/100 | train Loss: 0.7216 | train Accuracy: 0.7185 | valid Loss: 0.7130 | valid Accuracy: 0.7425 | test Accuracy: 0.4774 | patient: 3
+Sub 5 | Epoch 58/100 | train Loss: 0.7223 | train Accuracy: 0.7168 | valid Loss: 0.7021 | valid Accuracy: 0.7360 | test Accuracy: 0.4583 | patient: 4
+Sub 5 | Epoch 59/100 | train Loss: 0.7183 | train Accuracy: 0.7174 | valid Loss: 0.7310 | valid Accuracy: 0.7328 | test Accuracy: 0.4670 | patient: 5
+Sub 5 | Epoch 60/100 | train Loss: 0.7029 | train Accuracy: 0.7283 | valid Loss: 0.7422 | valid Accuracy: 0.7435 | test Accuracy: 0.4549 | patient: 6
+Sub 5 | Epoch 61/100 | train Loss: 0.7040 | train Accuracy: 0.7280 | valid Loss: 0.7361 | valid Accuracy: 0.7392 | test Accuracy: 0.4653 | patient: 7
+Sub 5 | Epoch 62/100 | train Loss: 0.7018 | train Accuracy: 0.7269 | valid Loss: 0.7541 | valid Accuracy: 0.7468 | test Accuracy: 0.4722 | patient: 8
+Sub 5 | Early Stopping: Best Epoch 63/100
+Sub 5 | Epoch 63/100 | train Loss: 0.7057 | train Accuracy: 0.7257 | valid Loss: 0.7003 | valid Accuracy: 0.7629 | test Accuracy: 0.4219 | patient: 0
+Sub 5 | Epoch 64/100 | train Loss: 0.6879 | train Accuracy: 0.7341 | valid Loss: 0.7579 | valid Accuracy: 0.7597 | test Accuracy: 0.4340 | patient: 1
+Sub 5 | Early Stopping: Best Epoch 65/100
+Sub 5 | Epoch 65/100 | train Loss: 0.7057 | train Accuracy: 0.7216 | valid Loss: 0.6486 | valid Accuracy: 0.7812 | test Accuracy: 0.4514 | patient: 0
+Sub 5 | Epoch 66/100 | train Loss: 0.7083 | train Accuracy: 0.7254 | valid Loss: 0.7014 | valid Accuracy: 0.7619 | test Accuracy: 0.4497 | patient: 1
+Sub 5 | Epoch 67/100 | train Loss: 0.6836 | train Accuracy: 0.7364 | valid Loss: 0.6615 | valid Accuracy: 0.7651 | test Accuracy: 0.4549 | patient: 2
+Sub 5 | Epoch 68/100 | train Loss: 0.6769 | train Accuracy: 0.7365 | valid Loss: 0.7156 | valid Accuracy: 0.7662 | test Accuracy: 0.4410 | patient: 3
+Sub 5 | Epoch 69/100 | train Loss: 0.6855 | train Accuracy: 0.7314 | valid Loss: 0.7406 | valid Accuracy: 0.7586 | test Accuracy: 0.4566 | patient: 4
+Sub 5 | Epoch 70/100 | train Loss: 0.6728 | train Accuracy: 0.7429 | valid Loss: 0.7876 | valid Accuracy: 0.7317 | test Accuracy: 0.4826 | patient: 5
+Sub 5 | Epoch 71/100 | train Loss: 0.6871 | train Accuracy: 0.7276 | valid Loss: 0.6519 | valid Accuracy: 0.7716 | test Accuracy: 0.4479 | patient: 6
+Sub 5 | Epoch 72/100 | train Loss: 0.6729 | train Accuracy: 0.7383 | valid Loss: 0.7558 | valid Accuracy: 0.7478 | test Accuracy: 0.4566 | patient: 7
+Sub 5 | Epoch 73/100 | train Loss: 0.6988 | train Accuracy: 0.7295 | valid Loss: 0.6736 | valid Accuracy: 0.7662 | test Accuracy: 0.4358 | patient: 8
+Sub 5 | Epoch 74/100 | train Loss: 0.6781 | train Accuracy: 0.7385 | valid Loss: 0.6980 | valid Accuracy: 0.7565 | test Accuracy: 0.4427 | patient: 9
+Sub 5 | Epoch 75/100 | train Loss: 0.6991 | train Accuracy: 0.7308 | valid Loss: 0.8692 | valid Accuracy: 0.7155 | test Accuracy: 0.3993 | patient: 10
+Sub 5 | Epoch 76/100 | train Loss: 0.6770 | train Accuracy: 0.7372 | valid Loss: 0.8653 | valid Accuracy: 0.7263 | test Accuracy: 0.4583 | patient: 11
+Sub 5 | Epoch 77/100 | train Loss: 0.6818 | train Accuracy: 0.7376 | valid Loss: 0.7331 | valid Accuracy: 0.7511 | test Accuracy: 0.4358 | patient: 12
+Sub 5 | Epoch 78/100 | train Loss: 0.6520 | train Accuracy: 0.7486 | valid Loss: 0.6729 | valid Accuracy: 0.7769 | test Accuracy: 0.4635 | patient: 13
+Sub 5 | Epoch 79/100 | train Loss: 0.6720 | train Accuracy: 0.7402 | valid Loss: 0.6942 | valid Accuracy: 0.7737 | test Accuracy: 0.4583 | patient: 14
+Sub 5 | Epoch 80/100 | train Loss: 0.6695 | train Accuracy: 0.7436 | valid Loss: 0.7282 | valid Accuracy: 0.7597 | test Accuracy: 0.4566 | patient: 15
+Sub 5 | Epoch 81/100 | train Loss: 0.6563 | train Accuracy: 0.7405 | valid Loss: 0.7249 | valid Accuracy: 0.7619 | test Accuracy: 0.4444 | patient: 16
+Sub 5 | Epoch 82/100 | train Loss: 0.6468 | train Accuracy: 0.7497 | valid Loss: 0.7443 | valid Accuracy: 0.7489 | test Accuracy: 0.4340 | patient: 17
+Sub 5 | Epoch 83/100 | train Loss: 0.6544 | train Accuracy: 0.7486 | valid Loss: 0.6866 | valid Accuracy: 0.7780 | test Accuracy: 0.4601 | patient: 18
+Sub 5 | Epoch 84/100 | train Loss: 0.6558 | train Accuracy: 0.7461 | valid Loss: 0.7347 | valid Accuracy: 0.7532 | test Accuracy: 0.4774 | patient: 19
+Sub 5 | Epoch 85/100 | train Loss: 0.6686 | train Accuracy: 0.7389 | valid Loss: 0.8198 | valid Accuracy: 0.7295 | test Accuracy: 0.4010 | patient: 20
+Sub 5 | Epoch 86/100 | train Loss: 0.6621 | train Accuracy: 0.7431 | valid Loss: 0.6958 | valid Accuracy: 0.7812 | test Accuracy: 0.4427 | patient: 21
+Sub 5 | Epoch 87/100 | train Loss: 0.6550 | train Accuracy: 0.7482 | valid Loss: 0.7078 | valid Accuracy: 0.7629 | test Accuracy: 0.4740 | patient: 22
+Sub 5 | Epoch 88/100 | train Loss: 0.6595 | train Accuracy: 0.7383 | valid Loss: 0.6636 | valid Accuracy: 0.7694 | test Accuracy: 0.4410 | patient: 23
+Sub 5 | Epoch 89/100 | train Loss: 0.6481 | train Accuracy: 0.7531 | valid Loss: 0.7106 | valid Accuracy: 0.7672 | test Accuracy: 0.4566 | patient: 24
+Sub 5 | Epoch 90/100 | train Loss: 0.6409 | train Accuracy: 0.7564 | valid Loss: 0.6836 | valid Accuracy: 0.7608 | test Accuracy: 0.4635 | patient: 25
+Sub 5 | All Epoch: Best Epoch 91/100
+Sub 5 | Epoch 91/100 | train Loss: 0.6408 | train Accuracy: 0.7485 | valid Loss: 0.7102 | valid Accuracy: 0.7672 | test Accuracy: 0.4965 | patient: 26
+Sub 5 | Early Stopping: Best Epoch 92/100
+Sub 5 | Epoch 92/100 | train Loss: 0.6396 | train Accuracy: 0.7539 | valid Loss: 0.6503 | valid Accuracy: 0.7899 | test Accuracy: 0.4653 | patient: 0
+Sub 5 | Epoch 93/100 | train Loss: 0.6428 | train Accuracy: 0.7520 | valid Loss: 0.6816 | valid Accuracy: 0.7608 | test Accuracy: 0.4861 | patient: 1
+Sub 5 | Epoch 94/100 | train Loss: 0.6428 | train Accuracy: 0.7458 | valid Loss: 0.7500 | valid Accuracy: 0.7554 | test Accuracy: 0.3889 | patient: 2
+Sub 5 | Epoch 95/100 | train Loss: 0.6321 | train Accuracy: 0.7542 | valid Loss: 0.7027 | valid Accuracy: 0.7608 | test Accuracy: 0.4601 | patient: 3
+Sub 5 | Epoch 96/100 | train Loss: 0.6482 | train Accuracy: 0.7470 | valid Loss: 0.5975 | valid Accuracy: 0.7856 | test Accuracy: 0.4618 | patient: 4
+Sub 5 | Epoch 97/100 | train Loss: 0.6413 | train Accuracy: 0.7496 | valid Loss: 0.7409 | valid Accuracy: 0.7672 | test Accuracy: 0.4236 | patient: 5
+Sub 5 | Early Stopping: Best Epoch 98/100
+Sub 5 | Epoch 98/100 | train Loss: 0.6437 | train Accuracy: 0.7514 | valid Loss: 0.5895 | valid Accuracy: 0.7942 | test Accuracy: 0.4635 | patient: 0
+Sub 5 | Epoch 99/100 | train Loss: 0.6295 | train Accuracy: 0.7584 | valid Loss: 0.6558 | valid Accuracy: 0.7845 | test Accuracy: 0.4201 | patient: 1
+Sub 5 | Epoch 100/100 | train Loss: 0.6392 | train Accuracy: 0.7571 | valid Loss: 0.6052 | valid Accuracy: 0.7931 | test Accuracy: 0.4566 | patient: 2
+Early Stopping Best Epoch: 98 | Test Subject 5 | Accuracy: 0.4635 | Kappa: 0.2847 | F1: 0.3425
+All Best Epoch: 91 | Test Subject 5 | Accuracy: 0.4965 | Kappa: 0.3287 | F1: 0.4015
+====== Subject 6/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 6 | Early Stopping: Best Epoch 1/100
+Sub 6 | All Epoch: Best Epoch 1/100
+Sub 6 | Epoch 1/100 | train Loss: 1.4215 | train Accuracy: 0.2739 | valid Loss: 1.3808 | valid Accuracy: 0.3276 | test Accuracy: 0.2188 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 2/100
+Sub 6 | All Epoch: Best Epoch 2/100
+Sub 6 | Epoch 2/100 | train Loss: 1.3514 | train Accuracy: 0.3293 | valid Loss: 1.3061 | valid Accuracy: 0.3631 | test Accuracy: 0.3177 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 3/100
+Sub 6 | Epoch 3/100 | train Loss: 1.3088 | train Accuracy: 0.3595 | valid Loss: 1.3206 | valid Accuracy: 0.4116 | test Accuracy: 0.2674 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 4/100
+Sub 6 | Epoch 4/100 | train Loss: 1.2722 | train Accuracy: 0.4050 | valid Loss: 1.2526 | valid Accuracy: 0.4418 | test Accuracy: 0.2986 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 5/100
+Sub 6 | Epoch 5/100 | train Loss: 1.2369 | train Accuracy: 0.4265 | valid Loss: 1.2009 | valid Accuracy: 0.5108 | test Accuracy: 0.2830 | patient: 0
+Sub 6 | Epoch 6/100 | train Loss: 1.1980 | train Accuracy: 0.4686 | valid Loss: 1.1567 | valid Accuracy: 0.4925 | test Accuracy: 0.2708 | patient: 1
+Sub 6 | Early Stopping: Best Epoch 7/100
+Sub 6 | Epoch 7/100 | train Loss: 1.1801 | train Accuracy: 0.4702 | valid Loss: 1.0737 | valid Accuracy: 0.5657 | test Accuracy: 0.2726 | patient: 0
+Sub 6 | All Epoch: Best Epoch 8/100
+Sub 6 | Epoch 8/100 | train Loss: 1.1478 | train Accuracy: 0.4999 | valid Loss: 1.0745 | valid Accuracy: 0.5259 | test Accuracy: 0.3385 | patient: 1
+Sub 6 | Epoch 9/100 | train Loss: 1.1170 | train Accuracy: 0.5110 | valid Loss: 1.1141 | valid Accuracy: 0.5345 | test Accuracy: 0.2674 | patient: 2
+Sub 6 | Early Stopping: Best Epoch 10/100
+Sub 6 | Epoch 10/100 | train Loss: 1.0807 | train Accuracy: 0.5349 | valid Loss: 1.0219 | valid Accuracy: 0.5851 | test Accuracy: 0.2917 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 11/100
+Sub 6 | Epoch 11/100 | train Loss: 1.0713 | train Accuracy: 0.5443 | valid Loss: 1.0067 | valid Accuracy: 0.6024 | test Accuracy: 0.3247 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 12/100
+Sub 6 | All Epoch: Best Epoch 12/100
+Sub 6 | Epoch 12/100 | train Loss: 1.0379 | train Accuracy: 0.5639 | valid Loss: 0.9892 | valid Accuracy: 0.6293 | test Accuracy: 0.3403 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 13/100
+Sub 6 | All Epoch: Best Epoch 13/100
+Sub 6 | Epoch 13/100 | train Loss: 1.0250 | train Accuracy: 0.5723 | valid Loss: 0.9644 | valid Accuracy: 0.6325 | test Accuracy: 0.3438 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 14/100
+Sub 6 | All Epoch: Best Epoch 14/100
+Sub 6 | Epoch 14/100 | train Loss: 0.9928 | train Accuracy: 0.5860 | valid Loss: 0.9968 | valid Accuracy: 0.6347 | test Accuracy: 0.3715 | patient: 0
+Sub 6 | All Epoch: Best Epoch 15/100
+Sub 6 | Epoch 15/100 | train Loss: 0.9527 | train Accuracy: 0.6126 | valid Loss: 1.0458 | valid Accuracy: 0.6131 | test Accuracy: 0.3750 | patient: 1
+Sub 6 | Epoch 16/100 | train Loss: 0.9461 | train Accuracy: 0.6068 | valid Loss: 0.9994 | valid Accuracy: 0.6282 | test Accuracy: 0.3438 | patient: 2
+Sub 6 | Early Stopping: Best Epoch 17/100
+Sub 6 | Epoch 17/100 | train Loss: 0.9260 | train Accuracy: 0.6264 | valid Loss: 0.9241 | valid Accuracy: 0.6466 | test Accuracy: 0.3663 | patient: 0
+Sub 6 | Epoch 18/100 | train Loss: 0.9169 | train Accuracy: 0.6317 | valid Loss: 0.9539 | valid Accuracy: 0.6412 | test Accuracy: 0.3681 | patient: 1
+Sub 6 | Early Stopping: Best Epoch 19/100
+Sub 6 | All Epoch: Best Epoch 19/100
+Sub 6 | Epoch 19/100 | train Loss: 0.8885 | train Accuracy: 0.6394 | valid Loss: 0.9315 | valid Accuracy: 0.6584 | test Accuracy: 0.4028 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 20/100
+Sub 6 | Epoch 20/100 | train Loss: 0.8729 | train Accuracy: 0.6493 | valid Loss: 0.9092 | valid Accuracy: 0.6724 | test Accuracy: 0.3924 | patient: 0
+Sub 6 | Early Stopping: Best Epoch 21/100
+Sub 6 | All Epoch: Best Epoch 21/100
+Sub 6 | Epoch 21/100 | train Loss: 0.8681 | train Accuracy: 0.6489 | valid Loss: 0.8462 | valid Accuracy: 0.6875 | test Accuracy: 0.4219 | patient: 0
+Sub 6 | All Epoch: Best Epoch 22/100
+Sub 6 | Epoch 22/100 | train Loss: 0.8579 | train Accuracy: 0.6602 | valid Loss: 0.9302 | valid Accuracy: 0.6778 | test Accuracy: 0.4479 | patient: 1
+Sub 6 | Early Stopping: Best Epoch 23/100
+Sub 6 | Epoch 23/100 | train Loss: 0.8577 | train Accuracy: 0.6621 | valid Loss: 0.8346 | valid Accuracy: 0.7037 | test Accuracy: 0.4184 | patient: 0
+Sub 6 | Epoch 24/100 | train Loss: 0.8460 | train Accuracy: 0.6586 | valid Loss: 0.9220 | valid Accuracy: 0.6713 | test Accuracy: 0.4028 | patient: 1
+Sub 6 | Epoch 25/100 | train Loss: 0.8347 | train Accuracy: 0.6640 | valid Loss: 0.9351 | valid Accuracy: 0.6810 | test Accuracy: 0.4271 | patient: 2
+Sub 6 | Epoch 26/100 | train Loss: 0.8370 | train Accuracy: 0.6633 | valid Loss: 0.8273 | valid Accuracy: 0.7015 | test Accuracy: 0.4028 | patient: 3
+Sub 6 | Epoch 27/100 | train Loss: 0.8187 | train Accuracy: 0.6760 | valid Loss: 0.7997 | valid Accuracy: 0.7026 | test Accuracy: 0.4201 | patient: 4
+Sub 6 | All Epoch: Best Epoch 28/100
+Sub 6 | Epoch 28/100 | train Loss: 0.8076 | train Accuracy: 0.6773 | valid Loss: 0.8730 | valid Accuracy: 0.6918 | test Accuracy: 0.4514 | patient: 5
+Sub 6 | Early Stopping: Best Epoch 29/100
+Sub 6 | Epoch 29/100 | train Loss: 0.8031 | train Accuracy: 0.6841 | valid Loss: 0.8067 | valid Accuracy: 0.7231 | test Accuracy: 0.4410 | patient: 0
+Sub 6 | Epoch 30/100 | train Loss: 0.7906 | train Accuracy: 0.6841 | valid Loss: 0.8379 | valid Accuracy: 0.7069 | test Accuracy: 0.4149 | patient: 1
+Sub 6 | Epoch 31/100 | train Loss: 0.7714 | train Accuracy: 0.6978 | valid Loss: 0.8774 | valid Accuracy: 0.7015 | test Accuracy: 0.4340 | patient: 2
+Sub 6 | Early Stopping: Best Epoch 32/100
+Sub 6 | Epoch 32/100 | train Loss: 0.7820 | train Accuracy: 0.6917 | valid Loss: 0.7808 | valid Accuracy: 0.7231 | test Accuracy: 0.4062 | patient: 0
+Sub 6 | Epoch 33/100 | train Loss: 0.7748 | train Accuracy: 0.6982 | valid Loss: 0.8465 | valid Accuracy: 0.7015 | test Accuracy: 0.4167 | patient: 1
+Sub 6 | Epoch 34/100 | train Loss: 0.7769 | train Accuracy: 0.6951 | valid Loss: 0.8175 | valid Accuracy: 0.7155 | test Accuracy: 0.4288 | patient: 2
+Sub 6 | Epoch 35/100 | train Loss: 0.7764 | train Accuracy: 0.6898 | valid Loss: 0.8084 | valid Accuracy: 0.7091 | test Accuracy: 0.4236 | patient: 3
+Sub 6 | Epoch 36/100 | train Loss: 0.7634 | train Accuracy: 0.7010 | valid Loss: 0.8522 | valid Accuracy: 0.7058 | test Accuracy: 0.4323 | patient: 4
+Sub 6 | Early Stopping: Best Epoch 37/100
+Sub 6 | Epoch 37/100 | train Loss: 0.7451 | train Accuracy: 0.7058 | valid Loss: 0.7797 | valid Accuracy: 0.7349 | test Accuracy: 0.4288 | patient: 0
+Sub 6 | Epoch 38/100 | train Loss: 0.7414 | train Accuracy: 0.7141 | valid Loss: 0.9263 | valid Accuracy: 0.6778 | test Accuracy: 0.4010 | patient: 1
+Sub 6 | Epoch 39/100 | train Loss: 0.7452 | train Accuracy: 0.7046 | valid Loss: 0.8853 | valid Accuracy: 0.7188 | test Accuracy: 0.4062 | patient: 2
+Sub 6 | Epoch 40/100 | train Loss: 0.7449 | train Accuracy: 0.7005 | valid Loss: 0.7794 | valid Accuracy: 0.7209 | test Accuracy: 0.4306 | patient: 3
+Sub 6 | Early Stopping: Best Epoch 41/100
+Sub 6 | Epoch 41/100 | train Loss: 0.7307 | train Accuracy: 0.7118 | valid Loss: 0.7959 | valid Accuracy: 0.7381 | test Accuracy: 0.4375 | patient: 0
+Sub 6 | Epoch 42/100 | train Loss: 0.7457 | train Accuracy: 0.7115 | valid Loss: 0.7555 | valid Accuracy: 0.7328 | test Accuracy: 0.4288 | patient: 1
+Sub 6 | Epoch 43/100 | train Loss: 0.7364 | train Accuracy: 0.7120 | valid Loss: 0.8310 | valid Accuracy: 0.7209 | test Accuracy: 0.4479 | patient: 2
+Sub 6 | Epoch 44/100 | train Loss: 0.7190 | train Accuracy: 0.7219 | valid Loss: 0.8572 | valid Accuracy: 0.6950 | test Accuracy: 0.4167 | patient: 3
+Sub 6 | Epoch 45/100 | train Loss: 0.7255 | train Accuracy: 0.7139 | valid Loss: 0.8462 | valid Accuracy: 0.7101 | test Accuracy: 0.4427 | patient: 4
+Sub 6 | Epoch 46/100 | train Loss: 0.7140 | train Accuracy: 0.7230 | valid Loss: 0.8035 | valid Accuracy: 0.7349 | test Accuracy: 0.4201 | patient: 5
+Sub 6 | Epoch 47/100 | train Loss: 0.7085 | train Accuracy: 0.7240 | valid Loss: 0.7833 | valid Accuracy: 0.7338 | test Accuracy: 0.4045 | patient: 6
+Sub 6 | Epoch 48/100 | train Loss: 0.7254 | train Accuracy: 0.7156 | valid Loss: 0.8635 | valid Accuracy: 0.7177 | test Accuracy: 0.4306 | patient: 7
+Sub 6 | Epoch 49/100 | train Loss: 0.7121 | train Accuracy: 0.7231 | valid Loss: 0.7389 | valid Accuracy: 0.7360 | test Accuracy: 0.4097 | patient: 8
+Sub 6 | Early Stopping: Best Epoch 50/100
+Sub 6 | Epoch 50/100 | train Loss: 0.6997 | train Accuracy: 0.7298 | valid Loss: 0.7295 | valid Accuracy: 0.7446 | test Accuracy: 0.4115 | patient: 0
+Sub 6 | Epoch 51/100 | train Loss: 0.7060 | train Accuracy: 0.7289 | valid Loss: 0.7557 | valid Accuracy: 0.7338 | test Accuracy: 0.4028 | patient: 1
+Sub 6 | Epoch 52/100 | train Loss: 0.7048 | train Accuracy: 0.7272 | valid Loss: 0.7312 | valid Accuracy: 0.7446 | test Accuracy: 0.4410 | patient: 2
+Sub 6 | Early Stopping: Best Epoch 53/100
+Sub 6 | Epoch 53/100 | train Loss: 0.6922 | train Accuracy: 0.7338 | valid Loss: 0.7198 | valid Accuracy: 0.7597 | test Accuracy: 0.4427 | patient: 0
+Sub 6 | Epoch 54/100 | train Loss: 0.6943 | train Accuracy: 0.7299 | valid Loss: 0.7659 | valid Accuracy: 0.7338 | test Accuracy: 0.4219 | patient: 1
+Sub 6 | Epoch 55/100 | train Loss: 0.6863 | train Accuracy: 0.7336 | valid Loss: 0.7380 | valid Accuracy: 0.7457 | test Accuracy: 0.4167 | patient: 2
+Sub 6 | Early Stopping: Best Epoch 56/100
+Sub 6 | Epoch 56/100 | train Loss: 0.6786 | train Accuracy: 0.7383 | valid Loss: 0.6912 | valid Accuracy: 0.7651 | test Accuracy: 0.4097 | patient: 0
+Sub 6 | Epoch 57/100 | train Loss: 0.6906 | train Accuracy: 0.7356 | valid Loss: 0.7151 | valid Accuracy: 0.7446 | test Accuracy: 0.4323 | patient: 1
+Sub 6 | Early Stopping: Best Epoch 58/100
+Sub 6 | Epoch 58/100 | train Loss: 0.6822 | train Accuracy: 0.7370 | valid Loss: 0.7022 | valid Accuracy: 0.7662 | test Accuracy: 0.4045 | patient: 0
+Sub 6 | Epoch 59/100 | train Loss: 0.6856 | train Accuracy: 0.7341 | valid Loss: 0.7161 | valid Accuracy: 0.7478 | test Accuracy: 0.4010 | patient: 1
+Sub 6 | Early Stopping: Best Epoch 60/100
+Sub 6 | Epoch 60/100 | train Loss: 0.6578 | train Accuracy: 0.7393 | valid Loss: 0.6852 | valid Accuracy: 0.7683 | test Accuracy: 0.3993 | patient: 0
+Sub 6 | Epoch 61/100 | train Loss: 0.6763 | train Accuracy: 0.7402 | valid Loss: 0.7424 | valid Accuracy: 0.7478 | test Accuracy: 0.4288 | patient: 1
+Sub 6 | Epoch 62/100 | train Loss: 0.6703 | train Accuracy: 0.7348 | valid Loss: 0.7394 | valid Accuracy: 0.7500 | test Accuracy: 0.3872 | patient: 2
+Sub 6 | Epoch 63/100 | train Loss: 0.6757 | train Accuracy: 0.7338 | valid Loss: 0.7070 | valid Accuracy: 0.7478 | test Accuracy: 0.3872 | patient: 3
+Sub 6 | Epoch 64/100 | train Loss: 0.6617 | train Accuracy: 0.7493 | valid Loss: 0.7661 | valid Accuracy: 0.7597 | test Accuracy: 0.4080 | patient: 4
+Sub 6 | Epoch 65/100 | train Loss: 0.6649 | train Accuracy: 0.7435 | valid Loss: 0.6974 | valid Accuracy: 0.7478 | test Accuracy: 0.3767 | patient: 5
+Sub 6 | Epoch 66/100 | train Loss: 0.6650 | train Accuracy: 0.7404 | valid Loss: 0.7129 | valid Accuracy: 0.7565 | test Accuracy: 0.4236 | patient: 6
+Sub 6 | Epoch 67/100 | train Loss: 0.6674 | train Accuracy: 0.7394 | valid Loss: 0.7026 | valid Accuracy: 0.7511 | test Accuracy: 0.3872 | patient: 7
+Sub 6 | Epoch 68/100 | train Loss: 0.6543 | train Accuracy: 0.7439 | valid Loss: 0.7009 | valid Accuracy: 0.7532 | test Accuracy: 0.4080 | patient: 8
+Sub 6 | Epoch 69/100 | train Loss: 0.6702 | train Accuracy: 0.7375 | valid Loss: 0.7045 | valid Accuracy: 0.7640 | test Accuracy: 0.4149 | patient: 9
+Sub 6 | Epoch 70/100 | train Loss: 0.6550 | train Accuracy: 0.7497 | valid Loss: 0.6614 | valid Accuracy: 0.7565 | test Accuracy: 0.3958 | patient: 10
+Sub 6 | Epoch 71/100 | train Loss: 0.6420 | train Accuracy: 0.7545 | valid Loss: 0.7541 | valid Accuracy: 0.7522 | test Accuracy: 0.4028 | patient: 11
+Sub 6 | Epoch 72/100 | train Loss: 0.6520 | train Accuracy: 0.7465 | valid Loss: 0.6890 | valid Accuracy: 0.7522 | test Accuracy: 0.3785 | patient: 12
+Sub 6 | Epoch 73/100 | train Loss: 0.6340 | train Accuracy: 0.7522 | valid Loss: 0.6662 | valid Accuracy: 0.7554 | test Accuracy: 0.4184 | patient: 13
+Sub 6 | Epoch 74/100 | train Loss: 0.6423 | train Accuracy: 0.7538 | valid Loss: 0.7608 | valid Accuracy: 0.7608 | test Accuracy: 0.4097 | patient: 14
+Sub 6 | Epoch 75/100 | train Loss: 0.6245 | train Accuracy: 0.7632 | valid Loss: 0.7448 | valid Accuracy: 0.7597 | test Accuracy: 0.3802 | patient: 15
+Sub 6 | Epoch 76/100 | train Loss: 0.6422 | train Accuracy: 0.7480 | valid Loss: 0.7476 | valid Accuracy: 0.7619 | test Accuracy: 0.3924 | patient: 16
+Sub 6 | Early Stopping: Best Epoch 77/100
+Sub 6 | Epoch 77/100 | train Loss: 0.6330 | train Accuracy: 0.7584 | valid Loss: 0.6365 | valid Accuracy: 0.7823 | test Accuracy: 0.3941 | patient: 0
+Sub 6 | Epoch 78/100 | train Loss: 0.6384 | train Accuracy: 0.7549 | valid Loss: 0.6813 | valid Accuracy: 0.7726 | test Accuracy: 0.4080 | patient: 1
+Sub 6 | Epoch 79/100 | train Loss: 0.6278 | train Accuracy: 0.7639 | valid Loss: 0.7204 | valid Accuracy: 0.7597 | test Accuracy: 0.4080 | patient: 2
+Sub 6 | Epoch 80/100 | train Loss: 0.6487 | train Accuracy: 0.7503 | valid Loss: 0.7004 | valid Accuracy: 0.7683 | test Accuracy: 0.4323 | patient: 3
+Sub 6 | Epoch 81/100 | train Loss: 0.6317 | train Accuracy: 0.7599 | valid Loss: 0.6420 | valid Accuracy: 0.7640 | test Accuracy: 0.4184 | patient: 4
+Sub 6 | Epoch 82/100 | train Loss: 0.6399 | train Accuracy: 0.7548 | valid Loss: 0.6727 | valid Accuracy: 0.7629 | test Accuracy: 0.4010 | patient: 5
+Sub 6 | Epoch 83/100 | train Loss: 0.6389 | train Accuracy: 0.7478 | valid Loss: 0.6417 | valid Accuracy: 0.7683 | test Accuracy: 0.4045 | patient: 6
+Sub 6 | Epoch 84/100 | train Loss: 0.6181 | train Accuracy: 0.7614 | valid Loss: 0.6573 | valid Accuracy: 0.7748 | test Accuracy: 0.4115 | patient: 7
+Sub 6 | Epoch 85/100 | train Loss: 0.6432 | train Accuracy: 0.7542 | valid Loss: 0.6271 | valid Accuracy: 0.7769 | test Accuracy: 0.3837 | patient: 8
+Sub 6 | Epoch 86/100 | train Loss: 0.6231 | train Accuracy: 0.7587 | valid Loss: 0.6580 | valid Accuracy: 0.7672 | test Accuracy: 0.3958 | patient: 9
+Sub 6 | Epoch 87/100 | train Loss: 0.6181 | train Accuracy: 0.7648 | valid Loss: 0.7268 | valid Accuracy: 0.7554 | test Accuracy: 0.4219 | patient: 10
+Sub 6 | Epoch 88/100 | train Loss: 0.6407 | train Accuracy: 0.7554 | valid Loss: 0.6324 | valid Accuracy: 0.7748 | test Accuracy: 0.4236 | patient: 11
+Sub 6 | Early Stopping: Best Epoch 89/100
+Sub 6 | Epoch 89/100 | train Loss: 0.6234 | train Accuracy: 0.7599 | valid Loss: 0.6620 | valid Accuracy: 0.7834 | test Accuracy: 0.4080 | patient: 0
+Sub 6 | Epoch 90/100 | train Loss: 0.6120 | train Accuracy: 0.7605 | valid Loss: 0.6950 | valid Accuracy: 0.7726 | test Accuracy: 0.3958 | patient: 1
+Sub 6 | Epoch 91/100 | train Loss: 0.6187 | train Accuracy: 0.7609 | valid Loss: 0.6710 | valid Accuracy: 0.7640 | test Accuracy: 0.4271 | patient: 2
+Sub 6 | Epoch 92/100 | train Loss: 0.6119 | train Accuracy: 0.7719 | valid Loss: 0.6194 | valid Accuracy: 0.7683 | test Accuracy: 0.4201 | patient: 3
+Sub 6 | Epoch 93/100 | train Loss: 0.6214 | train Accuracy: 0.7640 | valid Loss: 0.7157 | valid Accuracy: 0.7543 | test Accuracy: 0.4479 | patient: 4
+Sub 6 | Epoch 94/100 | train Loss: 0.6003 | train Accuracy: 0.7742 | valid Loss: 0.6632 | valid Accuracy: 0.7705 | test Accuracy: 0.4184 | patient: 5
+Sub 6 | Epoch 95/100 | train Loss: 0.6237 | train Accuracy: 0.7553 | valid Loss: 0.6265 | valid Accuracy: 0.7759 | test Accuracy: 0.4253 | patient: 6
+Sub 6 | Epoch 96/100 | train Loss: 0.5959 | train Accuracy: 0.7776 | valid Loss: 0.7598 | valid Accuracy: 0.7489 | test Accuracy: 0.3802 | patient: 7
+Sub 6 | Epoch 97/100 | train Loss: 0.6097 | train Accuracy: 0.7618 | valid Loss: 0.6335 | valid Accuracy: 0.7780 | test Accuracy: 0.4271 | patient: 8
+Sub 6 | Early Stopping: Best Epoch 98/100
+Sub 6 | Epoch 98/100 | train Loss: 0.5938 | train Accuracy: 0.7760 | valid Loss: 0.6345 | valid Accuracy: 0.7888 | test Accuracy: 0.4219 | patient: 0
+Sub 6 | Epoch 99/100 | train Loss: 0.5998 | train Accuracy: 0.7736 | valid Loss: 0.6760 | valid Accuracy: 0.7705 | test Accuracy: 0.3976 | patient: 1
+Sub 6 | Epoch 100/100 | train Loss: 0.5946 | train Accuracy: 0.7735 | valid Loss: 0.6590 | valid Accuracy: 0.7543 | test Accuracy: 0.4219 | patient: 2
+Early Stopping Best Epoch: 98 | Test Subject 6 | Accuracy: 0.4219 | Kappa: 0.2292 | F1: 0.3526
+All Best Epoch: 28 | Test Subject 6 | Accuracy: 0.4514 | Kappa: 0.2685 | F1: 0.4008
+====== Subject 7/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 7 | Early Stopping: Best Epoch 1/100
+Sub 7 | All Epoch: Best Epoch 1/100
+Sub 7 | Epoch 1/100 | train Loss: 1.4257 | train Accuracy: 0.2660 | valid Loss: 1.4087 | valid Accuracy: 0.2899 | test Accuracy: 0.2517 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 2/100
+Sub 7 | All Epoch: Best Epoch 2/100
+Sub 7 | Epoch 2/100 | train Loss: 1.3798 | train Accuracy: 0.2965 | valid Loss: 1.3764 | valid Accuracy: 0.3384 | test Accuracy: 0.2969 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 3/100
+Sub 7 | Epoch 3/100 | train Loss: 1.3487 | train Accuracy: 0.3314 | valid Loss: 1.3415 | valid Accuracy: 0.3761 | test Accuracy: 0.2622 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 4/100
+Sub 7 | Epoch 4/100 | train Loss: 1.3124 | train Accuracy: 0.3618 | valid Loss: 1.2958 | valid Accuracy: 0.4256 | test Accuracy: 0.2847 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 5/100
+Sub 7 | Epoch 5/100 | train Loss: 1.2726 | train Accuracy: 0.4072 | valid Loss: 1.2407 | valid Accuracy: 0.4612 | test Accuracy: 0.2865 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 6/100
+Sub 7 | Epoch 6/100 | train Loss: 1.2426 | train Accuracy: 0.4380 | valid Loss: 1.2134 | valid Accuracy: 0.4752 | test Accuracy: 0.2726 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 7/100
+Sub 7 | All Epoch: Best Epoch 7/100
+Sub 7 | Epoch 7/100 | train Loss: 1.2239 | train Accuracy: 0.4490 | valid Loss: 1.1666 | valid Accuracy: 0.4978 | test Accuracy: 0.3038 | patient: 0
+Sub 7 | Epoch 8/100 | train Loss: 1.2071 | train Accuracy: 0.4571 | valid Loss: 1.1717 | valid Accuracy: 0.4828 | test Accuracy: 0.2847 | patient: 1
+Sub 7 | Epoch 9/100 | train Loss: 1.1834 | train Accuracy: 0.4713 | valid Loss: 1.1487 | valid Accuracy: 0.4849 | test Accuracy: 0.3003 | patient: 2
+Sub 7 | Early Stopping: Best Epoch 10/100
+Sub 7 | Epoch 10/100 | train Loss: 1.1803 | train Accuracy: 0.4766 | valid Loss: 1.1265 | valid Accuracy: 0.5119 | test Accuracy: 0.2812 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 11/100
+Sub 7 | Epoch 11/100 | train Loss: 1.1423 | train Accuracy: 0.4970 | valid Loss: 1.1241 | valid Accuracy: 0.5226 | test Accuracy: 0.3003 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 12/100
+Sub 7 | All Epoch: Best Epoch 12/100
+Sub 7 | Epoch 12/100 | train Loss: 1.1432 | train Accuracy: 0.4950 | valid Loss: 1.1455 | valid Accuracy: 0.5496 | test Accuracy: 0.3056 | patient: 0
+Sub 7 | Epoch 13/100 | train Loss: 1.1291 | train Accuracy: 0.5072 | valid Loss: 1.0711 | valid Accuracy: 0.5442 | test Accuracy: 0.3038 | patient: 1
+Sub 7 | Epoch 14/100 | train Loss: 1.1048 | train Accuracy: 0.5160 | valid Loss: 1.1196 | valid Accuracy: 0.5194 | test Accuracy: 0.3021 | patient: 2
+Sub 7 | Epoch 15/100 | train Loss: 1.1006 | train Accuracy: 0.5212 | valid Loss: 1.1073 | valid Accuracy: 0.5399 | test Accuracy: 0.2917 | patient: 3
+Sub 7 | Early Stopping: Best Epoch 16/100
+Sub 7 | All Epoch: Best Epoch 16/100
+Sub 7 | Epoch 16/100 | train Loss: 1.0749 | train Accuracy: 0.5385 | valid Loss: 1.0046 | valid Accuracy: 0.5808 | test Accuracy: 0.3194 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 17/100
+Sub 7 | All Epoch: Best Epoch 17/100
+Sub 7 | Epoch 17/100 | train Loss: 1.0599 | train Accuracy: 0.5524 | valid Loss: 1.0500 | valid Accuracy: 0.5948 | test Accuracy: 0.3507 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 18/100
+Sub 7 | All Epoch: Best Epoch 18/100
+Sub 7 | Epoch 18/100 | train Loss: 1.0592 | train Accuracy: 0.5476 | valid Loss: 1.0416 | valid Accuracy: 0.5959 | test Accuracy: 0.4045 | patient: 0
+Sub 7 | Epoch 19/100 | train Loss: 1.0210 | train Accuracy: 0.5705 | valid Loss: 1.0437 | valid Accuracy: 0.5830 | test Accuracy: 0.3420 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 20/100
+Sub 7 | Epoch 20/100 | train Loss: 1.0158 | train Accuracy: 0.5707 | valid Loss: 0.9955 | valid Accuracy: 0.5959 | test Accuracy: 0.3958 | patient: 0
+Sub 7 | All Epoch: Best Epoch 21/100
+Sub 7 | Epoch 21/100 | train Loss: 1.0102 | train Accuracy: 0.5773 | valid Loss: 1.0649 | valid Accuracy: 0.5894 | test Accuracy: 0.4306 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 22/100
+Sub 7 | All Epoch: Best Epoch 22/100
+Sub 7 | Epoch 22/100 | train Loss: 0.9975 | train Accuracy: 0.5765 | valid Loss: 1.0849 | valid Accuracy: 0.6218 | test Accuracy: 0.4948 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 23/100
+Sub 7 | All Epoch: Best Epoch 23/100
+Sub 7 | Epoch 23/100 | train Loss: 0.9820 | train Accuracy: 0.5929 | valid Loss: 0.9640 | valid Accuracy: 0.6250 | test Accuracy: 0.5243 | patient: 0
+Sub 7 | Epoch 24/100 | train Loss: 0.9629 | train Accuracy: 0.5961 | valid Loss: 1.0820 | valid Accuracy: 0.6024 | test Accuracy: 0.4479 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 25/100
+Sub 7 | All Epoch: Best Epoch 25/100
+Sub 7 | Epoch 25/100 | train Loss: 0.9438 | train Accuracy: 0.6091 | valid Loss: 1.0335 | valid Accuracy: 0.6336 | test Accuracy: 0.5469 | patient: 0
+Sub 7 | Epoch 26/100 | train Loss: 0.9525 | train Accuracy: 0.6022 | valid Loss: 0.9958 | valid Accuracy: 0.6088 | test Accuracy: 0.4965 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 27/100
+Sub 7 | All Epoch: Best Epoch 27/100
+Sub 7 | Epoch 27/100 | train Loss: 0.9244 | train Accuracy: 0.6147 | valid Loss: 0.9597 | valid Accuracy: 0.6347 | test Accuracy: 0.5573 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 28/100
+Sub 7 | All Epoch: Best Epoch 28/100
+Sub 7 | Epoch 28/100 | train Loss: 0.9352 | train Accuracy: 0.6148 | valid Loss: 0.9651 | valid Accuracy: 0.6519 | test Accuracy: 0.5816 | patient: 0
+Sub 7 | All Epoch: Best Epoch 29/100
+Sub 7 | Epoch 29/100 | train Loss: 0.9181 | train Accuracy: 0.6274 | valid Loss: 0.9084 | valid Accuracy: 0.6498 | test Accuracy: 0.6337 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 30/100
+Sub 7 | Epoch 30/100 | train Loss: 0.9092 | train Accuracy: 0.6262 | valid Loss: 0.8898 | valid Accuracy: 0.6735 | test Accuracy: 0.6215 | patient: 0
+Sub 7 | Epoch 31/100 | train Loss: 0.8985 | train Accuracy: 0.6312 | valid Loss: 0.8907 | valid Accuracy: 0.6627 | test Accuracy: 0.6181 | patient: 1
+Sub 7 | Epoch 32/100 | train Loss: 0.8904 | train Accuracy: 0.6357 | valid Loss: 0.9781 | valid Accuracy: 0.6444 | test Accuracy: 0.6111 | patient: 2
+Sub 7 | Epoch 33/100 | train Loss: 0.9036 | train Accuracy: 0.6349 | valid Loss: 0.8955 | valid Accuracy: 0.6562 | test Accuracy: 0.5955 | patient: 3
+Sub 7 | Epoch 34/100 | train Loss: 0.8788 | train Accuracy: 0.6462 | valid Loss: 0.8871 | valid Accuracy: 0.6713 | test Accuracy: 0.6285 | patient: 4
+Sub 7 | Early Stopping: Best Epoch 35/100
+Sub 7 | Epoch 35/100 | train Loss: 0.8797 | train Accuracy: 0.6451 | valid Loss: 0.8717 | valid Accuracy: 0.6778 | test Accuracy: 0.6285 | patient: 0
+Sub 7 | Epoch 36/100 | train Loss: 0.8657 | train Accuracy: 0.6503 | valid Loss: 0.8361 | valid Accuracy: 0.6746 | test Accuracy: 0.5920 | patient: 1
+Sub 7 | Epoch 37/100 | train Loss: 0.8664 | train Accuracy: 0.6545 | valid Loss: 0.9278 | valid Accuracy: 0.6573 | test Accuracy: 0.6337 | patient: 2
+Sub 7 | Epoch 38/100 | train Loss: 0.8708 | train Accuracy: 0.6432 | valid Loss: 0.9099 | valid Accuracy: 0.6627 | test Accuracy: 0.6128 | patient: 3
+Sub 7 | Early Stopping: Best Epoch 39/100
+Sub 7 | Epoch 39/100 | train Loss: 0.8617 | train Accuracy: 0.6516 | valid Loss: 0.8093 | valid Accuracy: 0.6950 | test Accuracy: 0.6198 | patient: 0
+Sub 7 | Epoch 40/100 | train Loss: 0.8558 | train Accuracy: 0.6508 | valid Loss: 0.9216 | valid Accuracy: 0.6670 | test Accuracy: 0.6285 | patient: 1
+Sub 7 | Epoch 41/100 | train Loss: 0.8345 | train Accuracy: 0.6726 | valid Loss: 0.9582 | valid Accuracy: 0.6659 | test Accuracy: 0.6094 | patient: 2
+Sub 7 | All Epoch: Best Epoch 42/100
+Sub 7 | Epoch 42/100 | train Loss: 0.8407 | train Accuracy: 0.6598 | valid Loss: 0.8461 | valid Accuracy: 0.6950 | test Accuracy: 0.6441 | patient: 3
+Sub 7 | Epoch 43/100 | train Loss: 0.8525 | train Accuracy: 0.6579 | valid Loss: 0.8883 | valid Accuracy: 0.6735 | test Accuracy: 0.6389 | patient: 4
+Sub 7 | Early Stopping: Best Epoch 44/100
+Sub 7 | Epoch 44/100 | train Loss: 0.8300 | train Accuracy: 0.6618 | valid Loss: 0.8286 | valid Accuracy: 0.6994 | test Accuracy: 0.6424 | patient: 0
+Sub 7 | Epoch 45/100 | train Loss: 0.8436 | train Accuracy: 0.6576 | valid Loss: 0.9674 | valid Accuracy: 0.6756 | test Accuracy: 0.5590 | patient: 1
+Sub 7 | All Epoch: Best Epoch 46/100
+Sub 7 | Epoch 46/100 | train Loss: 0.8195 | train Accuracy: 0.6694 | valid Loss: 0.8380 | valid Accuracy: 0.6853 | test Accuracy: 0.6806 | patient: 2
+Sub 7 | Epoch 47/100 | train Loss: 0.8256 | train Accuracy: 0.6700 | valid Loss: 0.8783 | valid Accuracy: 0.6918 | test Accuracy: 0.6493 | patient: 3
+Sub 7 | Early Stopping: Best Epoch 48/100
+Sub 7 | Epoch 48/100 | train Loss: 0.8243 | train Accuracy: 0.6679 | valid Loss: 0.8337 | valid Accuracy: 0.7177 | test Accuracy: 0.6719 | patient: 0
+Sub 7 | Epoch 49/100 | train Loss: 0.8123 | train Accuracy: 0.6791 | valid Loss: 0.8125 | valid Accuracy: 0.7112 | test Accuracy: 0.6389 | patient: 1
+Sub 7 | Epoch 50/100 | train Loss: 0.8079 | train Accuracy: 0.6779 | valid Loss: 0.7660 | valid Accuracy: 0.7112 | test Accuracy: 0.6198 | patient: 2
+Sub 7 | Epoch 51/100 | train Loss: 0.8138 | train Accuracy: 0.6734 | valid Loss: 0.8320 | valid Accuracy: 0.7069 | test Accuracy: 0.6319 | patient: 3
+Sub 7 | Epoch 52/100 | train Loss: 0.8010 | train Accuracy: 0.6776 | valid Loss: 0.8523 | valid Accuracy: 0.7091 | test Accuracy: 0.6198 | patient: 4
+Sub 7 | All Epoch: Best Epoch 53/100
+Sub 7 | Epoch 53/100 | train Loss: 0.8009 | train Accuracy: 0.6852 | valid Loss: 0.8012 | valid Accuracy: 0.7080 | test Accuracy: 0.6806 | patient: 5
+Sub 7 | Epoch 54/100 | train Loss: 0.7849 | train Accuracy: 0.6885 | valid Loss: 0.8708 | valid Accuracy: 0.6972 | test Accuracy: 0.6406 | patient: 6
+Sub 7 | Epoch 55/100 | train Loss: 0.7902 | train Accuracy: 0.6825 | valid Loss: 0.7830 | valid Accuracy: 0.7166 | test Accuracy: 0.6771 | patient: 7
+Sub 7 | Epoch 56/100 | train Loss: 0.8054 | train Accuracy: 0.6803 | valid Loss: 0.8373 | valid Accuracy: 0.6897 | test Accuracy: 0.6198 | patient: 8
+Sub 7 | Early Stopping: Best Epoch 57/100
+Sub 7 | Epoch 57/100 | train Loss: 0.7792 | train Accuracy: 0.6899 | valid Loss: 0.7882 | valid Accuracy: 0.7284 | test Accuracy: 0.6441 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 58/100
+Sub 7 | Epoch 58/100 | train Loss: 0.7917 | train Accuracy: 0.6849 | valid Loss: 0.7809 | valid Accuracy: 0.7284 | test Accuracy: 0.6354 | patient: 0
+Sub 7 | Epoch 59/100 | train Loss: 0.7807 | train Accuracy: 0.6905 | valid Loss: 0.7707 | valid Accuracy: 0.7209 | test Accuracy: 0.6424 | patient: 1
+Sub 7 | Early Stopping: Best Epoch 60/100
+Sub 7 | Epoch 60/100 | train Loss: 0.7613 | train Accuracy: 0.6983 | valid Loss: 0.7827 | valid Accuracy: 0.7392 | test Accuracy: 0.6042 | patient: 0
+Sub 7 | All Epoch: Best Epoch 61/100
+Sub 7 | Epoch 61/100 | train Loss: 0.7835 | train Accuracy: 0.6924 | valid Loss: 0.8264 | valid Accuracy: 0.7274 | test Accuracy: 0.6840 | patient: 1
+Sub 7 | All Epoch: Best Epoch 62/100
+Sub 7 | Epoch 62/100 | train Loss: 0.7734 | train Accuracy: 0.6925 | valid Loss: 0.7911 | valid Accuracy: 0.7080 | test Accuracy: 0.6962 | patient: 2
+Sub 7 | Epoch 63/100 | train Loss: 0.7818 | train Accuracy: 0.6846 | valid Loss: 0.8167 | valid Accuracy: 0.7155 | test Accuracy: 0.6528 | patient: 3
+Sub 7 | Epoch 64/100 | train Loss: 0.7603 | train Accuracy: 0.6986 | valid Loss: 0.8841 | valid Accuracy: 0.7188 | test Accuracy: 0.6562 | patient: 4
+Sub 7 | Epoch 65/100 | train Loss: 0.7600 | train Accuracy: 0.7007 | valid Loss: 0.8015 | valid Accuracy: 0.7306 | test Accuracy: 0.6719 | patient: 5
+Sub 7 | Early Stopping: Best Epoch 66/100
+Sub 7 | Epoch 66/100 | train Loss: 0.7488 | train Accuracy: 0.7037 | valid Loss: 0.7561 | valid Accuracy: 0.7414 | test Accuracy: 0.6424 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 67/100
+Sub 7 | Epoch 67/100 | train Loss: 0.7480 | train Accuracy: 0.7038 | valid Loss: 0.7544 | valid Accuracy: 0.7435 | test Accuracy: 0.6441 | patient: 0
+Sub 7 | Epoch 68/100 | train Loss: 0.7552 | train Accuracy: 0.7003 | valid Loss: 0.7482 | valid Accuracy: 0.7425 | test Accuracy: 0.6719 | patient: 1
+Sub 7 | Epoch 69/100 | train Loss: 0.7475 | train Accuracy: 0.7048 | valid Loss: 0.8161 | valid Accuracy: 0.7198 | test Accuracy: 0.6337 | patient: 2
+Sub 7 | Early Stopping: Best Epoch 70/100
+Sub 7 | Epoch 70/100 | train Loss: 0.7577 | train Accuracy: 0.7054 | valid Loss: 0.6988 | valid Accuracy: 0.7478 | test Accuracy: 0.6649 | patient: 0
+Sub 7 | Epoch 71/100 | train Loss: 0.7430 | train Accuracy: 0.7113 | valid Loss: 0.7242 | valid Accuracy: 0.7360 | test Accuracy: 0.6701 | patient: 1
+Sub 7 | All Epoch: Best Epoch 72/100
+Sub 7 | Epoch 72/100 | train Loss: 0.7536 | train Accuracy: 0.7072 | valid Loss: 0.7485 | valid Accuracy: 0.7349 | test Accuracy: 0.6979 | patient: 2
+Sub 7 | Epoch 73/100 | train Loss: 0.7390 | train Accuracy: 0.7109 | valid Loss: 0.7081 | valid Accuracy: 0.7478 | test Accuracy: 0.6736 | patient: 3
+Sub 7 | Epoch 74/100 | train Loss: 0.7425 | train Accuracy: 0.7095 | valid Loss: 0.7332 | valid Accuracy: 0.7360 | test Accuracy: 0.6736 | patient: 4
+Sub 7 | Epoch 75/100 | train Loss: 0.7408 | train Accuracy: 0.7135 | valid Loss: 0.7591 | valid Accuracy: 0.7241 | test Accuracy: 0.6667 | patient: 5
+Sub 7 | Epoch 76/100 | train Loss: 0.7398 | train Accuracy: 0.7107 | valid Loss: 0.7461 | valid Accuracy: 0.7328 | test Accuracy: 0.6476 | patient: 6
+Sub 7 | Early Stopping: Best Epoch 77/100
+Sub 7 | All Epoch: Best Epoch 77/100
+Sub 7 | Epoch 77/100 | train Loss: 0.7480 | train Accuracy: 0.7118 | valid Loss: 0.6960 | valid Accuracy: 0.7489 | test Accuracy: 0.7014 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 78/100
+Sub 7 | Epoch 78/100 | train Loss: 0.7466 | train Accuracy: 0.7110 | valid Loss: 0.7291 | valid Accuracy: 0.7532 | test Accuracy: 0.6632 | patient: 0
+Sub 7 | Epoch 79/100 | train Loss: 0.7410 | train Accuracy: 0.7111 | valid Loss: 0.7080 | valid Accuracy: 0.7414 | test Accuracy: 0.6806 | patient: 1
+Sub 7 | Epoch 80/100 | train Loss: 0.7378 | train Accuracy: 0.7095 | valid Loss: 0.7191 | valid Accuracy: 0.7435 | test Accuracy: 0.6910 | patient: 2
+Sub 7 | Epoch 81/100 | train Loss: 0.7385 | train Accuracy: 0.7080 | valid Loss: 0.7106 | valid Accuracy: 0.7435 | test Accuracy: 0.6979 | patient: 3
+Sub 7 | Epoch 82/100 | train Loss: 0.7263 | train Accuracy: 0.7122 | valid Loss: 0.7810 | valid Accuracy: 0.7328 | test Accuracy: 0.6632 | patient: 4
+Sub 7 | Epoch 83/100 | train Loss: 0.7354 | train Accuracy: 0.7038 | valid Loss: 0.7053 | valid Accuracy: 0.7511 | test Accuracy: 0.6649 | patient: 5
+Sub 7 | Epoch 84/100 | train Loss: 0.7269 | train Accuracy: 0.7179 | valid Loss: 0.7278 | valid Accuracy: 0.7425 | test Accuracy: 0.6597 | patient: 6
+Sub 7 | Early Stopping: Best Epoch 85/100
+Sub 7 | All Epoch: Best Epoch 85/100
+Sub 7 | Epoch 85/100 | train Loss: 0.7183 | train Accuracy: 0.7179 | valid Loss: 0.7149 | valid Accuracy: 0.7554 | test Accuracy: 0.7118 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 86/100
+Sub 7 | Epoch 86/100 | train Loss: 0.7219 | train Accuracy: 0.7160 | valid Loss: 0.6756 | valid Accuracy: 0.7575 | test Accuracy: 0.6840 | patient: 0
+Sub 7 | Epoch 87/100 | train Loss: 0.7224 | train Accuracy: 0.7197 | valid Loss: 0.7025 | valid Accuracy: 0.7489 | test Accuracy: 0.6753 | patient: 1
+Sub 7 | Epoch 88/100 | train Loss: 0.7132 | train Accuracy: 0.7175 | valid Loss: 0.6941 | valid Accuracy: 0.7532 | test Accuracy: 0.6806 | patient: 2
+Sub 7 | Epoch 89/100 | train Loss: 0.7161 | train Accuracy: 0.7204 | valid Loss: 0.7273 | valid Accuracy: 0.7457 | test Accuracy: 0.6736 | patient: 3
+Sub 7 | Epoch 90/100 | train Loss: 0.7251 | train Accuracy: 0.7160 | valid Loss: 0.7122 | valid Accuracy: 0.7478 | test Accuracy: 0.6858 | patient: 4
+Sub 7 | Early Stopping: Best Epoch 91/100
+Sub 7 | Epoch 91/100 | train Loss: 0.7010 | train Accuracy: 0.7310 | valid Loss: 0.6906 | valid Accuracy: 0.7597 | test Accuracy: 0.6771 | patient: 0
+Sub 7 | Epoch 92/100 | train Loss: 0.7078 | train Accuracy: 0.7311 | valid Loss: 0.7081 | valid Accuracy: 0.7500 | test Accuracy: 0.6632 | patient: 1
+Sub 7 | Epoch 93/100 | train Loss: 0.7143 | train Accuracy: 0.7239 | valid Loss: 0.7153 | valid Accuracy: 0.7414 | test Accuracy: 0.6892 | patient: 2
+Sub 7 | Epoch 94/100 | train Loss: 0.7034 | train Accuracy: 0.7279 | valid Loss: 0.7155 | valid Accuracy: 0.7543 | test Accuracy: 0.6997 | patient: 3
+Sub 7 | Epoch 95/100 | train Loss: 0.6942 | train Accuracy: 0.7270 | valid Loss: 0.7750 | valid Accuracy: 0.7575 | test Accuracy: 0.6858 | patient: 4
+Sub 7 | Epoch 96/100 | train Loss: 0.7100 | train Accuracy: 0.7201 | valid Loss: 0.6817 | valid Accuracy: 0.7532 | test Accuracy: 0.6962 | patient: 5
+Sub 7 | Early Stopping: Best Epoch 97/100
+Sub 7 | Epoch 97/100 | train Loss: 0.6975 | train Accuracy: 0.7255 | valid Loss: 0.6497 | valid Accuracy: 0.7651 | test Accuracy: 0.6736 | patient: 0
+Sub 7 | Early Stopping: Best Epoch 98/100
+Sub 7 | Epoch 98/100 | train Loss: 0.6770 | train Accuracy: 0.7379 | valid Loss: 0.6618 | valid Accuracy: 0.7716 | test Accuracy: 0.6632 | patient: 0
+Sub 7 | Epoch 99/100 | train Loss: 0.6955 | train Accuracy: 0.7292 | valid Loss: 0.6836 | valid Accuracy: 0.7608 | test Accuracy: 0.6840 | patient: 1
+Sub 7 | Epoch 100/100 | train Loss: 0.6933 | train Accuracy: 0.7288 | valid Loss: 0.6624 | valid Accuracy: 0.7608 | test Accuracy: 0.7101 | patient: 2
+Early Stopping Best Epoch: 98 | Test Subject 7 | Accuracy: 0.6632 | Kappa: 0.5509 | F1: 0.6401
+All Best Epoch: 85 | Test Subject 7 | Accuracy: 0.7118 | Kappa: 0.6157 | F1: 0.6963
+====== Subject 8/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 8 | Early Stopping: Best Epoch 1/100
+Sub 8 | All Epoch: Best Epoch 1/100
+Sub 8 | Epoch 1/100 | train Loss: 1.4282 | train Accuracy: 0.2645 | valid Loss: 1.4294 | valid Accuracy: 0.2942 | test Accuracy: 0.3177 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 2/100
+Sub 8 | Epoch 2/100 | train Loss: 1.3780 | train Accuracy: 0.3022 | valid Loss: 1.4392 | valid Accuracy: 0.3028 | test Accuracy: 0.3021 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 3/100
+Sub 8 | Epoch 3/100 | train Loss: 1.3503 | train Accuracy: 0.3258 | valid Loss: 1.3999 | valid Accuracy: 0.3588 | test Accuracy: 0.3160 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 4/100
+Sub 8 | All Epoch: Best Epoch 4/100
+Sub 8 | Epoch 4/100 | train Loss: 1.3281 | train Accuracy: 0.3556 | valid Loss: 1.3136 | valid Accuracy: 0.3804 | test Accuracy: 0.3681 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 5/100
+Sub 8 | All Epoch: Best Epoch 5/100
+Sub 8 | Epoch 5/100 | train Loss: 1.2918 | train Accuracy: 0.3859 | valid Loss: 1.2781 | valid Accuracy: 0.4203 | test Accuracy: 0.4132 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 6/100
+Sub 8 | All Epoch: Best Epoch 6/100
+Sub 8 | Epoch 6/100 | train Loss: 1.2562 | train Accuracy: 0.4216 | valid Loss: 1.2713 | valid Accuracy: 0.4246 | test Accuracy: 0.4184 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 7/100
+Sub 8 | All Epoch: Best Epoch 7/100
+Sub 8 | Epoch 7/100 | train Loss: 1.2472 | train Accuracy: 0.4257 | valid Loss: 1.2600 | valid Accuracy: 0.4591 | test Accuracy: 0.4392 | patient: 0
+Sub 8 | All Epoch: Best Epoch 8/100
+Sub 8 | Epoch 8/100 | train Loss: 1.2306 | train Accuracy: 0.4353 | valid Loss: 1.2422 | valid Accuracy: 0.4558 | test Accuracy: 0.5000 | patient: 1
+Sub 8 | Epoch 9/100 | train Loss: 1.2172 | train Accuracy: 0.4458 | valid Loss: 1.2928 | valid Accuracy: 0.4386 | test Accuracy: 0.4444 | patient: 2
+Sub 8 | Early Stopping: Best Epoch 10/100
+Sub 8 | Epoch 10/100 | train Loss: 1.2037 | train Accuracy: 0.4637 | valid Loss: 1.2425 | valid Accuracy: 0.4591 | test Accuracy: 0.4965 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 11/100
+Sub 8 | All Epoch: Best Epoch 11/100
+Sub 8 | Epoch 11/100 | train Loss: 1.1986 | train Accuracy: 0.4573 | valid Loss: 1.1577 | valid Accuracy: 0.4828 | test Accuracy: 0.5486 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 12/100
+Sub 8 | Epoch 12/100 | train Loss: 1.1812 | train Accuracy: 0.4754 | valid Loss: 1.1871 | valid Accuracy: 0.5237 | test Accuracy: 0.5469 | patient: 0
+Sub 8 | All Epoch: Best Epoch 13/100
+Sub 8 | Epoch 13/100 | train Loss: 1.1704 | train Accuracy: 0.4871 | valid Loss: 1.2962 | valid Accuracy: 0.4677 | test Accuracy: 0.5625 | patient: 1
+Sub 8 | Early Stopping: Best Epoch 14/100
+Sub 8 | Epoch 14/100 | train Loss: 1.1579 | train Accuracy: 0.4933 | valid Loss: 1.1264 | valid Accuracy: 0.5496 | test Accuracy: 0.5382 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 15/100
+Sub 8 | Epoch 15/100 | train Loss: 1.1330 | train Accuracy: 0.5053 | valid Loss: 1.0681 | valid Accuracy: 0.5571 | test Accuracy: 0.5503 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 16/100
+Sub 8 | All Epoch: Best Epoch 16/100
+Sub 8 | Epoch 16/100 | train Loss: 1.1168 | train Accuracy: 0.5118 | valid Loss: 1.0671 | valid Accuracy: 0.5679 | test Accuracy: 0.6493 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 17/100
+Sub 8 | All Epoch: Best Epoch 17/100
+Sub 8 | Epoch 17/100 | train Loss: 1.0938 | train Accuracy: 0.5337 | valid Loss: 0.9790 | valid Accuracy: 0.6078 | test Accuracy: 0.7031 | patient: 0
+Sub 8 | Epoch 18/100 | train Loss: 1.0678 | train Accuracy: 0.5520 | valid Loss: 0.9838 | valid Accuracy: 0.6078 | test Accuracy: 0.6840 | patient: 1
+Sub 8 | Epoch 19/100 | train Loss: 1.0599 | train Accuracy: 0.5535 | valid Loss: 0.9867 | valid Accuracy: 0.6056 | test Accuracy: 0.6458 | patient: 2
+Sub 8 | Early Stopping: Best Epoch 20/100
+Sub 8 | Epoch 20/100 | train Loss: 1.0248 | train Accuracy: 0.5800 | valid Loss: 0.9543 | valid Accuracy: 0.6131 | test Accuracy: 0.6979 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 21/100
+Sub 8 | Epoch 21/100 | train Loss: 1.0009 | train Accuracy: 0.5878 | valid Loss: 1.0018 | valid Accuracy: 0.6336 | test Accuracy: 0.6615 | patient: 0
+Sub 8 | All Epoch: Best Epoch 22/100
+Sub 8 | Epoch 22/100 | train Loss: 1.0058 | train Accuracy: 0.5829 | valid Loss: 0.9346 | valid Accuracy: 0.6218 | test Accuracy: 0.7274 | patient: 1
+Sub 8 | Early Stopping: Best Epoch 23/100
+Sub 8 | Epoch 23/100 | train Loss: 0.9775 | train Accuracy: 0.5976 | valid Loss: 0.9576 | valid Accuracy: 0.6530 | test Accuracy: 0.6788 | patient: 0
+Sub 8 | Epoch 24/100 | train Loss: 0.9666 | train Accuracy: 0.6038 | valid Loss: 0.9089 | valid Accuracy: 0.6444 | test Accuracy: 0.7170 | patient: 1
+Sub 8 | Early Stopping: Best Epoch 25/100
+Sub 8 | Epoch 25/100 | train Loss: 0.9301 | train Accuracy: 0.6235 | valid Loss: 0.9511 | valid Accuracy: 0.6562 | test Accuracy: 0.7135 | patient: 0
+Sub 8 | Epoch 26/100 | train Loss: 0.9270 | train Accuracy: 0.6178 | valid Loss: 0.9363 | valid Accuracy: 0.6390 | test Accuracy: 0.7101 | patient: 1
+Sub 8 | Epoch 27/100 | train Loss: 0.9420 | train Accuracy: 0.6154 | valid Loss: 0.9571 | valid Accuracy: 0.6379 | test Accuracy: 0.6858 | patient: 2
+Sub 8 | Early Stopping: Best Epoch 28/100
+Sub 8 | Epoch 28/100 | train Loss: 0.9208 | train Accuracy: 0.6245 | valid Loss: 0.8690 | valid Accuracy: 0.6800 | test Accuracy: 0.7014 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 29/100
+Sub 8 | Epoch 29/100 | train Loss: 0.9130 | train Accuracy: 0.6318 | valid Loss: 0.8689 | valid Accuracy: 0.6821 | test Accuracy: 0.6944 | patient: 0
+Sub 8 | Epoch 30/100 | train Loss: 0.8848 | train Accuracy: 0.6467 | valid Loss: 0.9608 | valid Accuracy: 0.6562 | test Accuracy: 0.6771 | patient: 1
+Sub 8 | Epoch 31/100 | train Loss: 0.8684 | train Accuracy: 0.6622 | valid Loss: 0.8677 | valid Accuracy: 0.6670 | test Accuracy: 0.7083 | patient: 2
+Sub 8 | Epoch 32/100 | train Loss: 0.8843 | train Accuracy: 0.6457 | valid Loss: 0.8423 | valid Accuracy: 0.6789 | test Accuracy: 0.7101 | patient: 3
+Sub 8 | Early Stopping: Best Epoch 33/100
+Sub 8 | Epoch 33/100 | train Loss: 0.8724 | train Accuracy: 0.6470 | valid Loss: 0.8648 | valid Accuracy: 0.6821 | test Accuracy: 0.6944 | patient: 0
+Sub 8 | Early Stopping: Best Epoch 34/100
+Sub 8 | Epoch 34/100 | train Loss: 0.8757 | train Accuracy: 0.6522 | valid Loss: 0.8338 | valid Accuracy: 0.7004 | test Accuracy: 0.6840 | patient: 0
+Sub 8 | Epoch 35/100 | train Loss: 0.8567 | train Accuracy: 0.6541 | valid Loss: 0.8588 | valid Accuracy: 0.6843 | test Accuracy: 0.7083 | patient: 1
+Sub 8 | Epoch 36/100 | train Loss: 0.8765 | train Accuracy: 0.6466 | valid Loss: 0.8774 | valid Accuracy: 0.6843 | test Accuracy: 0.6858 | patient: 2
+Sub 8 | Epoch 37/100 | train Loss: 0.8550 | train Accuracy: 0.6596 | valid Loss: 0.9546 | valid Accuracy: 0.6562 | test Accuracy: 0.7066 | patient: 3
+Sub 8 | All Epoch: Best Epoch 38/100
+Sub 8 | Epoch 38/100 | train Loss: 0.8462 | train Accuracy: 0.6660 | valid Loss: 0.9104 | valid Accuracy: 0.6821 | test Accuracy: 0.7378 | patient: 4
+Sub 8 | Epoch 39/100 | train Loss: 0.8432 | train Accuracy: 0.6630 | valid Loss: 0.8406 | valid Accuracy: 0.6929 | test Accuracy: 0.6476 | patient: 5
+Sub 8 | Epoch 40/100 | train Loss: 0.8324 | train Accuracy: 0.6694 | valid Loss: 0.8748 | valid Accuracy: 0.6843 | test Accuracy: 0.7031 | patient: 6
+Sub 8 | Epoch 41/100 | train Loss: 0.8305 | train Accuracy: 0.6664 | valid Loss: 0.8893 | valid Accuracy: 0.6756 | test Accuracy: 0.7083 | patient: 7
+Sub 8 | Early Stopping: Best Epoch 42/100
+Sub 8 | Epoch 42/100 | train Loss: 0.8277 | train Accuracy: 0.6705 | valid Loss: 0.8275 | valid Accuracy: 0.7166 | test Accuracy: 0.7326 | patient: 0
+Sub 8 | Epoch 43/100 | train Loss: 0.8126 | train Accuracy: 0.6773 | valid Loss: 0.8121 | valid Accuracy: 0.7144 | test Accuracy: 0.7240 | patient: 1
+Sub 8 | Early Stopping: Best Epoch 44/100
+Sub 8 | Epoch 44/100 | train Loss: 0.8117 | train Accuracy: 0.6747 | valid Loss: 0.8123 | valid Accuracy: 0.7198 | test Accuracy: 0.7066 | patient: 0
+Sub 8 | All Epoch: Best Epoch 45/100
+Sub 8 | Epoch 45/100 | train Loss: 0.8102 | train Accuracy: 0.6822 | valid Loss: 0.7986 | valid Accuracy: 0.7026 | test Accuracy: 0.7413 | patient: 1
+Sub 8 | Epoch 46/100 | train Loss: 0.8087 | train Accuracy: 0.6871 | valid Loss: 0.8200 | valid Accuracy: 0.7037 | test Accuracy: 0.7049 | patient: 2
+Sub 8 | Epoch 47/100 | train Loss: 0.8003 | train Accuracy: 0.6904 | valid Loss: 0.8435 | valid Accuracy: 0.7112 | test Accuracy: 0.6944 | patient: 3
+Sub 8 | Epoch 48/100 | train Loss: 0.8092 | train Accuracy: 0.6774 | valid Loss: 0.8360 | valid Accuracy: 0.7080 | test Accuracy: 0.7118 | patient: 4
+Sub 8 | Early Stopping: Best Epoch 49/100
+Sub 8 | Epoch 49/100 | train Loss: 0.7926 | train Accuracy: 0.6876 | valid Loss: 0.8127 | valid Accuracy: 0.7284 | test Accuracy: 0.7066 | patient: 0
+Sub 8 | Epoch 50/100 | train Loss: 0.7877 | train Accuracy: 0.6853 | valid Loss: 0.8056 | valid Accuracy: 0.7231 | test Accuracy: 0.7153 | patient: 1
+Sub 8 | Epoch 51/100 | train Loss: 0.7874 | train Accuracy: 0.6874 | valid Loss: 0.8086 | valid Accuracy: 0.7112 | test Accuracy: 0.7205 | patient: 2
+Sub 8 | Early Stopping: Best Epoch 52/100
+Sub 8 | Epoch 52/100 | train Loss: 0.7885 | train Accuracy: 0.6882 | valid Loss: 0.7821 | valid Accuracy: 0.7371 | test Accuracy: 0.6927 | patient: 0
+Sub 8 | Epoch 53/100 | train Loss: 0.7863 | train Accuracy: 0.6909 | valid Loss: 0.8537 | valid Accuracy: 0.7188 | test Accuracy: 0.6753 | patient: 1
+Sub 8 | Epoch 54/100 | train Loss: 0.7797 | train Accuracy: 0.6865 | valid Loss: 0.7751 | valid Accuracy: 0.7295 | test Accuracy: 0.6858 | patient: 2
+Sub 8 | Epoch 55/100 | train Loss: 0.7853 | train Accuracy: 0.6952 | valid Loss: 0.7991 | valid Accuracy: 0.7252 | test Accuracy: 0.7309 | patient: 3
+Sub 8 | Epoch 56/100 | train Loss: 0.7759 | train Accuracy: 0.6937 | valid Loss: 0.7564 | valid Accuracy: 0.7349 | test Accuracy: 0.6979 | patient: 4
+Sub 8 | Early Stopping: Best Epoch 57/100
+Sub 8 | Epoch 57/100 | train Loss: 0.7615 | train Accuracy: 0.6984 | valid Loss: 0.7575 | valid Accuracy: 0.7392 | test Accuracy: 0.7083 | patient: 0
+Sub 8 | Epoch 58/100 | train Loss: 0.7657 | train Accuracy: 0.6946 | valid Loss: 0.9358 | valid Accuracy: 0.6983 | test Accuracy: 0.7222 | patient: 1
+Sub 8 | Epoch 59/100 | train Loss: 0.7754 | train Accuracy: 0.6942 | valid Loss: 0.8419 | valid Accuracy: 0.7134 | test Accuracy: 0.6927 | patient: 2
+Sub 8 | Epoch 60/100 | train Loss: 0.7670 | train Accuracy: 0.7027 | valid Loss: 0.8259 | valid Accuracy: 0.7306 | test Accuracy: 0.7292 | patient: 3
+Sub 8 | Epoch 61/100 | train Loss: 0.7595 | train Accuracy: 0.7048 | valid Loss: 0.8706 | valid Accuracy: 0.7058 | test Accuracy: 0.7153 | patient: 4
+Sub 8 | Early Stopping: Best Epoch 62/100
+Sub 8 | Epoch 62/100 | train Loss: 0.7654 | train Accuracy: 0.7004 | valid Loss: 0.7385 | valid Accuracy: 0.7543 | test Accuracy: 0.7292 | patient: 0
+Sub 8 | Epoch 63/100 | train Loss: 0.7607 | train Accuracy: 0.7082 | valid Loss: 0.8009 | valid Accuracy: 0.7252 | test Accuracy: 0.7257 | patient: 1
+Sub 8 | Epoch 64/100 | train Loss: 0.7600 | train Accuracy: 0.7029 | valid Loss: 0.7970 | valid Accuracy: 0.7209 | test Accuracy: 0.6910 | patient: 2
+Sub 8 | Epoch 65/100 | train Loss: 0.7709 | train Accuracy: 0.7035 | valid Loss: 0.7468 | valid Accuracy: 0.7414 | test Accuracy: 0.7101 | patient: 3
+Sub 8 | Epoch 66/100 | train Loss: 0.7574 | train Accuracy: 0.7053 | valid Loss: 0.7522 | valid Accuracy: 0.7381 | test Accuracy: 0.7049 | patient: 4
+Sub 8 | Epoch 67/100 | train Loss: 0.7589 | train Accuracy: 0.7072 | valid Loss: 0.7655 | valid Accuracy: 0.7435 | test Accuracy: 0.7101 | patient: 5
+Sub 8 | Epoch 68/100 | train Loss: 0.7457 | train Accuracy: 0.7065 | valid Loss: 0.7844 | valid Accuracy: 0.7252 | test Accuracy: 0.7118 | patient: 6
+Sub 8 | Epoch 69/100 | train Loss: 0.7389 | train Accuracy: 0.7140 | valid Loss: 0.7558 | valid Accuracy: 0.7522 | test Accuracy: 0.7066 | patient: 7
+Sub 8 | Epoch 70/100 | train Loss: 0.7586 | train Accuracy: 0.6997 | valid Loss: 0.7966 | valid Accuracy: 0.7198 | test Accuracy: 0.6962 | patient: 8
+Sub 8 | Epoch 71/100 | train Loss: 0.7362 | train Accuracy: 0.7101 | valid Loss: 0.7258 | valid Accuracy: 0.7522 | test Accuracy: 0.7083 | patient: 9
+Sub 8 | Epoch 72/100 | train Loss: 0.7401 | train Accuracy: 0.7148 | valid Loss: 0.7511 | valid Accuracy: 0.7414 | test Accuracy: 0.7153 | patient: 10
+Sub 8 | Epoch 73/100 | train Loss: 0.7334 | train Accuracy: 0.7181 | valid Loss: 0.7343 | valid Accuracy: 0.7532 | test Accuracy: 0.7170 | patient: 11
+Sub 8 | Epoch 74/100 | train Loss: 0.7306 | train Accuracy: 0.7107 | valid Loss: 0.8074 | valid Accuracy: 0.7349 | test Accuracy: 0.7083 | patient: 12
+Sub 8 | Epoch 75/100 | train Loss: 0.7513 | train Accuracy: 0.7077 | valid Loss: 0.7619 | valid Accuracy: 0.7468 | test Accuracy: 0.7205 | patient: 13
+Sub 8 | Epoch 76/100 | train Loss: 0.7225 | train Accuracy: 0.7211 | valid Loss: 0.7627 | valid Accuracy: 0.7435 | test Accuracy: 0.7014 | patient: 14
+Sub 8 | Epoch 77/100 | train Loss: 0.7308 | train Accuracy: 0.7159 | valid Loss: 0.7501 | valid Accuracy: 0.7328 | test Accuracy: 0.6806 | patient: 15
+Sub 8 | Epoch 78/100 | train Loss: 0.7336 | train Accuracy: 0.7126 | valid Loss: 0.7428 | valid Accuracy: 0.7489 | test Accuracy: 0.6806 | patient: 16
+Sub 8 | Epoch 79/100 | train Loss: 0.7234 | train Accuracy: 0.7186 | valid Loss: 0.7650 | valid Accuracy: 0.7414 | test Accuracy: 0.7188 | patient: 17
+Sub 8 | Early Stopping: Best Epoch 80/100
+Sub 8 | Epoch 80/100 | train Loss: 0.7337 | train Accuracy: 0.7168 | valid Loss: 0.7050 | valid Accuracy: 0.7575 | test Accuracy: 0.6892 | patient: 0
+Sub 8 | Epoch 81/100 | train Loss: 0.7202 | train Accuracy: 0.7211 | valid Loss: 0.7266 | valid Accuracy: 0.7543 | test Accuracy: 0.7240 | patient: 1
+Sub 8 | Epoch 82/100 | train Loss: 0.7206 | train Accuracy: 0.7230 | valid Loss: 0.7416 | valid Accuracy: 0.7500 | test Accuracy: 0.6701 | patient: 2
+Sub 8 | Epoch 83/100 | train Loss: 0.7115 | train Accuracy: 0.7234 | valid Loss: 0.7673 | valid Accuracy: 0.7500 | test Accuracy: 0.6788 | patient: 3
+Sub 8 | Epoch 84/100 | train Loss: 0.7205 | train Accuracy: 0.7240 | valid Loss: 0.6946 | valid Accuracy: 0.7543 | test Accuracy: 0.7170 | patient: 4
+Sub 8 | Epoch 85/100 | train Loss: 0.6987 | train Accuracy: 0.7268 | valid Loss: 0.7235 | valid Accuracy: 0.7500 | test Accuracy: 0.7153 | patient: 5
+Sub 8 | Early Stopping: Best Epoch 86/100
+Sub 8 | Epoch 86/100 | train Loss: 0.7106 | train Accuracy: 0.7228 | valid Loss: 0.6873 | valid Accuracy: 0.7716 | test Accuracy: 0.6927 | patient: 0
+Sub 8 | Epoch 87/100 | train Loss: 0.7055 | train Accuracy: 0.7319 | valid Loss: 0.7216 | valid Accuracy: 0.7586 | test Accuracy: 0.7309 | patient: 1
+Sub 8 | Epoch 88/100 | train Loss: 0.7104 | train Accuracy: 0.7310 | valid Loss: 0.6978 | valid Accuracy: 0.7565 | test Accuracy: 0.7014 | patient: 2
+Sub 8 | Epoch 89/100 | train Loss: 0.7151 | train Accuracy: 0.7220 | valid Loss: 0.7497 | valid Accuracy: 0.7586 | test Accuracy: 0.6892 | patient: 3
+Sub 8 | Epoch 90/100 | train Loss: 0.7014 | train Accuracy: 0.7258 | valid Loss: 0.6968 | valid Accuracy: 0.7683 | test Accuracy: 0.7170 | patient: 4
+Sub 8 | Epoch 91/100 | train Loss: 0.7080 | train Accuracy: 0.7270 | valid Loss: 0.7076 | valid Accuracy: 0.7522 | test Accuracy: 0.7135 | patient: 5
+Sub 8 | Epoch 92/100 | train Loss: 0.6894 | train Accuracy: 0.7312 | valid Loss: 0.7118 | valid Accuracy: 0.7672 | test Accuracy: 0.7222 | patient: 6
+Sub 8 | Epoch 93/100 | train Loss: 0.6979 | train Accuracy: 0.7300 | valid Loss: 0.6699 | valid Accuracy: 0.7629 | test Accuracy: 0.7222 | patient: 7
+Sub 8 | Epoch 94/100 | train Loss: 0.7063 | train Accuracy: 0.7235 | valid Loss: 0.7212 | valid Accuracy: 0.7586 | test Accuracy: 0.7240 | patient: 8
+Sub 8 | Epoch 95/100 | train Loss: 0.6841 | train Accuracy: 0.7398 | valid Loss: 0.7157 | valid Accuracy: 0.7629 | test Accuracy: 0.7014 | patient: 9
+Sub 8 | Epoch 96/100 | train Loss: 0.6959 | train Accuracy: 0.7327 | valid Loss: 0.7229 | valid Accuracy: 0.7629 | test Accuracy: 0.7118 | patient: 10
+Sub 8 | Epoch 97/100 | train Loss: 0.6986 | train Accuracy: 0.7311 | valid Loss: 0.7410 | valid Accuracy: 0.7554 | test Accuracy: 0.7205 | patient: 11
+Sub 8 | Epoch 98/100 | train Loss: 0.7101 | train Accuracy: 0.7243 | valid Loss: 0.7154 | valid Accuracy: 0.7597 | test Accuracy: 0.7205 | patient: 12
+Sub 8 | Epoch 99/100 | train Loss: 0.6982 | train Accuracy: 0.7296 | valid Loss: 0.7032 | valid Accuracy: 0.7500 | test Accuracy: 0.7413 | patient: 13
+Sub 8 | Epoch 100/100 | train Loss: 0.6781 | train Accuracy: 0.7427 | valid Loss: 0.6773 | valid Accuracy: 0.7575 | test Accuracy: 0.7344 | patient: 14
+Early Stopping Best Epoch: 86 | Test Subject 8 | Accuracy: 0.6927 | Kappa: 0.5903 | F1: 0.6829
+All Best Epoch: 45 | Test Subject 8 | Accuracy: 0.7413 | Kappa: 0.6551 | F1: 0.7402
+====== Subject 9/9 as Test ======
+Model Parameters: 75494
+Train size = 3680, Valid size = 928, Test size = 576
+Sub 9 | Early Stopping: Best Epoch 1/100
+Sub 9 | All Epoch: Best Epoch 1/100
+Sub 9 | Epoch 1/100 | train Loss: 1.4274 | train Accuracy: 0.2678 | valid Loss: 1.3701 | valid Accuracy: 0.2888 | test Accuracy: 0.2708 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 2/100
+Sub 9 | Epoch 2/100 | train Loss: 1.3777 | train Accuracy: 0.3020 | valid Loss: 1.3595 | valid Accuracy: 0.3599 | test Accuracy: 0.2552 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 3/100
+Sub 9 | All Epoch: Best Epoch 3/100
+Sub 9 | Epoch 3/100 | train Loss: 1.3363 | train Accuracy: 0.3507 | valid Loss: 1.3354 | valid Accuracy: 0.3944 | test Accuracy: 0.2951 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 4/100
+Sub 9 | All Epoch: Best Epoch 4/100
+Sub 9 | Epoch 4/100 | train Loss: 1.2942 | train Accuracy: 0.3942 | valid Loss: 1.3112 | valid Accuracy: 0.4267 | test Accuracy: 0.3038 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 5/100
+Sub 9 | Epoch 5/100 | train Loss: 1.2689 | train Accuracy: 0.4133 | valid Loss: 1.2715 | valid Accuracy: 0.4397 | test Accuracy: 0.2986 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 6/100
+Sub 9 | All Epoch: Best Epoch 6/100
+Sub 9 | Epoch 6/100 | train Loss: 1.2327 | train Accuracy: 0.4416 | valid Loss: 1.2257 | valid Accuracy: 0.4494 | test Accuracy: 0.3628 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 7/100
+Sub 9 | All Epoch: Best Epoch 7/100
+Sub 9 | Epoch 7/100 | train Loss: 1.2172 | train Accuracy: 0.4471 | valid Loss: 1.1996 | valid Accuracy: 0.4688 | test Accuracy: 0.4618 | patient: 0
+Sub 9 | Epoch 8/100 | train Loss: 1.2137 | train Accuracy: 0.4541 | valid Loss: 1.2556 | valid Accuracy: 0.4666 | test Accuracy: 0.4149 | patient: 1
+Sub 9 | Epoch 9/100 | train Loss: 1.2040 | train Accuracy: 0.4539 | valid Loss: 1.2776 | valid Accuracy: 0.4483 | test Accuracy: 0.3767 | patient: 2
+Sub 9 | All Epoch: Best Epoch 10/100
+Sub 9 | Epoch 10/100 | train Loss: 1.1733 | train Accuracy: 0.4760 | valid Loss: 1.2591 | valid Accuracy: 0.4494 | test Accuracy: 0.4896 | patient: 3
+Sub 9 | Early Stopping: Best Epoch 11/100
+Sub 9 | Epoch 11/100 | train Loss: 1.1728 | train Accuracy: 0.4764 | valid Loss: 1.2069 | valid Accuracy: 0.4935 | test Accuracy: 0.4531 | patient: 0
+Sub 9 | Epoch 12/100 | train Loss: 1.1574 | train Accuracy: 0.4867 | valid Loss: 1.1918 | valid Accuracy: 0.4881 | test Accuracy: 0.4219 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 13/100
+Sub 9 | Epoch 13/100 | train Loss: 1.1312 | train Accuracy: 0.5045 | valid Loss: 1.1068 | valid Accuracy: 0.5119 | test Accuracy: 0.4340 | patient: 0
+Sub 9 | All Epoch: Best Epoch 14/100
+Sub 9 | Epoch 14/100 | train Loss: 1.1234 | train Accuracy: 0.5103 | valid Loss: 1.1582 | valid Accuracy: 0.5022 | test Accuracy: 0.5174 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 15/100
+Sub 9 | Epoch 15/100 | train Loss: 1.1072 | train Accuracy: 0.5217 | valid Loss: 1.0621 | valid Accuracy: 0.5571 | test Accuracy: 0.5017 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 16/100
+Sub 9 | Epoch 16/100 | train Loss: 1.0835 | train Accuracy: 0.5367 | valid Loss: 1.0668 | valid Accuracy: 0.5776 | test Accuracy: 0.5104 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 17/100
+Sub 9 | All Epoch: Best Epoch 17/100
+Sub 9 | Epoch 17/100 | train Loss: 1.0664 | train Accuracy: 0.5527 | valid Loss: 1.0589 | valid Accuracy: 0.5938 | test Accuracy: 0.5191 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 18/100
+Sub 9 | All Epoch: Best Epoch 18/100
+Sub 9 | Epoch 18/100 | train Loss: 1.0450 | train Accuracy: 0.5648 | valid Loss: 0.9873 | valid Accuracy: 0.6164 | test Accuracy: 0.5747 | patient: 0
+Sub 9 | Epoch 19/100 | train Loss: 1.0172 | train Accuracy: 0.5791 | valid Loss: 1.0083 | valid Accuracy: 0.6142 | test Accuracy: 0.5451 | patient: 1
+Sub 9 | Epoch 20/100 | train Loss: 1.0082 | train Accuracy: 0.5825 | valid Loss: 1.0098 | valid Accuracy: 0.5959 | test Accuracy: 0.5521 | patient: 2
+Sub 9 | Early Stopping: Best Epoch 21/100
+Sub 9 | Epoch 21/100 | train Loss: 0.9871 | train Accuracy: 0.5861 | valid Loss: 1.0007 | valid Accuracy: 0.6282 | test Accuracy: 0.5208 | patient: 0
+Sub 9 | Epoch 22/100 | train Loss: 0.9702 | train Accuracy: 0.5982 | valid Loss: 1.0911 | valid Accuracy: 0.5819 | test Accuracy: 0.5295 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 23/100
+Sub 9 | Epoch 23/100 | train Loss: 0.9627 | train Accuracy: 0.6015 | valid Loss: 0.9237 | valid Accuracy: 0.6390 | test Accuracy: 0.5712 | patient: 0
+Sub 9 | Epoch 24/100 | train Loss: 0.9515 | train Accuracy: 0.6124 | valid Loss: 1.0204 | valid Accuracy: 0.6228 | test Accuracy: 0.5677 | patient: 1
+Sub 9 | Epoch 25/100 | train Loss: 0.9300 | train Accuracy: 0.6281 | valid Loss: 0.9721 | valid Accuracy: 0.6347 | test Accuracy: 0.5694 | patient: 2
+Sub 9 | Early Stopping: Best Epoch 26/100
+Sub 9 | Epoch 26/100 | train Loss: 0.9177 | train Accuracy: 0.6284 | valid Loss: 0.9247 | valid Accuracy: 0.6606 | test Accuracy: 0.5642 | patient: 0
+Sub 9 | Epoch 27/100 | train Loss: 0.9309 | train Accuracy: 0.6292 | valid Loss: 0.9531 | valid Accuracy: 0.6455 | test Accuracy: 0.5729 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 28/100
+Sub 9 | All Epoch: Best Epoch 28/100
+Sub 9 | Epoch 28/100 | train Loss: 0.9102 | train Accuracy: 0.6361 | valid Loss: 0.8675 | valid Accuracy: 0.6950 | test Accuracy: 0.5885 | patient: 0
+Sub 9 | Epoch 29/100 | train Loss: 0.9127 | train Accuracy: 0.6292 | valid Loss: 0.9418 | valid Accuracy: 0.6541 | test Accuracy: 0.5885 | patient: 1
+Sub 9 | Epoch 30/100 | train Loss: 0.8798 | train Accuracy: 0.6467 | valid Loss: 0.9024 | valid Accuracy: 0.6638 | test Accuracy: 0.5694 | patient: 2
+Sub 9 | All Epoch: Best Epoch 31/100
+Sub 9 | Epoch 31/100 | train Loss: 0.8805 | train Accuracy: 0.6435 | valid Loss: 0.9226 | valid Accuracy: 0.6595 | test Accuracy: 0.6007 | patient: 3
+Sub 9 | Early Stopping: Best Epoch 32/100
+Sub 9 | Epoch 32/100 | train Loss: 0.8733 | train Accuracy: 0.6508 | valid Loss: 0.8466 | valid Accuracy: 0.7015 | test Accuracy: 0.5938 | patient: 0
+Sub 9 | Epoch 33/100 | train Loss: 0.8805 | train Accuracy: 0.6463 | valid Loss: 0.8444 | valid Accuracy: 0.6907 | test Accuracy: 0.5625 | patient: 1
+Sub 9 | Epoch 34/100 | train Loss: 0.8524 | train Accuracy: 0.6625 | valid Loss: 0.9032 | valid Accuracy: 0.6929 | test Accuracy: 0.5799 | patient: 2
+Sub 9 | Epoch 35/100 | train Loss: 0.8679 | train Accuracy: 0.6573 | valid Loss: 0.8412 | valid Accuracy: 0.6875 | test Accuracy: 0.6007 | patient: 3
+Sub 9 | Epoch 36/100 | train Loss: 0.8571 | train Accuracy: 0.6580 | valid Loss: 0.8480 | valid Accuracy: 0.6832 | test Accuracy: 0.5903 | patient: 4
+Sub 9 | Epoch 37/100 | train Loss: 0.8600 | train Accuracy: 0.6636 | valid Loss: 0.8732 | valid Accuracy: 0.6897 | test Accuracy: 0.5747 | patient: 5
+Sub 9 | All Epoch: Best Epoch 38/100
+Sub 9 | Epoch 38/100 | train Loss: 0.8394 | train Accuracy: 0.6678 | valid Loss: 0.9726 | valid Accuracy: 0.6606 | test Accuracy: 0.6215 | patient: 6
+Sub 9 | Epoch 39/100 | train Loss: 0.8353 | train Accuracy: 0.6655 | valid Loss: 0.8468 | valid Accuracy: 0.6832 | test Accuracy: 0.6198 | patient: 7
+Sub 9 | Early Stopping: Best Epoch 40/100
+Sub 9 | Epoch 40/100 | train Loss: 0.8247 | train Accuracy: 0.6734 | valid Loss: 0.8594 | valid Accuracy: 0.7047 | test Accuracy: 0.5694 | patient: 0
+Sub 9 | All Epoch: Best Epoch 41/100
+Sub 9 | Epoch 41/100 | train Loss: 0.8252 | train Accuracy: 0.6738 | valid Loss: 0.8588 | valid Accuracy: 0.6994 | test Accuracy: 0.6319 | patient: 1
+Sub 9 | Epoch 42/100 | train Loss: 0.8262 | train Accuracy: 0.6768 | valid Loss: 0.9059 | valid Accuracy: 0.6843 | test Accuracy: 0.5920 | patient: 2
+Sub 9 | Epoch 43/100 | train Loss: 0.8249 | train Accuracy: 0.6781 | valid Loss: 0.8686 | valid Accuracy: 0.6843 | test Accuracy: 0.5955 | patient: 3
+Sub 9 | Epoch 44/100 | train Loss: 0.8059 | train Accuracy: 0.6819 | valid Loss: 0.9143 | valid Accuracy: 0.6810 | test Accuracy: 0.6146 | patient: 4
+Sub 9 | Early Stopping: Best Epoch 45/100
+Sub 9 | Epoch 45/100 | train Loss: 0.8102 | train Accuracy: 0.6758 | valid Loss: 0.8155 | valid Accuracy: 0.7231 | test Accuracy: 0.5938 | patient: 0
+Sub 9 | Epoch 46/100 | train Loss: 0.8078 | train Accuracy: 0.6815 | valid Loss: 0.8248 | valid Accuracy: 0.7080 | test Accuracy: 0.5868 | patient: 1
+Sub 9 | Epoch 47/100 | train Loss: 0.7981 | train Accuracy: 0.6893 | valid Loss: 0.8868 | valid Accuracy: 0.6886 | test Accuracy: 0.6111 | patient: 2
+Sub 9 | Early Stopping: Best Epoch 48/100
+Sub 9 | Epoch 48/100 | train Loss: 0.8011 | train Accuracy: 0.6853 | valid Loss: 0.7488 | valid Accuracy: 0.7403 | test Accuracy: 0.6076 | patient: 0
+Sub 9 | Epoch 49/100 | train Loss: 0.8034 | train Accuracy: 0.6874 | valid Loss: 0.8293 | valid Accuracy: 0.6853 | test Accuracy: 0.5660 | patient: 1
+Sub 9 | Epoch 50/100 | train Loss: 0.7830 | train Accuracy: 0.6875 | valid Loss: 0.8818 | valid Accuracy: 0.7004 | test Accuracy: 0.6285 | patient: 2
+Sub 9 | Epoch 51/100 | train Loss: 0.7924 | train Accuracy: 0.6864 | valid Loss: 0.8726 | valid Accuracy: 0.6800 | test Accuracy: 0.5990 | patient: 3
+Sub 9 | Epoch 52/100 | train Loss: 0.7788 | train Accuracy: 0.6957 | valid Loss: 0.8413 | valid Accuracy: 0.7101 | test Accuracy: 0.5972 | patient: 4
+Sub 9 | Epoch 53/100 | train Loss: 0.7723 | train Accuracy: 0.6943 | valid Loss: 0.8323 | valid Accuracy: 0.7177 | test Accuracy: 0.6267 | patient: 5
+Sub 9 | Epoch 54/100 | train Loss: 0.7806 | train Accuracy: 0.6937 | valid Loss: 0.8400 | valid Accuracy: 0.7080 | test Accuracy: 0.6181 | patient: 6
+Sub 9 | All Epoch: Best Epoch 55/100
+Sub 9 | Epoch 55/100 | train Loss: 0.7712 | train Accuracy: 0.6961 | valid Loss: 0.7974 | valid Accuracy: 0.7231 | test Accuracy: 0.6354 | patient: 7
+Sub 9 | Epoch 56/100 | train Loss: 0.7536 | train Accuracy: 0.7037 | valid Loss: 0.7660 | valid Accuracy: 0.7371 | test Accuracy: 0.6354 | patient: 8
+Sub 9 | Epoch 57/100 | train Loss: 0.7686 | train Accuracy: 0.6977 | valid Loss: 0.7774 | valid Accuracy: 0.7317 | test Accuracy: 0.5972 | patient: 9
+Sub 9 | Epoch 58/100 | train Loss: 0.7685 | train Accuracy: 0.6992 | valid Loss: 0.7959 | valid Accuracy: 0.7198 | test Accuracy: 0.6198 | patient: 10
+Sub 9 | Epoch 59/100 | train Loss: 0.7506 | train Accuracy: 0.7092 | valid Loss: 0.8709 | valid Accuracy: 0.7058 | test Accuracy: 0.6337 | patient: 11
+Sub 9 | All Epoch: Best Epoch 60/100
+Sub 9 | Epoch 60/100 | train Loss: 0.7588 | train Accuracy: 0.7049 | valid Loss: 0.7642 | valid Accuracy: 0.7338 | test Accuracy: 0.6424 | patient: 12
+Sub 9 | Epoch 61/100 | train Loss: 0.7638 | train Accuracy: 0.7012 | valid Loss: 0.8990 | valid Accuracy: 0.6961 | test Accuracy: 0.6285 | patient: 13
+Sub 9 | Early Stopping: Best Epoch 62/100
+Sub 9 | Epoch 62/100 | train Loss: 0.7450 | train Accuracy: 0.7064 | valid Loss: 0.7297 | valid Accuracy: 0.7403 | test Accuracy: 0.6337 | patient: 0
+Sub 9 | All Epoch: Best Epoch 63/100
+Sub 9 | Epoch 63/100 | train Loss: 0.7495 | train Accuracy: 0.7042 | valid Loss: 0.7533 | valid Accuracy: 0.7295 | test Accuracy: 0.6528 | patient: 1
+Sub 9 | Epoch 64/100 | train Loss: 0.7512 | train Accuracy: 0.7107 | valid Loss: 0.7515 | valid Accuracy: 0.7403 | test Accuracy: 0.6493 | patient: 2
+Sub 9 | Epoch 65/100 | train Loss: 0.7471 | train Accuracy: 0.7135 | valid Loss: 0.8209 | valid Accuracy: 0.7198 | test Accuracy: 0.6198 | patient: 3
+Sub 9 | All Epoch: Best Epoch 66/100
+Sub 9 | Epoch 66/100 | train Loss: 0.7393 | train Accuracy: 0.7118 | valid Loss: 0.7083 | valid Accuracy: 0.7338 | test Accuracy: 0.6580 | patient: 4
+Sub 9 | Early Stopping: Best Epoch 67/100
+Sub 9 | All Epoch: Best Epoch 67/100
+Sub 9 | Epoch 67/100 | train Loss: 0.7435 | train Accuracy: 0.7062 | valid Loss: 0.7177 | valid Accuracy: 0.7489 | test Accuracy: 0.6684 | patient: 0
+Sub 9 | Epoch 68/100 | train Loss: 0.7288 | train Accuracy: 0.7175 | valid Loss: 0.8337 | valid Accuracy: 0.7371 | test Accuracy: 0.5972 | patient: 1
+Sub 9 | All Epoch: Best Epoch 69/100
+Sub 9 | Epoch 69/100 | train Loss: 0.7480 | train Accuracy: 0.7111 | valid Loss: 0.7507 | valid Accuracy: 0.7317 | test Accuracy: 0.6771 | patient: 2
+Sub 9 | Epoch 70/100 | train Loss: 0.7282 | train Accuracy: 0.7151 | valid Loss: 0.7537 | valid Accuracy: 0.7231 | test Accuracy: 0.6684 | patient: 3
+Sub 9 | Early Stopping: Best Epoch 71/100
+Sub 9 | Epoch 71/100 | train Loss: 0.7281 | train Accuracy: 0.7269 | valid Loss: 0.7245 | valid Accuracy: 0.7500 | test Accuracy: 0.6684 | patient: 0
+Sub 9 | Epoch 72/100 | train Loss: 0.7040 | train Accuracy: 0.7266 | valid Loss: 0.7019 | valid Accuracy: 0.7392 | test Accuracy: 0.6562 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 73/100
+Sub 9 | Epoch 73/100 | train Loss: 0.7187 | train Accuracy: 0.7269 | valid Loss: 0.7110 | valid Accuracy: 0.7554 | test Accuracy: 0.6580 | patient: 0
+Sub 9 | Early Stopping: Best Epoch 74/100
+Sub 9 | Epoch 74/100 | train Loss: 0.7399 | train Accuracy: 0.7064 | valid Loss: 0.7244 | valid Accuracy: 0.7565 | test Accuracy: 0.6580 | patient: 0
+Sub 9 | Epoch 75/100 | train Loss: 0.7085 | train Accuracy: 0.7273 | valid Loss: 0.8036 | valid Accuracy: 0.7349 | test Accuracy: 0.6302 | patient: 1
+Sub 9 | Epoch 76/100 | train Loss: 0.7147 | train Accuracy: 0.7186 | valid Loss: 0.7470 | valid Accuracy: 0.7338 | test Accuracy: 0.6389 | patient: 2
+Sub 9 | Epoch 77/100 | train Loss: 0.6966 | train Accuracy: 0.7356 | valid Loss: 0.7831 | valid Accuracy: 0.7414 | test Accuracy: 0.6372 | patient: 3
+Sub 9 | Early Stopping: Best Epoch 78/100
+Sub 9 | Epoch 78/100 | train Loss: 0.7058 | train Accuracy: 0.7173 | valid Loss: 0.7107 | valid Accuracy: 0.7608 | test Accuracy: 0.6458 | patient: 0
+Sub 9 | Epoch 79/100 | train Loss: 0.7099 | train Accuracy: 0.7274 | valid Loss: 0.7430 | valid Accuracy: 0.7489 | test Accuracy: 0.6580 | patient: 1
+Sub 9 | Early Stopping: Best Epoch 80/100
+Sub 9 | Epoch 80/100 | train Loss: 0.7226 | train Accuracy: 0.7181 | valid Loss: 0.6957 | valid Accuracy: 0.7640 | test Accuracy: 0.6632 | patient: 0
+Sub 9 | Epoch 81/100 | train Loss: 0.7173 | train Accuracy: 0.7188 | valid Loss: 0.7444 | valid Accuracy: 0.7328 | test Accuracy: 0.6458 | patient: 1
+Sub 9 | Epoch 82/100 | train Loss: 0.7017 | train Accuracy: 0.7298 | valid Loss: 0.6970 | valid Accuracy: 0.7565 | test Accuracy: 0.6302 | patient: 2
+Sub 9 | All Epoch: Best Epoch 83/100
+Sub 9 | Epoch 83/100 | train Loss: 0.7085 | train Accuracy: 0.7224 | valid Loss: 0.7731 | valid Accuracy: 0.7306 | test Accuracy: 0.6806 | patient: 3
+Sub 9 | Epoch 84/100 | train Loss: 0.6982 | train Accuracy: 0.7277 | valid Loss: 0.7205 | valid Accuracy: 0.7565 | test Accuracy: 0.6250 | patient: 4
+Sub 9 | Early Stopping: Best Epoch 85/100
+Sub 9 | Epoch 85/100 | train Loss: 0.6836 | train Accuracy: 0.7342 | valid Loss: 0.6684 | valid Accuracy: 0.7662 | test Accuracy: 0.6719 | patient: 0
+Sub 9 | Epoch 86/100 | train Loss: 0.6898 | train Accuracy: 0.7326 | valid Loss: 0.6481 | valid Accuracy: 0.7608 | test Accuracy: 0.6667 | patient: 1
+Sub 9 | Epoch 87/100 | train Loss: 0.6917 | train Accuracy: 0.7298 | valid Loss: 0.7115 | valid Accuracy: 0.7619 | test Accuracy: 0.6424 | patient: 2
+Sub 9 | Epoch 88/100 | train Loss: 0.6848 | train Accuracy: 0.7327 | valid Loss: 0.6877 | valid Accuracy: 0.7575 | test Accuracy: 0.6406 | patient: 3
+Sub 9 | Early Stopping: Best Epoch 89/100
+Sub 9 | Epoch 89/100 | train Loss: 0.6901 | train Accuracy: 0.7314 | valid Loss: 0.6692 | valid Accuracy: 0.7705 | test Accuracy: 0.6406 | patient: 0
+Sub 9 | Epoch 90/100 | train Loss: 0.6775 | train Accuracy: 0.7410 | valid Loss: 0.7101 | valid Accuracy: 0.7586 | test Accuracy: 0.6146 | patient: 1
+Sub 9 | Epoch 91/100 | train Loss: 0.6981 | train Accuracy: 0.7314 | valid Loss: 0.7621 | valid Accuracy: 0.7435 | test Accuracy: 0.5938 | patient: 2
+Sub 9 | Epoch 92/100 | train Loss: 0.6728 | train Accuracy: 0.7412 | valid Loss: 0.7172 | valid Accuracy: 0.7586 | test Accuracy: 0.6354 | patient: 3
+Sub 9 | Epoch 93/100 | train Loss: 0.6788 | train Accuracy: 0.7382 | valid Loss: 0.7235 | valid Accuracy: 0.7489 | test Accuracy: 0.6406 | patient: 4
+Sub 9 | Epoch 94/100 | train Loss: 0.6675 | train Accuracy: 0.7428 | valid Loss: 0.7990 | valid Accuracy: 0.7220 | test Accuracy: 0.6510 | patient: 5
+Sub 9 | Epoch 95/100 | train Loss: 0.6721 | train Accuracy: 0.7442 | valid Loss: 0.6728 | valid Accuracy: 0.7629 | test Accuracy: 0.6806 | patient: 6
+Sub 9 | Epoch 96/100 | train Loss: 0.6812 | train Accuracy: 0.7448 | valid Loss: 0.7079 | valid Accuracy: 0.7478 | test Accuracy: 0.6476 | patient: 7
+Sub 9 | Epoch 97/100 | train Loss: 0.6750 | train Accuracy: 0.7364 | valid Loss: 0.6680 | valid Accuracy: 0.7683 | test Accuracy: 0.6684 | patient: 8
+Sub 9 | Epoch 98/100 | train Loss: 0.6803 | train Accuracy: 0.7356 | valid Loss: 0.6766 | valid Accuracy: 0.7683 | test Accuracy: 0.6528 | patient: 9
+Sub 9 | Epoch 99/100 | train Loss: 0.6739 | train Accuracy: 0.7424 | valid Loss: 0.6788 | valid Accuracy: 0.7597 | test Accuracy: 0.6424 | patient: 10
+Sub 9 | Epoch 100/100 | train Loss: 0.6564 | train Accuracy: 0.7470 | valid Loss: 0.6894 | valid Accuracy: 0.7608 | test Accuracy: 0.6285 | patient: 11
+Early Stopping Best Epoch: 89 | Test Subject 9 | Accuracy: 0.6406 | Kappa: 0.5208 | F1: 0.6331
+All Best Epoch: 83 | Test Subject 9 | Accuracy: 0.6806 | Kappa: 0.5741 | F1: 0.6805
+========== LOSO Done ==========
+----- Early Stopping Results -----
+Subject 01 | Acc = 0.6319 | Kappa = 0.5093 | F1 = 0.6199
+Subject 02 | Acc = 0.3837 | Kappa = 0.1782 | F1 = 0.3484
+Subject 03 | Acc = 0.7917 | Kappa = 0.7222 | F1 = 0.7910
+Subject 04 | Acc = 0.5000 | Kappa = 0.3333 | F1 = 0.4906
+Subject 05 | Acc = 0.4635 | Kappa = 0.2847 | F1 = 0.3425
+Subject 06 | Acc = 0.4219 | Kappa = 0.2292 | F1 = 0.3526
+Subject 07 | Acc = 0.6632 | Kappa = 0.5509 | F1 = 0.6401
+Subject 08 | Acc = 0.6927 | Kappa = 0.5903 | F1 = 0.6829
+Subject 09 | Acc = 0.6406 | Kappa = 0.5208 | F1 = 0.6331
+----- All Epoch Results -----
+Subject 01 | Acc = 0.6562 | Kappa = 0.5417 | F1 = 0.6473
+Subject 02 | Acc = 0.4219 | Kappa = 0.2292 | F1 = 0.3662
+Subject 03 | Acc = 0.8090 | Kappa = 0.7454 | F1 = 0.8101
+Subject 04 | Acc = 0.5000 | Kappa = 0.3333 | F1 = 0.4771
+Subject 05 | Acc = 0.4965 | Kappa = 0.3287 | F1 = 0.4015
+Subject 06 | Acc = 0.4514 | Kappa = 0.2685 | F1 = 0.4008
+Subject 07 | Acc = 0.7118 | Kappa = 0.6157 | F1 = 0.6963
+Subject 08 | Acc = 0.7413 | Kappa = 0.6551 | F1 = 0.7402
+Subject 09 | Acc = 0.6806 | Kappa = 0.5741 | F1 = 0.6805
+Early Stopping - Average LOSO Accuracy: 0.5766±0.1309
+Early Stopping - Average LOSO Kappa: 0.4354±0.1745
+Early Stopping - Average LOSO F1: 0.5446±0.1569
+All Epoch - Average LOSO Accuracy: 0.6076±0.1333
+All Epoch - Average LOSO Kappa: 0.4769±0.1777
+All Epoch - Average LOSO F1: 0.5800±0.1588

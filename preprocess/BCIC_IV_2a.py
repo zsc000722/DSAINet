@@ -30,7 +30,7 @@ T for training, E for evaluation
 '''
 
 mne.set_log_level(verbose='ERROR') 
-root_dir = '/mnt/data2/DSAINet/BCIC_IV_2a/'
+root_dir = '/mnt/data/250010236/DSAINet/data/BCIC_IV_2a/'
 
 bandpass = (0.5, 40.0)
 resample_rate = 250.0
@@ -53,7 +53,8 @@ def load_loso_bcic_iv_2a():
         # for session in ['T', 'E']:
         for session in ['T', 'E']:
             # data loading
-            data_path = os.path.join(root_dir, 'data', f'A{subject_id:02d}{session}.gdf')
+            data_path = os.path.join(root_dir, f'A{subject_id:02d}{session}.gdf')
+            # data_path = os.path.join(root_dir, 'data', f'A{subject_id:02d}{session}.gdf')
             raw = mne.io.read_raw_gdf(data_path, preload=True)
             # convert to uV
             raw._data *= 1e6

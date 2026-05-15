@@ -10,7 +10,7 @@ from preprocess.Zhou2016 import load_loso_zhou2016
 from preprocess.PhysioNet_MI import load_kfold_physionet_mi
 from preprocess.OpenBMI import load_kfold_openbmi
 from preprocess.Mumtaz2017 import load_kfold_mumtaz2017
-from preprocess.ADFTD import load_kfold_adftd
+# from preprocess.ADFTD import load_kfold_adftd
 from preprocess.EEGMat import load_kfold_eegmat
 from preprocess.Shin2018 import load_kfold_shin2018
 from preprocess.Rockhill2021 import load_kfold_rockhill2021

@@ -58,6 +58,8 @@ def train_test_loso(data, labels, config, device, logger):
     all_test_subject_f1 = []
     for test_subj in range(n_subjects):
         # Model initialization
+        # if test_subj != 8:
+        #     continue
         model_params = config['model']
 
         # train
@@ -239,9 +241,9 @@ def train_test_loso(data, labels, config, device, logger):
             logger.info(f"Sub {test_subj+1} | Epoch {epoch+1}/{num_epochs} | train Loss: {train_loss:.4f} | train Accuracy: {train_acc:.4f} | valid Loss: {val_loss:.4f} | valid Accuracy: {val_acc:.4f} | test Accuracy: {test_acc:.4f} | patient: {patient}")
 
         # Early Stopping Test
-        save_dir = f"/mnt/data2/DSAINet/weight/{config['model']['name']}/{args.dataset}"
+        save_dir = f"/mnt/data/250010236/DSAINet/weight/{config['model']['name']}/{args.dataset}"
         os.makedirs(save_dir, exist_ok=True)
-        torch.save(best_val_model_state, f"/mnt/data2/DSAINet/weight/{config['model']['name']}/{args.dataset}/{test_subj}.pth")
+        torch.save(best_val_model_state, f"/mnt/data/250010236/DSAINet/weight/{config['model']['name']}/{args.dataset}/{test_subj}.pth")
         
         model.load_state_dict(best_val_model_state)
         model.eval()
@@ -272,9 +274,9 @@ def train_test_loso(data, labels, config, device, logger):
         logger.info(f"Early Stopping Best Epoch: {best_val_epoch} | Test Subject {test_subj + 1} | Accuracy: {acc:.4f} | Kappa: {kappa:.4f} | F1: {f1:.4f}")
 
         # All Epochs Test
-        save_dir = f"/mnt/data2/DSAINet/weight/{config['model']['name']}/{args.dataset}"
+        save_dir = f"/mnt/data/250010236/DSAINet/weight/{config['model']['name']}/{args.dataset}"
         os.makedirs(save_dir, exist_ok=True)
-        torch.save(best_test_model_state, f"/mnt/data2/DSAINet/weight/{config['model']['name']}/{args.dataset}/best_{test_subj}.pth")
+        torch.save(best_test_model_state, f"/mnt/data/250010236/DSAINet/weight/{config['model']['name']}/{args.dataset}/best_{test_subj}.pth")
         model.load_state_dict(best_test_model_state)
         model.eval()
         correct = 0
