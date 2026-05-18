@@ -70,9 +70,9 @@ class PatchEmbeddingSNN(nn.Module):
     SNN version:
         Conv2d -> BN -> LIF
         Conv2d -> BN -> LIF
-        Pool/Dropout
+        Pool
         Conv2d -> BN -> LIF
-        Pool/Dropout
+        Pool
 
     The LIF time axis is the EEG time axis T, not an artificial repeated step.
     """
@@ -95,42 +95,41 @@ class PatchEmbeddingSNN(nn.Module):
 
         self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
         self.bn1 = nn.BatchNorm2d(f1)
-        self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif1 = nn.ELU()
 
         self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
         self.bn2 = nn.BatchNorm2d(f2)
         self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif2 = nn.ELU()
 
         self.pool1 = nn.AvgPool2d((1, pooling_size1))
-        self.drop1 = nn.Dropout(dropout_rate)
-
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
         self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
-        self.drop2 = nn.Dropout(dropout_rate)
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B,1,C,T)
-        x = self.lif1(self.bn1(self.temporal1(x)))
-        x = self.lif2(self.bn2(self.spatial(x)))
-        x = self.drop1(self.pool1(x))
-        x = self.lif3(self.bn3(self.temporal2(x)))
-        x = self.drop2(self.pool2(x))
+        x = self.bn1(self.temporal1(x))
+        x = self.lif1(x)
+        x = self.bn2(self.spatial(x))
+        x = self.pool1(x)
+        x = self.lif2(x)
+        x = self.bn3(self.temporal2(x))
+        x = self.pool2(x)
+        x = self.lif3(x)
         return x  # (B,f2,1,N)
 
 
 class PositionalEncoding(nn.Module):
-    """Learnable positional encoding followed by dropout."""
+    """Learnable positional encoding without dropout."""
     def __init__(self, emb_size: int, length: int = 512, dropout: float = 0.1):
         super().__init__()
         self.pe = nn.Parameter(torch.randn(1, length, emb_size))
-        self.drop = nn.Dropout(dropout)
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         n = x.shape[1]
-        return self.drop(x + self.pe[:, :n, :].to(x.device))
+        return x + self.pe[:, :n, :].to(x.device)
 
 
 class TokenProjectionSNN(nn.Module):
@@ -158,7 +157,7 @@ class TokenProjectionSNN(nn.Module):
         x = self.bn(x)
         x = x * math.sqrt(self.emb_size)
         x = self.pos(x)
-        x = self.lif(x)
+        # x = self.lif(x)
         return x  # (B,N,E), spike state
 
 
@@ -198,8 +197,6 @@ class ConvTimeLayerSNN(nn.Module):
 
         self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=4, bias=False)
         self.bn_pw2 = nn.BatchNorm1d(emb_size)
-        self.drop = nn.Dropout(dropout)
-
         self.alpha = nn.Parameter(torch.tensor(0.0))
         self.lif_out = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
@@ -207,7 +204,7 @@ class ConvTimeLayerSNN(nn.Module):
         # x: (B,E,N), spike state on N
         y = self.lif_dw(self.bn_dw(self.dw(x)))
         y = self.lif_pw1(self.bn_pw1(self.pw1(y)))
-        y = self.drop(self.bn_pw2(self.pw2(y)))
+        y = self.bn_pw2(self.pw2(y))
         return self.lif_out(x + self.alpha * y)
 
 
@@ -250,19 +247,15 @@ class SpikingFFN(nn.Module):
         self.fc1 = nn.Linear(emb_size, d_ff)
         self.bn1 = TokenBatchNorm(d_ff)
         self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.drop1 = nn.Dropout(dropout)
         self.fc2 = nn.Linear(d_ff, emb_size)
         self.bn2 = TokenBatchNorm(emb_size)
-        self.drop2 = nn.Dropout(dropout)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.fc1(x)
         x = self.bn1(x)
         x = self.lif1(x)
-        x = self.drop1(x)
         x = self.fc2(x)
         x = self.bn2(x)
-        x = self.drop2(x)
         return x
 
 
@@ -282,21 +275,17 @@ class IntraAttnBlockSNN(nn.Module):
         backend: str = "cupy",
     ):
         super().__init__()
-        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=dropout, batch_first=True)
+        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
         self.norm1 = nn.LayerNorm(emb_size)
         self.norm2 = nn.LayerNorm(emb_size)
-        self.drop = nn.Dropout(dropout)
         self.lif_attn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.ffn = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
         self.lif_ffn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         attn_out, _ = self.mha(x, x, x)
-        x = self.lif_attn(self.norm1(x + self.drop(attn_out)))
+        x = self.lif_attn(self.norm1(x + attn_out))
         x = self.lif_ffn(self.norm2(x + self.ffn(x)))
-        
-        # x = self.norm1(x + self.drop(attn_out))
-        # x = self.norm2(x + self.ffn(x))
         return x
 
 
@@ -318,14 +307,12 @@ class InterAttnBlockSNN(nn.Module):
         backend: str = "cupy",
     ):
         super().__init__()
-        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=dropout, batch_first=True)
+        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
 
         self.norm1a = nn.LayerNorm(emb_size)
         self.norm1b = nn.LayerNorm(emb_size)
         self.norm2a = nn.LayerNorm(emb_size)
         self.norm2b = nn.LayerNorm(emb_size)
-        self.drop_attn = nn.Dropout(dropout)
-
         self.beta12 = nn.Parameter(torch.tensor(1.0))
         self.beta21 = nn.Parameter(torch.tensor(1.0))
 
@@ -338,22 +325,13 @@ class InterAttnBlockSNN(nn.Module):
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor):
         out1, _ = self.mha(x1, x2, x2)
-        y1 = self.lif_attn1(self.norm1a(x1 + self.drop_attn(self.beta12 * out1)))
+        y1 = self.lif_attn1(self.norm1a(x1 + self.beta12 * out1))
 
         out2, _ = self.mha(x2, x1, x1)
-        y2 = self.lif_attn2(self.norm2a(x2 + self.drop_attn(self.beta21 * out2)))
+        y2 = self.lif_attn2(self.norm2a(x2 + self.beta21 * out2))
 
         y1 = self.lif_ffn1(self.norm1b(y1 + self.ffn1(y1)))
         y2 = self.lif_ffn2(self.norm2b(y2 + self.ffn2(y2)))
-
-        # out1, _ = self.mha(x1, x2, x2)
-        # y1 = self.norm1a(x1 + self.drop_attn(self.beta12 * out1))
-
-        # out2, _ = self.mha(x2, x1, x1)
-        # y2 = self.norm2a(x2 + self.drop_attn(self.beta21 * out2))
-
-        # y1 = self.norm1b(y1 + self.ffn1(y1))
-        # y2 = self.norm2b(y2 + self.ffn2(y2))
         return y1, y2
 
 
@@ -463,10 +441,7 @@ class DSAINet_SNN(nn.Module):
 
         # Original DSAINet token attention pooling is retained as readout.
         self.token_attn = nn.Linear(emb_size, 1)
-        self.classifier = nn.Sequential(
-            nn.Dropout(cls_dropout),
-            nn.Linear(2 * emb_size, n_classes),
-        )
+        self.classifier = nn.Linear(2 * emb_size, n_classes)
 
     def forward_features(self, x: torch.Tensor):
         # x: (B,1,C,T)
