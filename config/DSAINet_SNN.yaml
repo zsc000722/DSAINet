@@ -3,6 +3,9 @@ model:
   emb_size: 40
   heads: 4
 
+  #encoder
+  use_snns_encoder: true
+
   # patch embedding
   eeg1_f1: 16
   eeg1_kernel_size: 64

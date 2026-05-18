@@ -273,6 +273,7 @@ def load_model(model_params, config, n_class, n_channels, n_times, logger, devic
             n_classes=n_class,
             Chans=n_channels,
             Samples=n_times,
+            use_snns_encoder=model_params['use_snns_encoder'],
 
             emb_size=model_params['emb_size'],
             heads=model_params['heads'],
