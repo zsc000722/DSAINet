@@ -278,9 +278,14 @@ class ConvTimeLayerSNN(nn.Module):
 
 
 class ConvTimeStackSNN(nn.Module):
-    """Stack of dilated SNN-TCN blocks.
+    """Stack of SNN-TCN blocks.
 
-    Dilation grows exponentially by default: 1, 2, 4, ... across layers.
+    The block structure is shared by both coarse and fine branches, keeping the
+    two branches symmetric for later FFB6D-style cross-branch fusion. The only
+    intended difference is temporal granularity:
+        - coarse branch: dilation grows as 1, 2, 4, ... when dilation_base=2;
+        - fine branch: dilation stays 1, 1, 1, ... when dilation_base=1.
+
     The existing kernel_list still controls branch-specific temporal scales.
     """
     def __init__(
@@ -297,6 +302,7 @@ class ConvTimeStackSNN(nn.Module):
         super().__init__()
         if dilation_base <= 0:
             raise ValueError(f"dilation_base must be positive, got {dilation_base}.")
+        self.dilation_base = dilation_base
 
         self.layers = nn.ModuleList([
             ConvTimeLayerSNN(
@@ -486,6 +492,8 @@ class DSAINet_SNN(nn.Module):
         f2 = eeg1_f1 * eeg1_D
         self.token_proj = TokenProjectionSNN(f2, emb_size, pos_len, attn_dropout, tau, detach_reset, backend)
 
+        # Coarse branch: keep the same SNN-TCN block structure, but use growing
+        # dilation to enlarge temporal receptive field.
         self.branch1 = ConvTimeStackSNN(
             emb_size, branch_1_kernels,
             expansion=conv_expansion,
@@ -493,7 +501,10 @@ class DSAINet_SNN(nn.Module):
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
+            dilation_base=2,
         )
+        # Fine branch: keep the same SNN-TCN block structure for symmetry, but
+        # fix dilation to 1 so it remains dense/local and preserves fine detail.
         self.branch2 = ConvTimeStackSNN(
             emb_size, branch_2_kernels,
             expansion=conv_expansion,
@@ -501,6 +512,7 @@ class DSAINet_SNN(nn.Module):
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
+            dilation_base=1,
         )
 
         if big_residual:
