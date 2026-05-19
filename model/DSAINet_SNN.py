@@ -20,7 +20,6 @@ from typing import List, Optional
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from spikingjelly.clock_driven.neuron import MultiStepLIFNode
 from spikingjelly.clock_driven import functional
 
@@ -60,269 +59,22 @@ class TokenBatchNorm(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.bn(x.transpose(1, 2)).transpose(1, 2).contiguous()
 
-class ConvSNNsEncoderAdapter(nn.Module):
-    """
-    Band-wise Conv2d SNN encoder adapter for DSAINet_SNN.
-
-    This replaces the previous EEGSNN2-style Linear window encoder with:
-        raw EEG -> rectangular FFT band-pass decomposition -> shared Conv2d
-        temporal-spatial encoder -> LIF -> learnable band fusion.
-
-    Input:
-        x: (B, 1, C, T)
-
-    Rectangular band split:
-        rFFT over T, hard non-overlapping masks, iFFT back to time domain.
-        If band_edges_hz is None, the frequency axis [0, Nyquist] is split
-        uniformly into num_bands rectangular bands. The masks cover all rFFT
-        bins exactly once, so no frequency bin is intentionally dropped.
-
-    Shared band Conv encoder:
-        For each band waveform x_k:
-            Conv2d(1 -> f1, kernel=(1, temporal_kernel)) -> BN -> ELU/LIF
-            Conv2d(f1 -> f1*D, kernel=(C, 1), groups=f1) -> BN
-            AvgPool2d over time -> LIF
-            optional 1x1 Conv adapter to out_channels
-
-    Output:
-        (B, out_channels, 1, N1), which matches PatchEmbeddingSNN.lif2 input.
-    """
-    def __init__(
-        self,
-        number_channel: int,
-        out_channels: int,
-        time_windows: int,
-        hidden_dim: int = 512,  # kept only for backward compatibility; unused in conv version
-        tau: float = 2.0,
-        detach_reset: bool = True,
-        backend: str = "cupy",
-        # conv-band encoder controls
-        f1: int = 16,
-        D: int = 2,
-        temporal_kernel: int = 64,
-        num_bands: int = 6,
-        sample_rate: Optional[float] = None,
-        band_edges_hz: Optional[List[float]] = None,
-        first_lif: bool = False,
-        band_fusion: str = "softmax",
-    ):
-        super().__init__()
-        if time_windows <= 0:
-            raise ValueError(f"time_windows must be positive, got {time_windows}.")
-        if number_channel <= 0:
-            raise ValueError(f"number_channel must be positive, got {number_channel}.")
-        if num_bands <= 0:
-            raise ValueError(f"num_bands must be positive, got {num_bands}.")
-        if band_fusion not in {"softmax", "mean"}:
-            raise ValueError(f"band_fusion must be 'softmax' or 'mean', got {band_fusion}.")
-
-        if band_edges_hz is not None:
-            if len(band_edges_hz) < 2:
-                raise ValueError("band_edges_hz must contain at least two frequency edges.")
-            if any(band_edges_hz[i] >= band_edges_hz[i + 1] for i in range(len(band_edges_hz) - 1)):
-                raise ValueError(f"band_edges_hz must be strictly increasing, got {band_edges_hz}.")
-            num_bands = len(band_edges_hz) - 1
-
-        self.number_channel = number_channel
-        self.time_windows = time_windows
-        self.f1 = f1
-        self.D = D
-        self.mid_channels = f1 * D
-        self.out_channels = out_channels
-        self.temporal_kernel = temporal_kernel
-        self.num_bands = num_bands
-        self.sample_rate = sample_rate
-        self.band_edges_hz = band_edges_hz
-        self.band_fusion = band_fusion
-
-        # Temporal filtering within each rectangular frequency band.
-        self.temporal = nn.Conv2d(
-            in_channels=1,
-            out_channels=f1,
-            kernel_size=(1, temporal_kernel),
-            padding="same",
-            bias=False,
-        )
-        self.bn_temporal = nn.BatchNorm2d(f1)
-        self.act_temporal = TemporalLIF(tau, detach_reset, backend, time_dim=-1) if first_lif else nn.ELU()
-
-        # Spatial filtering across EEG electrodes, grouped by temporal filters.
-        self.spatial = nn.Conv2d(
-            in_channels=f1,
-            out_channels=self.mid_channels,
-            kernel_size=(number_channel, 1),
-            groups=f1,
-            padding="valid",
-            bias=False,
-        )
-        self.bn_spatial = nn.BatchNorm2d(self.mid_channels)
-        self.pool = nn.AvgPool2d(
-            kernel_size=(1, time_windows),
-            stride=(1, time_windows),
-            ceil_mode=True,
-        )
-        self.lif = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-
-        if self.mid_channels == out_channels:
-            self.adapter = nn.Identity()
-        else:
-            self.adapter = nn.Sequential(
-                nn.Conv2d(self.mid_channels, out_channels, kernel_size=1, bias=False),
-                nn.BatchNorm2d(out_channels),
-            )
-
-        if band_fusion == "softmax":
-            self.band_logits = nn.Parameter(torch.zeros(num_bands))
-        else:
-            self.register_buffer("band_logits", torch.zeros(num_bands), persistent=False)
-
-    def _rectangular_band_masks(self, T: int, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
-        """Create hard rectangular rFFT masks with shape (K, F)."""
-        if self.sample_rate is None:
-            # Normalized frequency in cycles/sample: [0, 0.5].
-            freqs = torch.fft.rfftfreq(T, d=1.0, device=device)
-            max_freq = 0.5
-        else:
-            freqs = torch.fft.rfftfreq(T, d=1.0 / float(self.sample_rate), device=device)
-            max_freq = float(self.sample_rate) / 2.0
-
-        if self.band_edges_hz is None:
-            edges = torch.linspace(0.0, max_freq, self.num_bands + 1, device=device, dtype=freqs.dtype)
-        else:
-            edges = torch.tensor(self.band_edges_hz, device=device, dtype=freqs.dtype)
-            if edges[0] > 0:
-                raise ValueError("band_edges_hz should start from 0 to avoid dropping low-frequency bins.")
-            if edges[-1] < max_freq:
-                raise ValueError(
-                    f"band_edges_hz should cover the Nyquist frequency ({max_freq}), got last edge {float(edges[-1])}."
-                )
-
-        masks = []
-        for i in range(self.num_bands):
-            left, right = edges[i], edges[i + 1]
-            if i == self.num_bands - 1:
-                mask = (freqs >= left) & (freqs <= right)
-            else:
-                mask = (freqs >= left) & (freqs < right)
-            masks.append(mask.to(dtype=dtype))
-        return torch.stack(masks, dim=0)  # (K, F)
-
-    def _split_bands(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Rectangular FFT band-pass split.
-
-        Args:
-            x: (B, 1, C, T)
-        Returns:
-            x_bands: (B, K, C, T)
-        """
-        B, _, C, T = x.shape
-        X = torch.fft.rfft(x.squeeze(1), dim=-1)  # (B, C, F)
-        masks = self._rectangular_band_masks(T, x.device, x.real.dtype)  # (K, F)
-        X_bands = X.unsqueeze(1) * masks.view(1, self.num_bands, 1, -1)  # (B, K, C, F)
-        x_bands = torch.fft.irfft(X_bands, n=T, dim=-1)  # (B, K, C, T)
-        return x_bands.contiguous()
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Expected DSAINet input: (B, 1, C, T)
-        if x.dim() != 4 or x.shape[1] != 1:
-            raise ValueError(f"Expected input with shape (B, 1, C, T), got {tuple(x.shape)}.")
-        if x.shape[2] != self.number_channel:
-            raise ValueError(f"Expected {self.number_channel} EEG channels, got {x.shape[2]}.")
-
-        B, _, C, T = x.shape
-        x = self._split_bands(x)                    # (B, K, C, T)
-        x = x.reshape(B * self.num_bands, 1, C, T)  # (B*K, 1, C, T)
-
-        x = self.bn_temporal(self.temporal(x))
-        x = self.act_temporal(x)
-        x = self.bn_spatial(self.spatial(x))
-        x = self.pool(x)                            # (B*K, f1*D, 1, N1)
-        x = self.lif(x)
-        x = self.adapter(x)                         # (B*K, out_channels, 1, N1)
-
-        _, F2, _, N1 = x.shape
-        x = x.reshape(B, self.num_bands, F2, 1, N1) # (B, K, f2, 1, N1)
-
-        if self.band_fusion == "softmax":
-            weights = torch.softmax(self.band_logits, dim=0).view(1, self.num_bands, 1, 1, 1)
-            x = (x * weights).sum(dim=1)
-        else:
-            x = x.mean(dim=1)
-
-        return x.contiguous()                       # (B, out_channels, 1, N1)
-    
-class LinearSNNsEncoderAdapter(nn.Module):
-    """
-    Adapter for the encoder style used in SNNs.py / EEGSNN2.
-
-    It follows the first encoder stage of EEGSNN2:
-        temporal windowing -> Linear(Chans * time_windows, hidden_dim)
-        -> BatchNorm1d(hidden_dim) -> LIF
-
-    Then a small Linear adapter maps hidden_dim to DSAINet patch channels f2,
-    producing the same tensor layout expected by PatchEmbeddingSNN.lif2:
-        (B, f2, 1, N1)
-    where N1 is the number of temporal windows.
-    """
-    def __init__(
-        self,
-        number_channel: int,
-        out_channels: int,
-        time_windows: int,
-        hidden_dim: int = 512,
-        tau: float = 2.0,
-        detach_reset: bool = True,
-        backend: str = "cupy",
-    ):
-        super().__init__()
-        if time_windows <= 0:
-            raise ValueError(f"time_windows must be positive, got {time_windows}.")
-        self.number_channel = number_channel
-        self.time_windows = time_windows
-        self.layer1 = nn.Linear(number_channel * time_windows, hidden_dim, bias=True)
-        self.norm1 = nn.BatchNorm1d(hidden_dim)
-        self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.adapter = nn.Linear(hidden_dim, out_channels, bias=True)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # DSAINet input: (B, 1, C, T) -> EEGSNN2-style input: (B, T, C)
-        if x.dim() != 4 or x.shape[1] != 1:
-            raise ValueError(f"Expected input with shape (B, 1, C, T), got {tuple(x.shape)}.")
-        x = x.squeeze(1).transpose(1, 2).contiguous()  # (B, T, C)
-        B, T, C = x.shape
-        if C != self.number_channel:
-            raise ValueError(f"Expected {self.number_channel} EEG channels, got {C}.")
-
-        # Match pooling-style downsampling by using non-overlapping windows.
-        # If the runtime T is not divisible by time_windows, pad only the tail.
-        n_win = math.ceil(T / self.time_windows)
-        target_T = n_win * self.time_windows
-        if target_T != T:
-            x = F.pad(x, (0, 0, 0, target_T - T))
-
-        x = x.reshape(B, n_win, self.time_windows, C)
-        x = self.layer1(x.flatten(2, 3).contiguous())  # (B, N1, hidden_dim)
-
-        B, N, F_dim = x.shape
-        x = self.norm1(x.reshape(B * N, F_dim)).reshape(B, N, F_dim)
-        x = self.lif1(x)
-        x = self.adapter(x)                           # (B, N1, f2)
-        return x.transpose(1, 2).unsqueeze(2).contiguous()  # (B, f2, 1, N1)
-
 
 class PatchEmbeddingSNN(nn.Module):
     """
-    DSAINet patch embedding with an optional SNNs.py/EEGSNN2-style encoder.
+    DSAINet patch embedding with layer-level spike conversion.
 
-    Default path keeps the original behavior:
-        temporal Conv2d -> BN -> ELU -> spatial Conv2d -> BN -> Pool -> LIF
-        -> temporal Conv2d -> BN -> Pool -> LIF
+    Original main learnable transforms:
+        temporal Conv2d -> spatial Conv2d -> temporal Conv2d
 
-    When use_snns_encoder=True, everything before the first real LIF (lif2) is
-    replaced by SNNsEncoderAdapter, because lif1 in this file is only ELU.
-    The adapter outputs (B, f2, 1, N1), so lif2 and the later patch embedding
-    layers are kept unchanged.
+    SNN version:
+        Conv2d -> BN -> LIF
+        Conv2d -> BN -> LIF
+        Pool
+        Conv2d -> BN -> LIF
+        Pool
+
+    The LIF time axis is the EEG time axis T, not an artificial repeated step.
     """
     def __init__(
         self,
@@ -336,78 +88,34 @@ class PatchEmbeddingSNN(nn.Module):
         tau: float = 2.0,
         detach_reset: bool = True,
         backend: str = "cupy",
-        use_snns_encoder: bool = False,
-        snns_encoder_time_windows: Optional[int] = None,
-        snns_encoder_hidden_dim: int = 512,
-        snns_encoder_num_bands: int = 6,
-        snns_encoder_sample_rate: Optional[float] = None,
-        snns_encoder_band_edges_hz: Optional[List[float]] = None,
-        snns_encoder_first_lif: bool = False,
-        snns_encoder_band_fusion: str = "softmax",
     ):
         super().__init__()
         f2 = D * f1
         self.f2 = f2
-        self.use_snns_encoder = use_snns_encoder
-        self.pre_lif2_time_reduction = snns_encoder_time_windows or pooling_size1
 
-        if use_snns_encoder:
-            print("Load General Spike Encoder...")
-            # self.snns_encoder = LinearSNNsEncoderAdapter(
-            #     number_channel=number_channel,
-            #     out_channels=f2,
-            #     time_windows=self.pre_lif2_time_reduction,
-            #     hidden_dim=snns_encoder_hidden_dim,
-            #     tau=tau,
-            #     detach_reset=detach_reset,
-            #     backend=backend,
-            # )
-            self.snns_encoder = ConvSNNsEncoderAdapter(
-                number_channel=number_channel,
-                out_channels=f2,
-                time_windows=self.pre_lif2_time_reduction,
-                hidden_dim=snns_encoder_hidden_dim,
-                tau=tau,
-                detach_reset=detach_reset,
-                backend=backend,
-                f1=f1,
-                D=D,
-                temporal_kernel=kernel_size,
-                num_bands=snns_encoder_num_bands,
-                sample_rate=snns_encoder_sample_rate,
-                band_edges_hz=snns_encoder_band_edges_hz,
-                first_lif=snns_encoder_first_lif,
-                band_fusion=snns_encoder_band_fusion,
-            )
-        else:
-            self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
-            self.bn1 = nn.BatchNorm2d(f1)
-            # self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-            self.lif1 = nn.ELU()
-            self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
-            self.bn2 = nn.BatchNorm2d(f2)
+        self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
+        self.bn1 = nn.BatchNorm2d(f1)
+        # self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif1 = nn.ELU()
 
-        self.pool1 = nn.AvgPool2d((1, pooling_size1))
+        self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
+        self.bn2 = nn.BatchNorm2d(f2)
         self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
         # self.lif2 = nn.ELU()
 
+        self.pool1 = nn.AvgPool2d((1, pooling_size1))
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
         self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B,1,C,T)
-        if self.use_snns_encoder:
-            x = self.snns_encoder(x)                 # (B,f2,1,N1), before lif2
-        else:
-            x = self.bn1(self.temporal1(x))
-            x = self.lif1(x)                         # ELU, not a real LIF
-            x = self.bn2(self.spatial(x))
-            x = self.lif2(x)
-        
-        x = self.pool1(x)                        # (B,f2,1,N1), before lif2
+        x = self.bn1(self.temporal1(x))
+        x = self.lif1(x)
+        x = self.bn2(self.spatial(x))
+        x = self.pool1(x)
+        x = self.lif2(x)
         x = self.bn3(self.temporal2(x))
         x = self.pool2(x)
         x = self.lif3(x)
@@ -455,11 +163,26 @@ class TokenProjectionSNN(nn.Module):
 
 class ConvTimeLayerSNN(nn.Module):
     """
-    DSAINet ConvTime layer with layer-level spike conversion.
+    Dilated SNN-TCN block for DSAINet temporal branches.
 
-    Original structure is preserved at the level of depthwise temporal conv,
-    pointwise expansion/compression, BN, dropout, and residual scaling.
-    GELU nonlinearities are replaced by LIF states.
+    This replaces the original ConvTime layer with a standard residual TCN-style
+    block along the token/time axis N:
+
+        DW dilated Conv1d -> BN -> LIF
+        PW expansion Conv1d -> BN -> LIF
+        DW dilated Conv1d -> BN -> LIF
+        PW projection Conv1d -> BN
+        residual scaling + LIF
+
+    Input / output layout is unchanged:
+        x: (B, E, N) -> (B, E, N)
+
+    Notes:
+    - Depthwise dilated Conv1d keeps temporal modeling SNN-friendly and expands
+      receptive field without greatly increasing parameters.
+    - Pointwise Conv1d handles channel mixing / FFN-style expansion.
+    - The residual scale alpha is initialized to 0, so each block starts close
+      to identity and is safer for direct SNN training.
     """
     def __init__(
         self,
@@ -470,37 +193,96 @@ class ConvTimeLayerSNN(nn.Module):
         tau: float = 2.0,
         detach_reset: bool = True,
         backend: str = "cupy",
+        dilation: int = 1,
     ):
         super().__init__()
-        self.dw = nn.Conv1d(
+        if dilation <= 0:
+            raise ValueError(f"dilation must be positive, got {dilation}.")
+
+        self.kernel_size = kernel_size
+        self.dilation = dilation
+        padding = (kernel_size - 1) * dilation // 2
+
+        # First depthwise dilated temporal convolution.
+        self.dw1 = nn.Conv1d(
             emb_size, emb_size,
             kernel_size=kernel_size,
-            padding=kernel_size // 2,
+            padding=padding,
+            dilation=dilation,
             groups=emb_size,
             bias=False,
         )
-        self.bn_dw = nn.BatchNorm1d(emb_size)
-        self.lif_dw = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.bn_dw1 = nn.BatchNorm1d(emb_size)
+        self.lif_dw1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         d_ff = expansion * emb_size
-        self.pw1 = nn.Conv1d(emb_size, d_ff, 1, groups=4, bias=False)
+        # Pointwise expansion, analogous to TCN/FFN channel expansion.
+        # Keep grouped pointwise conv when possible to preserve your original
+        # lightweight grouped design. Fall back to dense pointwise if needed.
+        pw_groups = 4 if emb_size % 4 == 0 and d_ff % 4 == 0 else 1
+        self.pw1 = nn.Conv1d(emb_size, d_ff, 1, groups=pw_groups, bias=False)
         self.bn_pw1 = nn.BatchNorm1d(d_ff)
         self.lif_pw1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
-        self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=4, bias=False)
+        # Second depthwise dilated temporal convolution, making the block closer
+        # to a standard residual TCN block with two temporal convolutions.
+        self.dw2 = nn.Conv1d(
+            d_ff, d_ff,
+            kernel_size=kernel_size,
+            padding=padding,
+            dilation=dilation,
+            groups=d_ff,
+            bias=False,
+        )
+        self.bn_dw2 = nn.BatchNorm1d(d_ff)
+        self.lif_dw2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+
+        self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=pw_groups, bias=False)
         self.bn_pw2 = nn.BatchNorm1d(emb_size)
+
+        # Keep residual initially close to identity for stable SNN optimization.
         self.alpha = nn.Parameter(torch.tensor(0.0))
         self.lif_out = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
+    @staticmethod
+    def _match_time_length(y: torch.Tensor, target_len: int) -> torch.Tensor:
+        """Crop/pad temporal dimension to keep residual addition safe."""
+        cur_len = y.shape[-1]
+        if cur_len == target_len:
+            return y
+        if cur_len > target_len:
+            start = (cur_len - target_len) // 2
+            return y[..., start:start + target_len]
+        pad_total = target_len - cur_len
+        left = pad_total // 2
+        right = pad_total - left
+        return F.pad(y, (left, right))
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (B,E,N), spike state on N
-        y = self.lif_dw(self.bn_dw(self.dw(x)))
+        # x: (B, E, N), spike state on N
+        residual = x
+        target_len = x.shape[-1]
+
+        y = self.dw1(x)
+        y = self._match_time_length(y, target_len)
+        y = self.lif_dw1(self.bn_dw1(y))
+
         y = self.lif_pw1(self.bn_pw1(self.pw1(y)))
+
+        y = self.dw2(y)
+        y = self._match_time_length(y, target_len)
+        y = self.lif_dw2(self.bn_dw2(y))
+
         y = self.bn_pw2(self.pw2(y))
-        return self.lif_out(x + self.alpha * y)
+        return self.lif_out(residual + self.alpha * y)
 
 
 class ConvTimeStackSNN(nn.Module):
+    """Stack of dilated SNN-TCN blocks.
+
+    Dilation grows exponentially by default: 1, 2, 4, ... across layers.
+    The existing kernel_list still controls branch-specific temporal scales.
+    """
     def __init__(
         self,
         emb_size: int,
@@ -510,11 +292,24 @@ class ConvTimeStackSNN(nn.Module):
         tau: float = 2.0,
         detach_reset: bool = True,
         backend: str = "cupy",
+        dilation_base: int = 2,
     ):
         super().__init__()
+        if dilation_base <= 0:
+            raise ValueError(f"dilation_base must be positive, got {dilation_base}.")
+
         self.layers = nn.ModuleList([
-            ConvTimeLayerSNN(emb_size, k, expansion, dropout, tau, detach_reset, backend)
-            for k in kernel_list
+            ConvTimeLayerSNN(
+                emb_size,
+                k,
+                expansion=expansion,
+                dropout=dropout,
+                tau=tau,
+                detach_reset=detach_reset,
+                backend=backend,
+                dilation=dilation_base ** i,
+            )
+            for i, k in enumerate(kernel_list)
         ])
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -644,10 +439,6 @@ class DSAINet_SNN(nn.Module):
         eeg1_pooling_size1: int = 4,
         eeg1_pooling_size2: int = 8,
         eeg1_dropout_rate: float = 0.25,
-        # optional SNNs.py / EEGSNN2-style encoder before PatchEmbeddingSNN.lif2
-        use_snns_encoder: bool = False,
-        snns_encoder_time_windows: Optional[int] = None,
-        snns_encoder_hidden_dim: int = 512,
         # branch kernel lists
         branch_1_kernels: Optional[List[int]] = None,
         branch_2_kernels: Optional[List[int]] = None,
@@ -678,9 +469,7 @@ class DSAINet_SNN(nn.Module):
         self.big_residual = big_residual
         self.reset_state_each_forward = reset_state_each_forward
 
-        pre_lif2_reduction = snns_encoder_time_windows or eeg1_pooling_size1 if use_snns_encoder else eeg1_pooling_size1
-        pos_len = math.ceil(Samples / pre_lif2_reduction) // eeg1_pooling_size2
-        pos_len = max(pos_len, 1)
+        pos_len = Samples // (eeg1_pooling_size1 * eeg1_pooling_size2)
 
         self.patch = PatchEmbeddingSNN(
             f1=eeg1_f1,
@@ -693,9 +482,6 @@ class DSAINet_SNN(nn.Module):
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
-            use_snns_encoder=use_snns_encoder,
-            snns_encoder_time_windows=snns_encoder_time_windows,
-            snns_encoder_hidden_dim=snns_encoder_hidden_dim,
         )
         f2 = eeg1_f1 * eeg1_D
         self.token_proj = TokenProjectionSNN(f2, emb_size, pos_len, attn_dropout, tau, detach_reset, backend)
