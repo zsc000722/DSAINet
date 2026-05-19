@@ -466,7 +466,7 @@ class DSAINet_SNN(nn.Module):
     ):
         super().__init__()
         if branch_1_kernels is None:
-            branch_1_kernels = [11, 15]
+            branch_1_kernels = [11, 15]  
         if branch_2_kernels is None:
             branch_2_kernels = [3, 7]
 

@@ -15,7 +15,8 @@ model:
   eeg1_dropout_rate: 0.25
 
   # branch kernel lists
-  branch_1_kernels: [11, 15]
+  branch_1_kernels: [7, 11]
+  # branch_1_kernels: [11, 15]  # original
   branch_2_kernels: [3, 7]
 
   # conv expansion and dropout
