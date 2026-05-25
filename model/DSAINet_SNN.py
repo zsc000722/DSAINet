@@ -20,6 +20,7 @@ from typing import List, Optional
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from spikingjelly.clock_driven.neuron import MultiStepLIFNode
 from spikingjelly.clock_driven import functional
 
@@ -100,17 +101,19 @@ class PatchEmbeddingSNN(nn.Module):
 
         self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
         self.bn2 = nn.BatchNorm2d(f2)
-        self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        # self.lif2 = nn.ELU()
+        # self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif2 = nn.ELU()
 
         self.pool1 = nn.AvgPool2d((1, pooling_size1))
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
-        self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif3 = nn.ELU()
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B,1,C,T)
+        import pdb; pdb.set_trace()
         x = self.bn1(self.temporal1(x))
         x = self.lif1(x)
         x = self.bn2(self.spatial(x))
@@ -324,6 +327,148 @@ class ConvTimeStackSNN(nn.Module):
         return x
 
 
+class CrossBranchGatedFusionSNN(nn.Module):
+    """One FFB6D-style bidirectional fusion bridge for coarse/fine branches.
+
+    Input / output:
+        z_coarse, z_fine: (B, E, N)
+
+    This is the first, stable adaptation of FFB6D-style fusion for the current
+    DSAINet_SNN backend:
+        fine  -> 1x1 Conv + BN -> gated residual injection into coarse -> LIF
+        coarse-> 1x1 Conv + BN -> gated residual injection into fine   -> LIF
+
+    The gates are scalar per direction and initialized with a negative logit so
+    the fusion starts weak. This keeps the initial model close to the no-fusion
+    baseline while allowing the network to learn cross-scale communication.
+    """
+    def __init__(
+        self,
+        emb_size: int,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        gate_init: float = -3.0,
+    ):
+        super().__init__()
+        self.fine_to_coarse = nn.Sequential(
+            nn.Conv1d(emb_size, emb_size, kernel_size=1, bias=False),
+            nn.BatchNorm1d(emb_size),
+        )
+        self.coarse_to_fine = nn.Sequential(
+            nn.Conv1d(emb_size, emb_size, kernel_size=1, bias=False),
+            nn.BatchNorm1d(emb_size),
+        )
+
+        self.gate_f2c = nn.Parameter(torch.tensor(float(gate_init)))
+        self.gate_c2f = nn.Parameter(torch.tensor(float(gate_init)))
+        self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+
+    def forward(self, z_coarse: torch.Tensor, z_fine: torch.Tensor):
+        # Use the pre-fusion features from both branches, then update them
+        # simultaneously to avoid order-dependent information leakage.
+        delta_coarse = self.fine_to_coarse(z_fine)
+        delta_fine = self.coarse_to_fine(z_coarse)
+
+        gate_f2c = torch.sigmoid(self.gate_f2c)
+        gate_c2f = torch.sigmoid(self.gate_c2f)
+
+        z_coarse = self.lif_coarse(z_coarse + gate_f2c * delta_coarse)
+        z_fine = self.lif_fine(z_fine + gate_c2f * delta_fine)
+        # z_coarse = z_coarse + gate_f2c * delta_coarse
+        # z_fine = z_fine + gate_c2f * delta_fine
+        return z_coarse, z_fine
+
+
+class FFB6DStyleConvTimeStackSNN(nn.Module):
+    """Full-flow bidirectional fusion stack for coarse/fine SNN-TCN branches.
+
+    Compared with two independent ConvTimeStackSNN branches, this module keeps
+    the two branch structures symmetric but inserts a bidirectional fusion bridge
+    after every paired coarse/fine TCN layer:
+
+        z_c = coarse_layer_i(z_c)
+        z_f = fine_layer_i(z_f)
+        z_c, z_f = fusion_i(z_c, z_f)
+
+    This follows the FFB6D-style idea of repeated cross-stream communication,
+    adapted here from RGB/point-cloud streams to coarse/fine temporal streams.
+    """
+    def __init__(
+        self,
+        emb_size: int,
+        coarse_kernel_list: List[int],
+        fine_kernel_list: List[int],
+        expansion: int = 4,
+        dropout: float = 0.1,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        coarse_dilation_base: int = 2,
+        fine_dilation_base: int = 1,
+        fusion_gate_init: float = -3.0,
+    ):
+        super().__init__()
+        if len(coarse_kernel_list) != len(fine_kernel_list):
+            raise ValueError(
+                "FFB6D-style paired fusion requires the same number of coarse and fine layers, "
+                f"got {len(coarse_kernel_list)} and {len(fine_kernel_list)}."
+            )
+        if coarse_dilation_base <= 0 or fine_dilation_base <= 0:
+            raise ValueError(
+                f"dilation bases must be positive, got coarse={coarse_dilation_base}, fine={fine_dilation_base}."
+            )
+
+        self.coarse_layers = nn.ModuleList([
+            ConvTimeLayerSNN(
+                emb_size,
+                k,
+                expansion=expansion,
+                dropout=dropout,
+                tau=tau,
+                detach_reset=detach_reset,
+                backend=backend,
+                dilation=coarse_dilation_base ** i,
+            )
+            for i, k in enumerate(coarse_kernel_list)
+        ])
+        self.fine_layers = nn.ModuleList([
+            ConvTimeLayerSNN(
+                emb_size,
+                k,
+                expansion=expansion,
+                dropout=dropout,
+                tau=tau,
+                detach_reset=detach_reset,
+                backend=backend,
+                dilation=fine_dilation_base ** i,
+            )
+            for i, k in enumerate(fine_kernel_list)
+        ])
+        self.fusion_layers = nn.ModuleList([
+            CrossBranchGatedFusionSNN(
+                emb_size,
+                tau=tau,
+                detach_reset=detach_reset,
+                backend=backend,
+                gate_init=fusion_gate_init,
+            )
+            for _ in range(len(coarse_kernel_list))
+        ])
+
+    def forward(self, x: torch.Tensor):
+        z_coarse = x
+        z_fine = x
+        for coarse_layer, fine_layer, fusion_layer in zip(
+            self.coarse_layers, self.fine_layers, self.fusion_layers
+        ):
+            z_coarse = coarse_layer(z_coarse)
+            z_fine = fine_layer(z_fine)
+            z_coarse, z_fine = fusion_layer(z_coarse, z_fine)
+        return z_coarse, z_fine
+
+
 class SpikingFFN(nn.Module):
     """Transformer FFN with Linear -> BN -> LIF -> Linear -> BN, then residual LIF outside."""
     def __init__(
@@ -450,6 +595,7 @@ class DSAINet_SNN(nn.Module):
         branch_2_kernels: Optional[List[int]] = None,
         conv_expansion: int = 4,
         conv_dropout: float = 0.25,
+        fusion_gate_init: float = -3.0,
         # intra/inter
         intra_ffn_expansion: int = 2,
         inter_ffn_expansion: int = 2,
@@ -492,27 +638,23 @@ class DSAINet_SNN(nn.Module):
         f2 = eeg1_f1 * eeg1_D
         self.token_proj = TokenProjectionSNN(f2, emb_size, pos_len, attn_dropout, tau, detach_reset, backend)
 
-        # Coarse branch: keep the same SNN-TCN block structure, but use growing
-        # dilation to enlarge temporal receptive field.
-        self.branch1 = ConvTimeStackSNN(
-            emb_size, branch_1_kernels,
+        # FFB6D-style full-flow bidirectional fusion over the coarse/fine
+        # temporal branches. Both streams still use the same SNN-TCN block type;
+        # the coarse stream uses growing dilation, while the fine stream keeps
+        # dilation fixed at 1. A gated fusion bridge is inserted after every
+        # paired coarse/fine layer.
+        self.dual_branch = FFB6DStyleConvTimeStackSNN(
+            emb_size=emb_size,
+            coarse_kernel_list=branch_1_kernels,
+            fine_kernel_list=branch_2_kernels,
             expansion=conv_expansion,
             dropout=conv_dropout,
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
-            dilation_base=2,
-        )
-        # Fine branch: keep the same SNN-TCN block structure for symmetry, but
-        # fix dilation to 1 so it remains dense/local and preserves fine detail.
-        self.branch2 = ConvTimeStackSNN(
-            emb_size, branch_2_kernels,
-            expansion=conv_expansion,
-            dropout=conv_dropout,
-            tau=tau,
-            detach_reset=detach_reset,
-            backend=backend,
-            dilation_base=1,
+            coarse_dilation_base=2,
+            fine_dilation_base=1,
+            fusion_gate_init=fusion_gate_init,
         )
 
         if big_residual:
@@ -549,8 +691,9 @@ class DSAINet_SNN(nn.Module):
         a0 = self.token_proj(a0)                     # (B,N,E), spike state
 
         z0 = a0.transpose(1, 2)                      # (B,E,N)
-        a1 = self.branch1(z0).transpose(1, 2)        # (B,N,E), spike state
-        a2 = self.branch2(z0).transpose(1, 2)        # (B,N,E), spike state
+        z1, z2 = self.dual_branch(z0)                # (B,E,N), (B,E,N), spike states
+        a1 = z1.transpose(1, 2)                      # (B,N,E), coarse branch
+        a2 = z2.transpose(1, 2)                      # (B,N,E), fine branch
 
         if self.big_residual:
             a1 = self.lif_big1(a1 + self.alpha1 * a0)

@@ -9,6 +9,9 @@ import torch
 torch.set_num_threads(1)
 torch.set_num_interop_threads(1)
 
+
+
+
 import numpy as np
 import torch.nn as nn
 import yaml
@@ -355,7 +358,7 @@ if __name__ == "__main__":
         sample_rate = 200
 
     # logger
-    logger = setup_logger(f"{args.dataset}", log_dir=f"./log/{config['model']['name']}/", overwrite=True)
+    logger = setup_logger(f"{args.dataset}", log_dir=f"/mnt/data/250010236/DSAINet/log/{config['model']['name']}/", overwrite=True)
     # device
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
     # log config 
