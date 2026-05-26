@@ -234,8 +234,8 @@ class PatchEmbeddingSNN(nn.Module):
         self.pool1 = nn.AvgPool2d((1, pooling_size1))
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
-        # self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif3 = nn.ELU()
+        self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif3 = nn.ELU()
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -507,7 +507,7 @@ class CrossBranchGatedFusionSNN(nn.Module):
         z_fine = self.lif_fine(z_fine + gate_c2f * delta_fine)
         # z_coarse = z_coarse + gate_f2c * delta_coarse
         # z_fine = z_fine + gate_c2f * delta_fine
-        return z_coarse, z_fine
+        return z_coarse, z_fine  
 
 
 class FFB6DStyleConvTimeStackSNN(nn.Module):
@@ -845,6 +845,9 @@ class DSAINet_SNN(nn.Module):
         if self.big_residual:
             a1 = self.lif_big1(a1 + self.alpha1 * a0)
             a2 = self.lif_big2(a2 + self.alpha2 * a0)
+        else:
+            a1 = self.lif_big1(a0)
+            a2 = self.lif_big2(a0)  
 
         for i in range(self.attn_depth):
             a1 = self.intra_1[i](a1)
