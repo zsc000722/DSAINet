@@ -16,7 +16,7 @@ Output: (B, n_classes)
 """
 
 import math
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import torch
 import torch.nn as nn
@@ -59,6 +59,133 @@ class TokenBatchNorm(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.bn(x.transpose(1, 2)).transpose(1, 2).contiguous()
+
+
+class ChannelFeatureGate(nn.Module):
+    """Topology-aware lightweight channel side path.
+
+    It reads the pre-spatial-conv feature map h with shape (B, f1, C, T),
+    summarizes channel-wise activity before the EEGNet-like C -> 1 spatial
+    bottleneck, concatenates each channel summary with an explicit 2D electrode
+    coordinate, and produces an embedding-wise gate for temporal tokens
+    a0: (B, N, E).
+
+    For BCIC-IV-2a style 22-channel input, the default coordinate order is:
+        Fz,
+        FC3, FC1, FCz, FC2, FC4,
+        C5, C3, C1, Cz, C2, C4, C6,
+        CP3, CP1, CPz, CP2, CP4,
+        P1, Pz, P2,
+        POz
+
+    The gate is applied as:
+        a0 = a0 * (1 + scale * sigmoid(gate_mlp(topo_channel_summary))[:, None, :])
+
+    scale is initialized to 0 by default, so the model starts exactly from the
+    original backbone and can learn to use the topology-aware channel side
+    information only if it is beneficial.
+    """
+    def __init__(
+        self,
+        f1: int,
+        number_channel: int,
+        emb_size: int,
+        hidden_dim: int = 64,
+        init_scale: float = 0.0,
+    ):
+        super().__init__()
+        self.f1 = f1
+        self.number_channel = number_channel
+        self.emb_size = emb_size
+
+        # Fixed explicit 2D electrode coordinates. These are not learned.
+        # They are used only when use_channel_gate=True, so the false path keeps
+        # the original model behavior and random initialization order intact.
+        coords = self._make_default_coords(number_channel)
+        self.register_buffer("coords", coords, persistent=False)  # (C, 2)
+
+        # Per-channel topology-aware encoder:
+        # each channel receives [mean over T, std over T, x_coord, y_coord].
+        per_channel_in_dim = 2 * f1 + 2
+        self.channel_encoder = nn.Sequential(
+            nn.Linear(per_channel_in_dim, hidden_dim),
+            nn.ELU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.ELU(),
+        )
+
+        # Lightweight attention pooling over channels. This lets the model learn
+        # which spatial locations are more informative for the current trial.
+        self.channel_attn = nn.Linear(hidden_dim, 1)
+
+        # Map the pooled topology-aware channel summary to an embedding-wise gate.
+        self.gate_mlp = nn.Linear(hidden_dim, emb_size)
+        self.scale = nn.Parameter(torch.tensor(float(init_scale)))
+
+    @staticmethod
+    def _make_default_coords(number_channel: int) -> torch.Tensor:
+        """Return normalized 2D channel coordinates with shape (C, 2).
+
+        For C=22, this follows the common BCIC-IV-2a 22-electrode order. For a
+        different C, use a deterministic circular fallback so the module still
+        runs, although for serious experiments the channel order should be
+        checked and this coordinate table should be replaced accordingly.
+        """
+        if number_channel == 22:
+            coords = torch.tensor([
+                [ 0.00,  1.00],  # Fz
+                [-0.60,  0.55],  # FC3
+                [-0.25,  0.55],  # FC1
+                [ 0.00,  0.55],  # FCz
+                [ 0.25,  0.55],  # FC2
+                [ 0.60,  0.55],  # FC4
+                [-1.00,  0.00],  # C5
+                [-0.60,  0.00],  # C3
+                [-0.25,  0.00],  # C1
+                [ 0.00,  0.00],  # Cz
+                [ 0.25,  0.00],  # C2
+                [ 0.60,  0.00],  # C4
+                [ 1.00,  0.00],  # C6
+                [-0.60, -0.55],  # CP3
+                [-0.25, -0.55],  # CP1
+                [ 0.00, -0.55],  # CPz
+                [ 0.25, -0.55],  # CP2
+                [ 0.60, -0.55],  # CP4
+                [-0.25, -1.00],  # P1
+                [ 0.00, -1.00],  # Pz
+                [ 0.25, -1.00],  # P2
+                [ 0.00, -1.25],  # POz
+            ], dtype=torch.float32)
+            # Normalize y to roughly [-1, 1] while preserving relative layout.
+            coords[:, 1] = coords[:, 1] / coords[:, 1].abs().max().clamp_min(1e-6)
+            return coords
+
+        # Fallback: place channels uniformly on a unit circle according to index.
+        theta = torch.linspace(0, 2 * math.pi, steps=number_channel + 1, dtype=torch.float32)[:-1]
+        return torch.stack([torch.cos(theta), torch.sin(theta)], dim=-1)
+
+    def forward(self, h: torch.Tensor, tokens: torch.Tensor) -> torch.Tensor:
+        # h:      (B, f1, C, T), before spatial C -> 1 convolution
+        # tokens: (B, N, E)
+        B, f1, C, _ = h.shape
+        if C != self.number_channel:
+            raise ValueError(f"Expected {self.number_channel} channels, got {C}.")
+
+        h_mean = h.mean(dim=-1)                         # (B, f1, C)
+        h_std = h.std(dim=-1, unbiased=False)           # (B, f1, C)
+        stats = torch.cat([h_mean, h_std], dim=1)        # (B, 2*f1, C)
+        stats = stats.transpose(1, 2).contiguous()      # (B, C, 2*f1)
+
+        coords = self.coords.to(device=h.device, dtype=h.dtype)
+        coords = coords.unsqueeze(0).expand(B, -1, -1)  # (B, C, 2)
+        topo_stats = torch.cat([stats, coords], dim=-1) # (B, C, 2*f1+2)
+
+        ch_emb = self.channel_encoder(topo_stats)       # (B, C, hidden)
+        attn = torch.softmax(self.channel_attn(ch_emb).squeeze(-1), dim=-1)  # (B, C)
+        pooled = (ch_emb * attn.unsqueeze(-1)).sum(dim=1)                    # (B, hidden)
+
+        gate = torch.sigmoid(self.gate_mlp(pooled))     # (B, E)
+        return tokens * (1.0 + self.scale * gate.unsqueeze(1))
 
 
 class PatchEmbeddingSNN(nn.Module):
@@ -111,18 +238,20 @@ class PatchEmbeddingSNN(nn.Module):
         self.lif3 = nn.ELU()
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         # x: (B,1,C,T)
-        import pdb; pdb.set_trace()
-        x = self.bn1(self.temporal1(x))
-        x = self.lif1(x)
-        x = self.bn2(self.spatial(x))
+        # h keeps explicit channel information before the EEGNet-like
+        # spatial convolution collapses C -> 1. It is used by the optional
+        # channel side gate in DSAINet_SNN.forward_features().
+        h = self.bn1(self.temporal1(x))                 # (B,f1,C,T)
+        x = self.lif1(h)
+        x = self.bn2(self.spatial(x))                   # (B,f2,1,T)
         x = self.pool1(x)
         x = self.lif2(x)
         x = self.bn3(self.temporal2(x))
         x = self.pool2(x)
         x = self.lif3(x)
-        return x  # (B,f2,1,N)
+        return x, h  # (B,f2,1,N), (B,f1,C,T)
 
 
 class PositionalEncoding(nn.Module):
@@ -595,6 +724,10 @@ class DSAINet_SNN(nn.Module):
         branch_2_kernels: Optional[List[int]] = None,
         conv_expansion: int = 4,
         conv_dropout: float = 0.25,
+        # lightweight explicit channel-information gate
+        use_channel_gate: bool = True,
+        channel_gate_hidden: int = 64,
+        channel_gate_init: float = 0.0,
         fusion_gate_init: float = -3.0,
         # intra/inter
         intra_ffn_expansion: int = 2,
@@ -637,6 +770,18 @@ class DSAINet_SNN(nn.Module):
         )
         f2 = eeg1_f1 * eeg1_D
         self.token_proj = TokenProjectionSNN(f2, emb_size, pos_len, attn_dropout, tau, detach_reset, backend)
+
+        self.use_channel_gate = use_channel_gate
+        if use_channel_gate:
+            self.channel_gate = ChannelFeatureGate(
+                f1=eeg1_f1,
+                number_channel=Chans,
+                emb_size=emb_size,
+                hidden_dim=channel_gate_hidden,
+                init_scale=channel_gate_init,
+            )
+        else:
+            self.channel_gate = None
 
         # FFB6D-style full-flow bidirectional fusion over the coarse/fine
         # temporal branches. Both streams still use the same SNN-TCN block type;
@@ -686,9 +831,11 @@ class DSAINet_SNN(nn.Module):
 
     def forward_features(self, x: torch.Tensor):
         # x: (B,1,C,T)
-        fmap = self.patch(x)                         # (B,f2,1,N)
+        fmap, h_channel = self.patch(x)              # (B,f2,1,N), (B,f1,C,T)
         a0 = fmap.squeeze(2).transpose(1, 2)         # (B,N,f2)
         a0 = self.token_proj(a0)                     # (B,N,E), spike state
+        if self.use_channel_gate:
+            a0 = self.channel_gate(h_channel, a0)    # inject explicit topology-aware channel summary without changing N
 
         z0 = a0.transpose(1, 2)                      # (B,E,N)
         z1, z2 = self.dual_branch(z0)                # (B,E,N), (B,E,N), spike states
