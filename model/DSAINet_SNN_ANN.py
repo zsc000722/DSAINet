@@ -9,7 +9,7 @@ Design goals:
 2. Do NOT duplicate EEG input into artificial CV-style spike steps.
    The EEG temporal/token axis is used as the LIF multi-step axis.
 3. Use layer-level spike conversion: major learnable transforms are followed by LIF.
-4. Use PLIF/MultiStepParametricLIFNode where available; otherwise fall back to LIF with a learnable input scale.
+4. Use SpikingJelly MultiStepLIFNode directly; no fallback implementation.
 
 Input : (B, 1, C, T)
 Output: (B, n_classes)
@@ -1041,6 +1041,433 @@ class DSAINet_SNN_PLIF(nn.Module):
         pooled = (x * w.unsqueeze(-1)).sum(dim=2)    # (B,2,E)
         feat = pooled.reshape(B, -1)
         return self.classifier(feat)
+
+
+
+
+# ============================================================================
+# Symmetric ANN counterpart for ANN warm-up / ANN-to-SNN initialization
+# ============================================================================
+
+class PatchEmbeddingANN(nn.Module):
+    """ANN counterpart of PatchEmbeddingSNN with the same learnable layers."""
+    def __init__(
+        self,
+        f1: int = 16,
+        kernel_size: int = 64,
+        D: int = 2,
+        pooling_size1: int = 4,
+        pooling_size2: int = 8,
+        dropout_rate: float = 0.25,
+        number_channel: int = 22,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+    ):
+        super().__init__()
+        f2 = D * f1
+        self.f2 = f2
+        self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
+        self.bn1 = nn.BatchNorm2d(f1)
+        self.lif1 = nn.ELU()
+        self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
+        self.bn2 = nn.BatchNorm2d(f2)
+        self.lif2 = nn.ELU()
+        self.pool1 = nn.AvgPool2d((1, pooling_size1))
+        self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
+        self.bn3 = nn.BatchNorm2d(f2)
+        self.act3 = nn.ELU()
+        self.pool2 = nn.AvgPool2d((1, pooling_size2))
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        h = self.temporal1(x)
+        x = self.lif1(h)
+        x = self.spatial(x)
+        x = self.pool1(x)
+        x = self.lif2(x)
+        x = self.bn3(self.temporal2(x))
+        x = self.pool2(x)
+        x = self.act3(x)
+        return x, h
+
+
+class TokenProjectionANN(nn.Module):
+    """ANN counterpart of TokenProjectionSNN; names match for weight transfer."""
+    def __init__(
+        self,
+        in_dim: int,
+        emb_size: int,
+        pos_len: int,
+        dropout: float,
+        tau: float,
+        detach_reset: bool,
+        backend: str,
+    ):
+        super().__init__()
+        self.proj = nn.Linear(in_dim, emb_size) if in_dim != emb_size else nn.Identity()
+        self.pos = PositionalEncoding(emb_size, length=pos_len, dropout=dropout)
+        self.emb_size = emb_size
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.proj(x)
+        x = x * math.sqrt(self.emb_size)
+        x = self.pos(x)
+        return x
+
+
+class ConvTimeLayerANN(nn.Module):
+    """ANN counterpart of ConvTimeLayerSNN_PLIF with matched conv/bn/alpha names."""
+    def __init__(
+        self,
+        emb_size: int,
+        kernel_size: int,
+        expansion: int = 4,
+        dropout: float = 0.1,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        dilation: int = 1,
+    ):
+        super().__init__()
+        if dilation <= 0:
+            raise ValueError(f"dilation must be positive, got {dilation}.")
+        self.kernel_size = kernel_size
+        self.dilation = dilation
+        padding = (kernel_size - 1) * dilation // 2
+        self.bn_in = nn.BatchNorm1d(emb_size)
+        self.act_in = nn.GELU()
+        self.dw1 = nn.Conv1d(emb_size, emb_size, kernel_size=kernel_size,
+                             padding=padding, dilation=dilation, groups=emb_size, bias=False)
+        self.bn_dw1 = nn.BatchNorm1d(emb_size)
+        self.act_dw1 = nn.GELU()
+        d_ff = expansion * emb_size
+        pw_groups = 4 if emb_size % 4 == 0 and d_ff % 4 == 0 else 1
+        self.pw1 = nn.Conv1d(emb_size, d_ff, 1, groups=pw_groups, bias=False)
+        self.bn_pw1 = nn.BatchNorm1d(d_ff)
+        self.act_pw1 = nn.GELU()
+        self.dw2 = nn.Conv1d(d_ff, d_ff, kernel_size=kernel_size,
+                             padding=padding, dilation=dilation, groups=d_ff, bias=False)
+        self.bn_dw2 = nn.BatchNorm1d(d_ff)
+        self.act_dw2 = nn.GELU()
+        self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=pw_groups, bias=False)
+        self.bn_pw2 = nn.BatchNorm1d(emb_size)
+        self.alpha = nn.Parameter(torch.tensor(0.0))
+
+    @staticmethod
+    def _match_time_length(y: torch.Tensor, target_len: int) -> torch.Tensor:
+        cur_len = y.shape[-1]
+        if cur_len == target_len:
+            return y
+        if cur_len > target_len:
+            start = (cur_len - target_len) // 2
+            return y[..., start:start + target_len]
+        pad_total = target_len - cur_len
+        left = pad_total // 2
+        right = pad_total - left
+        return F.pad(y, (left, right))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        residual = x
+        target_len = x.shape[-1]
+        x_act = self.act_in(self.bn_in(x))
+        y = self.dw1(x_act)
+        y = self._match_time_length(y, target_len)
+        y = self.act_dw1(self.bn_dw1(y))
+        y = self.act_pw1(self.bn_pw1(self.pw1(y)))
+        y = self.dw2(y)
+        y = self._match_time_length(y, target_len)
+        y = self.act_dw2(self.bn_dw2(y))
+        y = self.bn_pw2(self.pw2(y))
+        return residual + self.alpha * y
+
+
+class FFB6DStyleConvTimeStackANN(nn.Module):
+    def __init__(
+        self,
+        emb_size: int,
+        coarse_kernel_list: List[int],
+        fine_kernel_list: List[int],
+        expansion: int = 4,
+        dropout: float = 0.1,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        coarse_dilation_base: int = 2,
+        fine_dilation_base: int = 1,
+        fusion_gate_init: float = -3.0,
+    ):
+        super().__init__()
+        if len(coarse_kernel_list) != len(fine_kernel_list):
+            raise ValueError("FFB6D-style paired fusion requires matched layer counts.")
+        self.coarse_layers = nn.ModuleList([
+            ConvTimeLayerANN(emb_size, k, expansion=expansion, dropout=dropout,
+                             tau=tau, detach_reset=detach_reset, backend=backend,
+                             dilation=coarse_dilation_base ** i)
+            for i, k in enumerate(coarse_kernel_list)
+        ])
+        self.fine_layers = nn.ModuleList([
+            ConvTimeLayerANN(emb_size, k, expansion=expansion, dropout=dropout,
+                             tau=tau, detach_reset=detach_reset, backend=backend,
+                             dilation=fine_dilation_base ** i)
+            for i, k in enumerate(fine_kernel_list)
+        ])
+        self.fusion_layers = nn.ModuleList([
+            CrossBranchGatedFusionSNN(emb_size, tau=tau, detach_reset=detach_reset,
+                                      backend=backend, gate_init=fusion_gate_init)
+            for _ in range(len(coarse_kernel_list))
+        ])
+
+    def forward(self, x: torch.Tensor):
+        z_coarse = x
+        z_fine = x
+        for coarse_layer, fine_layer, fusion_layer in zip(self.coarse_layers, self.fine_layers, self.fusion_layers):
+            z_coarse = coarse_layer(z_coarse)
+            z_fine = fine_layer(z_fine)
+            z_coarse, z_fine = fusion_layer(z_coarse, z_fine)
+        return z_coarse, z_fine
+
+
+class ANNInputMultiheadAttention(nn.Module):
+    """ANN counterpart of SpikeInputMultiheadAttention with matched MHA name."""
+    def __init__(self, emb_size: int, heads: int, dropout: float = 0.0,
+                 tau: float = 2.0, detach_reset: bool = True, backend: str = "cupy",
+                 spike_value: bool = True):
+        super().__init__()
+        self.norm_q = TokenBatchNorm(emb_size)
+        self.norm_k = TokenBatchNorm(emb_size)
+        self.norm_v = TokenBatchNorm(emb_size)
+        self.act_q = nn.GELU()
+        self.act_k = nn.GELU()
+        self.act_v = nn.GELU()
+        self.spike_value = spike_value
+        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=dropout, batch_first=True)
+
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+        q = self.act_q(self.norm_q(query))
+        k = self.act_k(self.norm_k(key))
+        v = self.act_v(self.norm_v(value)) if self.spike_value else self.norm_v(value)
+        return self.mha(q, k, v)
+
+
+class QKVANNPreprocess(nn.Module):
+    def __init__(self, emb_size: int, tau: float = 2.0, detach_reset: bool = True,
+                 backend: str = "cupy", spike_value: bool = True):
+        super().__init__()
+        self.norm_q = TokenBatchNorm(emb_size)
+        self.norm_k = TokenBatchNorm(emb_size)
+        self.norm_v = TokenBatchNorm(emb_size)
+        self.act_q = nn.GELU()
+        self.act_k = nn.GELU()
+        self.act_v = nn.GELU()
+        self.spike_value = spike_value
+
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+        q = self.act_q(self.norm_q(query))
+        k = self.act_k(self.norm_k(key))
+        v = self.act_v(self.norm_v(value)) if self.spike_value else self.norm_v(value)
+        return q, k, v
+
+
+class SpikingFFNANN(nn.Module):
+    """ANN counterpart of SpikingFFN. fc/bn names are kept compatible."""
+    def __init__(self, emb_size: int, expansion: int, dropout: float,
+                 tau: float, detach_reset: bool, backend: str):
+        super().__init__()
+        d_ff = expansion * emb_size
+        self.fc1 = nn.Linear(emb_size, d_ff)
+        self.bn1 = TokenBatchNorm(d_ff)
+        self.act1 = nn.GELU()
+        self.fc2 = nn.Linear(d_ff, emb_size)
+        self.bn2 = TokenBatchNorm(emb_size)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.fc1(x)
+        x = self.bn1(x)
+        x = self.act1(x)
+        x = self.fc2(x)
+        x = self.bn2(x)
+        return x
+
+
+class IntraAttnBlockANN(nn.Module):
+    def __init__(self, emb_size: int, heads: int, dropout: float = 0.1,
+                 ffn_expansion: int = 4, tau: float = 2.0,
+                 detach_reset: bool = True, backend: str = "cupy"):
+        super().__init__()
+        self.mha = ANNInputMultiheadAttention(emb_size, heads, dropout=0.0,
+                                              tau=tau, detach_reset=detach_reset,
+                                              backend=backend, spike_value=True)
+        self.norm1 = nn.LayerNorm(emb_size)
+        self.norm2 = nn.LayerNorm(emb_size)
+        self.ffn = SpikingFFNANN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        attn_out, _ = self.mha(x, x, x)
+        x = self.norm1(x + attn_out)
+        x = self.norm2(x + self.ffn(x))
+        return x
+
+
+class InterAttnBlockANN(nn.Module):
+    def __init__(self, emb_size: int, heads: int, dropout: float = 0.1,
+                 ffn_expansion: int = 2, tau: float = 2.0,
+                 detach_reset: bool = True, backend: str = "cupy"):
+        super().__init__()
+        self.spike12 = QKVANNPreprocess(emb_size, tau=tau, detach_reset=detach_reset,
+                                        backend=backend, spike_value=True)
+        self.spike21 = QKVANNPreprocess(emb_size, tau=tau, detach_reset=detach_reset,
+                                        backend=backend, spike_value=True)
+        self.shared_mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
+        self.norm1a = nn.LayerNorm(emb_size)
+        self.norm1b = nn.LayerNorm(emb_size)
+        self.norm2a = nn.LayerNorm(emb_size)
+        self.norm2b = nn.LayerNorm(emb_size)
+        self.beta12 = nn.Parameter(torch.tensor(1.0))
+        self.beta21 = nn.Parameter(torch.tensor(1.0))
+        self.ffn1 = SpikingFFNANN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+        self.ffn2 = SpikingFFNANN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+
+    def forward(self, x1: torch.Tensor, x2: torch.Tensor):
+        q1, k2, v2 = self.spike12(x1, x2, x2)
+        out1, _ = self.shared_mha(q1, k2, v2)
+        y1 = self.norm1a(x1 + self.beta12 * out1)
+        q2, k1, v1 = self.spike21(x2, x1, x1)
+        out2, _ = self.shared_mha(q2, k1, v1)
+        y2 = self.norm2a(x2 + self.beta21 * out2)
+        y1 = self.norm1b(y1 + self.ffn1(y1))
+        y2 = self.norm2b(y2 + self.ffn2(y2))
+        return y1, y2
+
+
+class DSAINet_ANN_Symmetric(nn.Module):
+    """ANN counterpart matched to DSAINet_SNN_PLIF for warm-up initialization."""
+    def __init__(
+        self,
+        n_classes: int,
+        Chans: int,
+        Samples: int,
+        emb_size: int = 40,
+        heads: int = 4,
+        attn_depth: int = 1,
+        attn_dropout: float = 0.25,
+        eeg1_f1: int = 16,
+        eeg1_kernel_size: int = 64,
+        eeg1_D: int = 2,
+        eeg1_pooling_size1: int = 4,
+        eeg1_pooling_size2: int = 8,
+        eeg1_dropout_rate: float = 0.25,
+        branch_1_kernels: Optional[List[int]] = None,
+        branch_2_kernels: Optional[List[int]] = None,
+        conv_expansion: int = 4,
+        conv_dropout: float = 0.25,
+        use_channel_gate: bool = True,
+        channel_gate_hidden: int = 64,
+        channel_gate_init: float = 0.0,
+        fusion_gate_init: float = -3.0,
+        intra_ffn_expansion: int = 2,
+        inter_ffn_expansion: int = 2,
+        big_residual: bool = True,
+        big_residual_learnable: bool = True,
+        cls_dropout: float = 0.25,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        reset_state_each_forward: bool = True,
+    ):
+        super().__init__()
+        if branch_1_kernels is None:
+            branch_1_kernels = [11, 15]
+        if branch_2_kernels is None:
+            branch_2_kernels = [3, 7]
+        self.emb_size = emb_size
+        self.attn_depth = attn_depth
+        self.big_residual = big_residual
+        pos_len = Samples // (eeg1_pooling_size1 * eeg1_pooling_size2)
+        self.patch = PatchEmbeddingANN(f1=eeg1_f1, kernel_size=eeg1_kernel_size,
+                                       D=eeg1_D, pooling_size1=eeg1_pooling_size1,
+                                       pooling_size2=eeg1_pooling_size2,
+                                       dropout_rate=eeg1_dropout_rate,
+                                       number_channel=Chans, tau=tau,
+                                       detach_reset=detach_reset, backend=backend)
+        f2 = eeg1_f1 * eeg1_D
+        self.token_proj = TokenProjectionANN(f2, emb_size, pos_len, attn_dropout,
+                                             tau, detach_reset, backend)
+        self.use_channel_gate = use_channel_gate
+        if use_channel_gate:
+            self.channel_gate = ChannelFeatureGate(f1=eeg1_f1, number_channel=Chans,
+                                                   emb_size=emb_size,
+                                                   hidden_dim=channel_gate_hidden,
+                                                   init_scale=channel_gate_init)
+        else:
+            self.channel_gate = None
+        self.dual_branch = FFB6DStyleConvTimeStackANN(
+            emb_size=emb_size,
+            coarse_kernel_list=branch_1_kernels,
+            fine_kernel_list=branch_2_kernels,
+            expansion=conv_expansion,
+            dropout=conv_dropout,
+            tau=tau,
+            detach_reset=detach_reset,
+            backend=backend,
+            coarse_dilation_base=2,
+            fine_dilation_base=1,
+            fusion_gate_init=fusion_gate_init,
+        )
+        if big_residual:
+            if big_residual_learnable:
+                self.alpha1 = nn.Parameter(torch.tensor(1.0))
+                self.alpha2 = nn.Parameter(torch.tensor(1.0))
+            else:
+                self.register_buffer("alpha1", torch.tensor(1.0), persistent=False)
+                self.register_buffer("alpha2", torch.tensor(1.0), persistent=False)
+        self.intra_1 = nn.ModuleList([
+            IntraAttnBlockANN(emb_size, heads, attn_dropout, intra_ffn_expansion,
+                              tau, detach_reset, backend)
+            for _ in range(attn_depth)
+        ])
+        self.intra_2 = nn.ModuleList([
+            IntraAttnBlockANN(emb_size, heads, attn_dropout, intra_ffn_expansion,
+                              tau, detach_reset, backend)
+            for _ in range(attn_depth)
+        ])
+        self.inter = nn.ModuleList([
+            InterAttnBlockANN(emb_size, heads, attn_dropout, inter_ffn_expansion,
+                              tau, detach_reset, backend)
+            for _ in range(attn_depth)
+        ])
+        self.token_attn = nn.Linear(emb_size, 1)
+        self.classifier = nn.Linear(2 * emb_size, n_classes)
+
+    def forward_features(self, x: torch.Tensor):
+        fmap, h_channel = self.patch(x)
+        a0 = fmap.squeeze(2).transpose(1, 2)
+        a0 = self.token_proj(a0)
+        if self.use_channel_gate:
+            a0 = self.channel_gate(h_channel, a0)
+        z0 = a0.transpose(1, 2)
+        z1, z2 = self.dual_branch(z0)
+        a1 = z1.transpose(1, 2)
+        a2 = z2.transpose(1, 2)
+        if self.big_residual:
+            a1 = a1 + self.alpha1 * a0
+            a2 = a2 + self.alpha2 * a0
+        for i in range(self.attn_depth):
+            a1 = self.intra_1[i](a1)
+            a2 = self.intra_2[i](a2)
+            a1, a2 = self.inter[i](a1, a2)
+        return a1, a2
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        B = x.shape[0]
+        a1, a2 = self.forward_features(x)
+        x = torch.stack([a1, a2], dim=1)
+        w = torch.softmax(self.token_attn(x).squeeze(-1), dim=2)
+        pooled = (x * w.unsqueeze(-1)).sum(dim=2)
+        feat = pooled.reshape(B, -1)
+        return self.classifier(feat)
+
+
+DSAINet_ANN = DSAINet_ANN_Symmetric
 
 
 # Drop-in aliases
