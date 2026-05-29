@@ -302,11 +302,12 @@ class ConvTimeLayerSNN(nn.Module):
     This replaces the original ConvTime layer with a standard residual TCN-style
     block along the token/time axis N:
 
+        input BN -> LIF
         DW dilated Conv1d -> BN -> LIF
         PW expansion Conv1d -> BN -> LIF
         DW dilated Conv1d -> BN -> LIF
         PW projection Conv1d -> BN
-        residual scaling + LIF
+        residual scaling without output LIF
 
     Input / output layout is unchanged:
         x: (B, E, N) -> (B, E, N)
@@ -336,6 +337,12 @@ class ConvTimeLayerSNN(nn.Module):
         self.kernel_size = kernel_size
         self.dilation = dilation
         padding = (kernel_size - 1) * dilation // 2
+
+        # Spike-normalize the layer input before the first temporal convolution.
+        # This makes the ConvTime branch consume spike-like inputs, while the
+        # residual path remains continuous/information-preserving.
+        self.bn_in = nn.BatchNorm1d(emb_size)
+        self.lif_in = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         # First depthwise dilated temporal convolution.
         self.dw1 = nn.Conv1d(
@@ -374,9 +381,10 @@ class ConvTimeLayerSNN(nn.Module):
         self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=pw_groups, bias=False)
         self.bn_pw2 = nn.BatchNorm1d(emb_size)
 
-        # Keep residual initially close to identity for stable SNN optimization.
+        # Keep residual initially exactly identity for stable SNN optimization.
+        # The branch input is spike-normalized by bn_in/lif_in; we do not apply
+        # another hard LIF after residual addition.
         self.alpha = nn.Parameter(torch.tensor(0.0))
-        self.lif_out = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
     @staticmethod
     def _match_time_length(y: torch.Tensor, target_len: int) -> torch.Tensor:
@@ -397,7 +405,9 @@ class ConvTimeLayerSNN(nn.Module):
         residual = x
         target_len = x.shape[-1]
 
-        y = self.dw1(x)
+        x_spk = self.lif_in(self.bn_in(x))
+
+        y = self.dw1(x_spk)
         y = self._match_time_length(y, target_len)
         y = self.lif_dw1(self.bn_dw1(y))
 
@@ -408,7 +418,7 @@ class ConvTimeLayerSNN(nn.Module):
         y = self.lif_dw2(self.bn_dw2(y))
 
         y = self.bn_pw2(self.pw2(y))
-        return self.lif_out(residual + self.alpha * y)
+        return residual + self.alpha * y
 
 
 class ConvTimeStackSNN(nn.Module):
@@ -587,8 +597,9 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
             )
             for _ in range(len(coarse_kernel_list))
         ])
-        self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # No fusion-output LIF here. The next ConvTimeLayerSNN performs
+        # input BN -> LIF before its first convolution, so fusion/residual
+        # results remain continuous until consumed by a spike-input transform.
 
     def forward(self, x: torch.Tensor):
         z_coarse = x
@@ -599,9 +610,8 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
             z_coarse = coarse_layer(z_coarse)
             z_fine = fine_layer(z_fine)
             z_coarse, z_fine = fusion_layer(z_coarse, z_fine)
-            if i < len(self.coarse_layers) - 1:
-                z_coarse = self.lif_coarse(z_coarse)
-                z_fine = self.lif_fine(z_fine)
+            # Do not spike the fusion output here. The next ConvTime layer
+            # will spike-normalize its own input before computation.
         return z_coarse, z_fine
 
 
@@ -648,6 +658,45 @@ class SpikeInputMultiheadAttention(nn.Module):
             # Useful ablation: spike Q/K as event selectors but keep V continuous.
             v = self.norm_v(value)
         return self.mha(q, k, v)
+
+
+class QKVSpikePreprocess(nn.Module):
+    """Spike-normalize Q/K/V inputs before a shared attention module.
+
+    This module contains only the stateful BN/LIF preprocessing for Q/K/V.
+    It intentionally does not own nn.MultiheadAttention, so different branches
+    can share attention weights while keeping separate LIF membrane states.
+
+    Input / output layout:
+        query, key, value: (B, N, E)
+        q, k, v:           (B, N, E)
+    """
+    def __init__(
+        self,
+        emb_size: int,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        spike_value: bool = True,
+    ):
+        super().__init__()
+        self.norm_q = TokenBatchNorm(emb_size)
+        self.norm_k = TokenBatchNorm(emb_size)
+        self.norm_v = TokenBatchNorm(emb_size)
+        self.lif_q = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.lif_k = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.lif_v = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.spike_value = spike_value
+
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+        q = self.lif_q(self.norm_q(query))
+        k = self.lif_k(self.norm_k(key))
+        if self.spike_value:
+            v = self.lif_v(self.norm_v(value))
+        else:
+            # Useful ablation: spike Q/K as event selectors but keep V continuous.
+            v = self.norm_v(value)
+        return q, k, v
 
 
 class SpikingFFN(nn.Module):
@@ -736,15 +785,23 @@ class InterAttnBlockSNN(nn.Module):
         backend: str = "cupy",
     ):
         super().__init__()
-        self.mha = SpikeInputMultiheadAttention(
+        # Keep the original ANN-style inter-attention weight sharing, but do
+        # not share stateful LIF membrane states between the two directions.
+        self.spike12 = QKVSpikePreprocess(
             emb_size,
-            heads,
-            dropout=0.0,
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
             spike_value=True,
         )
+        self.spike21 = QKVSpikePreprocess(
+            emb_size,
+            tau=tau,
+            detach_reset=detach_reset,
+            backend=backend,
+            spike_value=True,
+        )
+        self.shared_mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
 
         self.norm1a = nn.LayerNorm(emb_size)
         self.norm1b = nn.LayerNorm(emb_size)
@@ -759,19 +816,19 @@ class InterAttnBlockSNN(nn.Module):
         # self.lif_ffn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor):
-        out1, _ = self.mha(x1, x2, x2)
+        # Direction 1: branch1 attends to branch2.
+        # Attention weights are shared, but Q/K/V LIF states are direction-specific.
+        q1, k2, v2 = self.spike12(x1, x2, x2)
+        out1, _ = self.shared_mha(q1, k2, v2)
         y1 = self.norm1a(x1 + self.beta12 * out1)
 
-        out2, _ = self.mha(x2, x1, x1)
+        # Direction 2: branch2 attends to branch1.
+        q2, k1, v1 = self.spike21(x2, x1, x1)
+        out2, _ = self.shared_mha(q2, k1, v1)
         y2 = self.norm2a(x2 + self.beta21 * out2)
 
         y1 = self.norm1b(y1 + self.ffn1(y1))
         y2 = self.norm2b(y2 + self.ffn2(y2))
-        # y1 = self.lif_ffn1(self.norm1b(y1 + self.ffn1(y1)))
-        # y2 = self.lif_ffn2(self.norm2b(y2 + self.ffn2(y2)))
-        # y1 = self.norm1b(y1 + self.ffn1(y1))
-        # y2 = self.norm2b(y2 + self.ffn2(y2))  # 这里出去直接接判断了，不用再LIF了
-
         return y1, y2
 
 
