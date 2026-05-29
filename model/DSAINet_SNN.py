@@ -769,8 +769,8 @@ class InterAttnBlockSNN(nn.Module):
         y2 = self.norm2b(y2 + self.ffn2(y2))
         # y1 = self.lif_ffn1(self.norm1b(y1 + self.ffn1(y1)))
         # y2 = self.lif_ffn2(self.norm2b(y2 + self.ffn2(y2)))
-        y1 = self.norm1b(y1 + self.ffn1(y1))
-        y2 = self.norm2b(y2 + self.ffn2(y2))  # 这里出去直接接判断了，不用再LIF了
+        # y1 = self.norm1b(y1 + self.ffn1(y1))
+        # y2 = self.norm2b(y2 + self.ffn2(y2))  # 这里出去直接接判断了，不用再LIF了
 
         return y1, y2
 
