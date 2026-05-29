@@ -35,6 +35,7 @@ def parse_args():
     parser.add_argument('--batch-size', type=int, default=32, help='batch size')
     parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
     parser.add_argument('--epochs', type=int, default=100, help='epochs')
+    parser.add_argument('--times', type=int, default=100, help='times')
     return parser.parse_args()
 
 def train_test_loso(data, labels, config, device, logger):
@@ -358,7 +359,7 @@ if __name__ == "__main__":
         sample_rate = 200
 
     # logger
-    logger = setup_logger(f"{args.dataset}", log_dir=f"/mnt/data/250010236/DSAINet/log/{config['model']['name']}/", overwrite=True)
+    logger = setup_logger(f"{args.dataset}_{args.times}", log_dir=f"/mnt/data/250010236/DSAINet/log/{config['model']['name']}/", overwrite=True)
     # device
     device = torch.device(f"cuda:{args.device}" if torch.cuda.is_available() else "cpu")
     # log config 

@@ -605,6 +605,51 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
         return z_coarse, z_fine
 
 
+class SpikeInputMultiheadAttention(nn.Module):
+    """Multi-head attention whose inputs are spike-normalized before MHA.
+
+    This is a lightweight hybrid version rather than a full Spikformer SSA:
+        query/key/value tokens -> TokenBatchNorm -> TemporalLIF -> nn.MultiheadAttention
+
+    The MHA computation itself is still PyTorch's dense softmax attention. The
+    difference from the previous block is that the attention module consumes
+    spike-like Q/K/V inputs, instead of applying LIF after the residual output.
+
+    Input / output layout:
+        query, key, value: (B, N, E)
+        output:            (B, N, E)
+    """
+    def __init__(
+        self,
+        emb_size: int,
+        heads: int,
+        dropout: float = 0.0,
+        tau: float = 2.0,
+        detach_reset: bool = True,
+        backend: str = "cupy",
+        spike_value: bool = True,
+    ):
+        super().__init__()
+        self.norm_q = TokenBatchNorm(emb_size)
+        self.norm_k = TokenBatchNorm(emb_size)
+        self.norm_v = TokenBatchNorm(emb_size)
+        self.lif_q = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.lif_k = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.lif_v = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.spike_value = spike_value
+        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=dropout, batch_first=True)
+
+    def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
+        q = self.lif_q(self.norm_q(query))
+        k = self.lif_k(self.norm_k(key))
+        if self.spike_value:
+            v = self.lif_v(self.norm_v(value))
+        else:
+            # Useful ablation: spike Q/K as event selectors but keep V continuous.
+            v = self.norm_v(value)
+        return self.mha(q, k, v)
+
+
 class SpikingFFN(nn.Module):
     """Transformer FFN with Linear -> BN -> LIF -> Linear -> BN, then residual LIF outside."""
     def __init__(
@@ -649,17 +694,27 @@ class IntraAttnBlockSNN(nn.Module):
         backend: str = "cupy",
     ):
         super().__init__()
-        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
+        self.mha = SpikeInputMultiheadAttention(
+            emb_size,
+            heads,
+            dropout=0.0,
+            tau=tau,
+            detach_reset=detach_reset,
+            backend=backend,
+            spike_value=True,
+        )
         self.norm1 = nn.LayerNorm(emb_size)
         self.norm2 = nn.LayerNorm(emb_size)
-        self.lif_attn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # Attention inputs are spike-normalized inside self.mha; do not apply
+        # another hard LIF after the residual add, so the residual path remains
+        # information-preserving.
         self.ffn = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
         self.lif_ffn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         attn_out, _ = self.mha(x, x, x)
-        x = self.lif_attn(self.norm1(x + attn_out))
-        x = self.lif_ffn(self.norm2(x + self.ffn(x)))
+        x = self.norm1(x + attn_out)
+        x = self.norm2(x + self.ffn(x))
+        # x = self.lif_ffn(self.norm2(x + self.ffn(x)))  # 后边立马接MHA会再做LIF，这里不需要
         return x
 
 
@@ -681,7 +736,15 @@ class InterAttnBlockSNN(nn.Module):
         backend: str = "cupy",
     ):
         super().__init__()
-        self.mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
+        self.mha = SpikeInputMultiheadAttention(
+            emb_size,
+            heads,
+            dropout=0.0,
+            tau=tau,
+            detach_reset=detach_reset,
+            backend=backend,
+            spike_value=True,
+        )
 
         self.norm1a = nn.LayerNorm(emb_size)
         self.norm1b = nn.LayerNorm(emb_size)
@@ -690,22 +753,25 @@ class InterAttnBlockSNN(nn.Module):
         self.beta12 = nn.Parameter(torch.tensor(1.0))
         self.beta21 = nn.Parameter(torch.tensor(1.0))
 
-        self.lif_attn1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.lif_attn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.ffn1 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
         self.ffn2 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
-        self.lif_ffn1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.lif_ffn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # self.lif_ffn1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # self.lif_ffn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor):
         out1, _ = self.mha(x1, x2, x2)
-        y1 = self.lif_attn1(self.norm1a(x1 + self.beta12 * out1))
+        y1 = self.norm1a(x1 + self.beta12 * out1)
 
         out2, _ = self.mha(x2, x1, x1)
-        y2 = self.lif_attn2(self.norm2a(x2 + self.beta21 * out2))
+        y2 = self.norm2a(x2 + self.beta21 * out2)
 
-        y1 = self.lif_ffn1(self.norm1b(y1 + self.ffn1(y1)))
-        y2 = self.lif_ffn2(self.norm2b(y2 + self.ffn2(y2)))
+        y1 = self.norm1b(y1 + self.ffn1(y1))
+        y2 = self.norm2b(y2 + self.ffn2(y2))
+        # y1 = self.lif_ffn1(self.norm1b(y1 + self.ffn1(y1)))
+        # y2 = self.lif_ffn2(self.norm2b(y2 + self.ffn2(y2)))
+        y1 = self.norm1b(y1 + self.ffn1(y1))
+        y2 = self.norm2b(y2 + self.ffn2(y2))  # 这里出去直接接判断了，不用再LIF了
+
         return y1, y2
 
 
