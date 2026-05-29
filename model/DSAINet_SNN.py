@@ -757,8 +757,12 @@ class IntraAttnBlockSNN(nn.Module):
         # Attention inputs are spike-normalized inside self.mha; do not apply
         # another hard LIF after the residual add, so the residual path remains
         # information-preserving.
-        self.ffn = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
-        self.lif_ffn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # self.ffn = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+        self.ffn = nn.Sequential(
+            nn.Linear(emb_size, d_ff),
+            nn.Linear(d_ff, emb_size),
+        )
+        # self.lif_ffn = TemporalLIF(tau, detach_reset, backend, time_dim=1)
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         attn_out, _ = self.mha(x, x, x)
         x = self.norm1(x + attn_out)
@@ -810,8 +814,16 @@ class InterAttnBlockSNN(nn.Module):
         self.beta12 = nn.Parameter(torch.tensor(1.0))
         self.beta21 = nn.Parameter(torch.tensor(1.0))
 
-        self.ffn1 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
-        self.ffn2 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+        # self.ffn1 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+        # self.ffn2 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
+        self.ffn1 = nn.Sequential(
+            nn.Linear(emb_size, d_ff),
+            nn.Linear(d_ff, emb_size),
+        )
+        self.ffn2 = nn.Sequential(
+            nn.Linear(emb_size, d_ff),
+            nn.Linear(d_ff, emb_size),
+        )
         # self.lif_ffn1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         # self.lif_ffn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
 
