@@ -9,7 +9,7 @@ Design goals:
 2. Do NOT duplicate EEG input into artificial CV-style spike steps.
    The EEG temporal/token axis is used as the LIF multi-step axis.
 3. Use layer-level spike conversion: major learnable transforms are followed by LIF.
-4. Use PLIF/MultiStepParametricLIFNode where available; otherwise fall back to LIF with a learnable input scale.
+4. Use SpikingJelly MultiStepLIFNode directly; regularized to reduce LOSO overfitting.
 
 Input : (B, 1, C, T)
 Output: (B, n_classes)
@@ -21,74 +21,34 @@ from typing import List, Optional, Tuple
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-try:
-    from spikingjelly.clock_driven.neuron import MultiStepLIFNode, MultiStepParametricLIFNode
-    from spikingjelly.clock_driven import functional
-except Exception:  # fallback for newer SpikingJelly namespace
-    try:
-        from spikingjelly.activation_based.neuron import MultiStepLIFNode, MultiStepParametricLIFNode
-        from spikingjelly.activation_based import functional
-    except Exception:
-        MultiStepLIFNode = None
-        MultiStepParametricLIFNode = None
-        functional = None
+from spikingjelly.clock_driven.neuron import MultiStepLIFNode
+from spikingjelly.clock_driven import functional
 
 
-class TemporalPLIF(nn.Module):
+class TemporalLIF(nn.Module):
     """
-    Apply PLIF/MultiStepParametricLIFNode along an existing temporal dimension.
+    Apply MultiStepLIFNode along an existing temporal dimension.
 
-    This keeps the same tensor layout behavior as the previous TemporalLIF:
-        (B, C, H, T), time_dim=-1 -> (T, B, C, H) -> PLIF -> back
-        (B, N, E),    time_dim=1  -> (N, B, E)    -> PLIF -> back
-        (B, E, N),    time_dim=-1 -> (N, B, E)    -> PLIF -> back
+    Unlike CV-style SNNs, this module does not create/repeat an artificial
+    simulation-step axis. Instead, it treats the given EEG temporal/token axis
+    as the multi-step axis.
 
-    If the installed SpikingJelly version does not provide MultiStepParametricLIFNode,
-    the module falls back to MultiStepLIFNode with a learnable input scale. The
-    fallback is not a full PLIF tau parameterization, but it still gives each spike
-    layer a trainable firing threshold/scale rather than a completely fixed LIF.
+    Examples:
+        (B, C, H, T), time_dim=-1 -> (T, B, C, H) -> LIF -> back
+        (B, N, E),    time_dim=1  -> (N, B, E)    -> LIF -> back
+        (B, E, N),    time_dim=-1 -> (N, B, E)    -> LIF -> back
     """
-    def __init__(
-        self,
-        tau: float = 2.0,
-        detach_reset: bool = True,
-        backend: str = "cupy",
-        time_dim: int = -1,
-        learnable_scale_fallback: bool = True,
-    ):
+    def __init__(self, tau: float = 2.0, detach_reset: bool = True, backend: str = "cupy", time_dim: int = -1):
         super().__init__()
         self.time_dim = time_dim
-        self.uses_parametric_lif = MultiStepParametricLIFNode is not None
-        if self.uses_parametric_lif:
-            # SpikingJelly PLIF uses a learnable membrane time constant.
-            self.node = MultiStepParametricLIFNode(init_tau=tau, detach_reset=detach_reset, backend=backend)
-            self.log_input_scale = None
-        else:
-            if MultiStepLIFNode is None:
-                raise ImportError(
-                    "SpikingJelly is required for TemporalPLIF. Install spikingjelly or "
-                    "run this model in the original project environment."
-                )
-            self.node = MultiStepLIFNode(tau=tau, detach_reset=detach_reset, backend=backend)
-            self.log_input_scale = nn.Parameter(
-                torch.zeros((), dtype=torch.float32),
-                requires_grad=learnable_scale_fallback,
-            )
+        self.node = MultiStepLIFNode(tau=tau, detach_reset=detach_reset, backend=backend)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        if self.log_input_scale is not None:
-            scale = self.log_input_scale.exp().clamp(0.1, 10.0).to(device=x.device, dtype=x.dtype)
-            x = x / scale
         td = self.time_dim if self.time_dim >= 0 else x.dim() + self.time_dim
         y = torch.movedim(x, td, 0).contiguous()
         y = self.node(y)
         y = torch.movedim(y, 0, td).contiguous()
         return y
-
-
-# Backward-compatible alias: all existing module definitions below can keep using
-# TemporalLIF(...), but this PLIF version will be instantiated in this file.
-TemporalLIF = TemporalPLIF
 
 
 class TokenBatchNorm(nn.Module):
@@ -102,28 +62,19 @@ class TokenBatchNorm(nn.Module):
 
 
 class ChannelFeatureGate(nn.Module):
-    """Topology-aware lightweight channel side path.
+    """Topology-aware channel side path with trial-wise relative statistics.
 
-    It reads the pre-spatial-conv feature map h with shape (B, f1, C, T),
-    summarizes channel-wise activity before the EEGNet-like C -> 1 spatial
-    bottleneck, concatenates each channel summary with an explicit 2D electrode
-    coordinate, and produces an embedding-wise gate for temporal tokens
-    a0: (B, N, E).
+    Compared with the previous version, this gate avoids feeding raw channel
+    mean/std magnitudes directly into the MLP. Raw magnitudes are highly
+    subject-dependent in LOSO EEG. Here the per-channel descriptors are
+    normalized within each trial across channels, so the gate mainly sees a
+    relative topographic pattern rather than absolute subject-specific scale.
 
-    For BCIC-IV-2a style 22-channel input, the default coordinate order is:
-        Fz,
-        FC3, FC1, FCz, FC2, FC4,
-        C5, C3, C1, Cz, C2, C4, C6,
-        CP3, CP1, CPz, CP2, CP4,
-        P1, Pz, P2,
-        POz
-
-    The gate is applied as:
-        a0 = a0 * (1 + scale * sigmoid(gate_mlp(topo_channel_summary))[:, None, :])
-
-    scale is initialized to 0 by default, so the model starts exactly from the
-    original backbone and can learn to use the topology-aware channel side
-    information only if it is beneficial.
+    Input:
+        h:      (B, f1, C, T), pre-spatial-conv feature map
+        tokens: (B, N, E)
+    Output:
+        gated tokens: (B, N, E)
     """
     def __init__(
         self,
@@ -132,45 +83,38 @@ class ChannelFeatureGate(nn.Module):
         emb_size: int,
         hidden_dim: int = 64,
         init_scale: float = 0.0,
+        dropout: float = 0.10,
+        use_relative_stats: bool = True,
     ):
         super().__init__()
         self.f1 = f1
         self.number_channel = number_channel
         self.emb_size = emb_size
+        self.use_relative_stats = use_relative_stats
 
-        # Fixed explicit 2D electrode coordinates. These are not learned.
-        # They are used only when use_channel_gate=True, so the false path keeps
-        # the original model behavior and random initialization order intact.
         coords = self._make_default_coords(number_channel)
         self.register_buffer("coords", coords, persistent=False)  # (C, 2)
 
-        # Per-channel topology-aware encoder:
-        # each channel receives [mean over T, std over T, x_coord, y_coord].
+        # [relative mean over T, relative log-std over T, x_coord, y_coord]
         per_channel_in_dim = 2 * f1 + 2
+        self.input_norm = nn.LayerNorm(per_channel_in_dim)
         self.channel_encoder = nn.Sequential(
             nn.Linear(per_channel_in_dim, hidden_dim),
             nn.ELU(),
+            nn.Dropout(dropout),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ELU(),
+            nn.Dropout(dropout),
         )
-
-        # Lightweight attention pooling over channels. This lets the model learn
-        # which spatial locations are more informative for the current trial.
         self.channel_attn = nn.Linear(hidden_dim, 1)
-
-        # Map the pooled topology-aware channel summary to an embedding-wise gate.
         self.gate_mlp = nn.Linear(hidden_dim, emb_size)
+
+        # Keep the gate initially close to no-op. A small clamp in forward also
+        # prevents this side path from dominating early training.
         self.scale = nn.Parameter(torch.tensor(float(init_scale)))
 
     @staticmethod
     def _make_default_coords(number_channel: int) -> torch.Tensor:
-        """Return normalized 2D channel coordinates with shape (C, 2).
-
-        For C=22, this follows the common BCIC-IV-2a 22-electrode order. For a
-        different C, use a deterministic circular fallback so the module still
-        runs, although for serious experiments the channel order should be
-        checked and this coordinate table should be replaced accordingly.
-        """
         if number_channel == 22:
             coords = torch.tensor([
                 [ 0.00,  1.00],  # Fz
@@ -196,53 +140,59 @@ class ChannelFeatureGate(nn.Module):
                 [ 0.25, -1.00],  # P2
                 [ 0.00, -1.25],  # POz
             ], dtype=torch.float32)
-            # Normalize y to roughly [-1, 1] while preserving relative layout.
             coords[:, 1] = coords[:, 1] / coords[:, 1].abs().max().clamp_min(1e-6)
             return coords
-
-        # Fallback: place channels uniformly on a unit circle according to index.
         theta = torch.linspace(0, 2 * math.pi, steps=number_channel + 1, dtype=torch.float32)[:-1]
         return torch.stack([torch.cos(theta), torch.sin(theta)], dim=-1)
 
+    @staticmethod
+    def _relative_channel_norm(x: torch.Tensor, eps: float = 1e-5) -> torch.Tensor:
+        # x: (B, f, C). Normalize each trial/feature across channels.
+        mean = x.mean(dim=-1, keepdim=True)
+        std = x.std(dim=-1, keepdim=True, unbiased=False).clamp_min(eps)
+        return (x - mean) / std
+
     def forward(self, h: torch.Tensor, tokens: torch.Tensor) -> torch.Tensor:
-        # h:      (B, f1, C, T), before spatial C -> 1 convolution
-        # tokens: (B, N, E)
         B, f1, C, _ = h.shape
         if C != self.number_channel:
             raise ValueError(f"Expected {self.number_channel} channels, got {C}.")
 
-        h_mean = h.mean(dim=-1)                         # (B, f1, C)
-        h_std = h.std(dim=-1, unbiased=False)           # (B, f1, C)
-        stats = torch.cat([h_mean, h_std], dim=1)        # (B, 2*f1, C)
-        stats = stats.transpose(1, 2).contiguous()      # (B, C, 2*f1)
+        h_mean = h.mean(dim=-1)                                      # (B, f1, C)
+        h_std = h.std(dim=-1, unbiased=False).clamp_min(1e-5)        # (B, f1, C)
+        h_logstd = torch.log(h_std)
+
+        if self.use_relative_stats:
+            h_mean = self._relative_channel_norm(h_mean)
+            h_logstd = self._relative_channel_norm(h_logstd)
+
+        stats = torch.cat([h_mean, h_logstd], dim=1)                 # (B, 2*f1, C)
+        stats = stats.transpose(1, 2).contiguous()                   # (B, C, 2*f1)
 
         coords = self.coords.to(device=h.device, dtype=h.dtype)
-        coords = coords.unsqueeze(0).expand(B, -1, -1)  # (B, C, 2)
-        topo_stats = torch.cat([stats, coords], dim=-1) # (B, C, 2*f1+2)
+        coords = coords.unsqueeze(0).expand(B, -1, -1)               # (B, C, 2)
+        topo_stats = torch.cat([stats, coords], dim=-1)              # (B, C, 2*f1+2)
+        topo_stats = self.input_norm(topo_stats)
 
-        ch_emb = self.channel_encoder(topo_stats)       # (B, C, hidden)
-        attn = torch.softmax(self.channel_attn(ch_emb).squeeze(-1), dim=-1)  # (B, C)
-        pooled = (ch_emb * attn.unsqueeze(-1)).sum(dim=1)                    # (B, hidden)
+        ch_emb = self.channel_encoder(topo_stats)                    # (B, C, hidden)
+        attn = torch.softmax(self.channel_attn(ch_emb).squeeze(-1), dim=-1)
+        pooled = (ch_emb * attn.unsqueeze(-1)).sum(dim=1)            # (B, hidden)
 
-        gate = torch.sigmoid(self.gate_mlp(pooled))     # (B, E)
-        return tokens * (1.0 + self.scale * gate.unsqueeze(1))
+        gate = torch.sigmoid(self.gate_mlp(pooled))                  # (B, E)
+        scale = self.scale.clamp(-1.0, 1.0)
+        return tokens * (1.0 + scale * gate.unsqueeze(1))
 
 
 class PatchEmbeddingSNN(nn.Module):
-    """
-    DSAINet patch embedding with layer-level spike conversion.
+    """DSAINet-style patch embedding with restored BN/dropout and final LIF.
 
-    Original main learnable transforms:
-        temporal Conv2d -> spatial Conv2d -> temporal Conv2d
+    This follows the original DSAINet front-end ordering as closely as possible:
+        temporal Conv2d -> BN
+        spatial Conv2d  -> BN -> ELU -> AvgPool -> Dropout
+        temporal Conv2d -> BN -> ELU -> AvgPool -> Dropout
 
-    SNN version:
-        Conv2d -> BN -> LIF
-        Conv2d -> BN -> LIF
-        Pool
-        Conv2d -> BN -> LIF
-        Pool
-
-    The LIF time axis is the EEG time axis T, not an artificial repeated step.
+    The only SNN-specific addition kept here is the final LIF after the second
+    pooling/dropout, so patch-level continuous EEG features are converted into
+    spike-like token features before entering the backend.
     """
     def __init__(
         self,
@@ -263,37 +213,32 @@ class PatchEmbeddingSNN(nn.Module):
 
         self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
         self.bn1 = nn.BatchNorm2d(f1)
-        # self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif1 = nn.ELU()
 
         self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
         self.bn2 = nn.BatchNorm2d(f2)
-        # self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif2 = nn.ELU()
+        self.act1 = nn.ELU()
 
         self.pool1 = nn.AvgPool2d((1, pooling_size1))
+        self.drop1 = nn.Dropout(dropout_rate)
+
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
-        self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        # self.lif3 = nn.ELU()
+        self.act2 = nn.ELU()
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
+        self.drop2 = nn.Dropout(dropout_rate)
+        self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         # x: (B,1,C,T)
-        # h keeps explicit channel information before the EEGNet-like
-        # spatial convolution collapses C -> 1. It is used by the optional
-        # channel side gate in DSAINet_SNN.forward_features().
-        h = self.temporal1(x)                 # (B,f1,C,T)
-        # h = self.bn1(self.temporal1(x))                 # (B,f1,C,T)
-        x = self.lif1(h)
-        x = self.spatial(x)                   # (B,f2,1,T)
-        # x = self.bn2(self.spatial(x))                   # (B,f2,1,T)
-        x = self.pool1(x)
-        x = self.lif2(x)
-        x = self.bn3(self.temporal2(x))
-        x = self.pool2(x)
+        h = self.bn1(self.temporal1(x))       # (B,f1,C,T), used by ChannelFeatureGate
+        x = self.spatial(h)                   # (B,f2,1,T)
+        x = self.act1(self.bn2(x))
+        x = self.drop1(self.pool1(x))
+        x = self.act2(self.bn3(self.temporal2(x)))
+        x = self.drop2(self.pool2(x))
         x = self.lif3(x)
-        return x, h  # (B,f2,1,N), (B,f1,C,T)
+        return x, h                           # (B,f2,1,N), (B,f1,C,T)
 
 
 class PositionalEncoding(nn.Module):
@@ -420,6 +365,7 @@ class ConvTimeLayerSNN(nn.Module):
 
         self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=pw_groups, bias=False)
         self.bn_pw2 = nn.BatchNorm1d(emb_size)
+        self.drop = nn.Dropout(dropout)
 
         # Keep residual initially exactly identity for stable SNN optimization.
         # The branch input is spike-normalized by bn_in/lif_in; we do not apply
@@ -457,7 +403,7 @@ class ConvTimeLayerSNN(nn.Module):
         y = self._match_time_length(y, target_len)
         y = self.lif_dw2(self.bn_dw2(y))
 
-        y = self.bn_pw2(self.pw2(y))
+        y = self.drop(self.bn_pw2(self.pw2(y)))
         return residual + self.alpha * y
 
 
@@ -508,20 +454,44 @@ class ConvTimeStackSNN(nn.Module):
         return x
 
 
+class _ChannelLayerNorm1d(nn.Module):
+    """LayerNorm over channels for Conv1d tensors shaped (B, C, N)."""
+    def __init__(self, num_channels: int):
+        super().__init__()
+        self.norm = nn.LayerNorm(num_channels)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.norm(x.transpose(1, 2)).transpose(1, 2).contiguous()
+
+
+def _make_fusion_norm(num_channels: int, norm_type: str = "gn") -> nn.Module:
+    """Normalization for FFB6D fusion deltas.
+
+    Options:
+        "gn"/"group": GroupNorm, default; no running statistics, usually safer for LOSO.
+        "ln"/"layer": LayerNorm over channel dimension, also no running statistics.
+        "bn"/"batch": original BatchNorm1d behavior.
+        "none"/"identity": no normalization.
+    """
+    norm_type = (norm_type or "gn").lower()
+    if norm_type in {"gn", "group", "groupnorm"}:
+        groups = 4 if num_channels % 4 == 0 else 1
+        return nn.GroupNorm(groups, num_channels)
+    if norm_type in {"ln", "layer", "layernorm"}:
+        return _ChannelLayerNorm1d(num_channels)
+    if norm_type in {"bn", "batch", "batchnorm"}:
+        return nn.BatchNorm1d(num_channels)
+    if norm_type in {"none", "identity", "id"}:
+        return nn.Identity()
+    raise ValueError(f"Unknown fusion_norm_type={norm_type!r}.")
+
+
 class CrossBranchGatedFusionSNN(nn.Module):
-    """One FFB6D-style bidirectional fusion bridge for coarse/fine branches.
+    """FFB6D-style bidirectional fusion bridge for coarse/fine branches.
 
-    Input / output:
-        z_coarse, z_fine: (B, E, N)
-
-    This is the first, stable adaptation of FFB6D-style fusion for the current
-    DSAINet_SNN backend:
-        fine  -> 1x1 Conv + BN -> gated residual injection into coarse -> LIF
-        coarse-> 1x1 Conv + BN -> gated residual injection into fine   -> LIF
-
-    The gates are scalar per direction and initialized with a negative logit so
-    the fusion starts weak. This keeps the initial model close to the no-fusion
-    baseline while allowing the network to learn cross-scale communication.
+    The fusion module is kept, but BatchNorm can be replaced by a normalization
+    without running statistics. Default is GroupNorm because LOSO test subjects
+    can shift BN running mean/var.
     """
     def __init__(
         self,
@@ -530,36 +500,31 @@ class CrossBranchGatedFusionSNN(nn.Module):
         detach_reset: bool = True,
         backend: str = "cupy",
         gate_init: float = -3.0,
+        fusion_norm_type: str = "gn",
     ):
         super().__init__()
         self.fine_to_coarse = nn.Sequential(
             nn.Conv1d(emb_size, emb_size, kernel_size=1, bias=False),
-            nn.BatchNorm1d(emb_size),
+            _make_fusion_norm(emb_size, fusion_norm_type),
         )
         self.coarse_to_fine = nn.Sequential(
             nn.Conv1d(emb_size, emb_size, kernel_size=1, bias=False),
-            nn.BatchNorm1d(emb_size),
+            _make_fusion_norm(emb_size, fusion_norm_type),
         )
 
         self.gate_f2c = nn.Parameter(torch.tensor(float(gate_init)))
         self.gate_c2f = nn.Parameter(torch.tensor(float(gate_init)))
-        # self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        # self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
     def forward(self, z_coarse: torch.Tensor, z_fine: torch.Tensor):
-        # Use the pre-fusion features from both branches, then update them
-        # simultaneously to avoid order-dependent information leakage.
         delta_coarse = self.fine_to_coarse(z_fine)
         delta_fine = self.coarse_to_fine(z_coarse)
 
         gate_f2c = torch.sigmoid(self.gate_f2c)
         gate_c2f = torch.sigmoid(self.gate_c2f)
 
-        # z_coarse = self.lif_coarse(z_coarse + gate_f2c * delta_coarse)
-        # z_fine = self.lif_fine(z_fine + gate_c2f * delta_fine)
         z_coarse = z_coarse + gate_f2c * delta_coarse
         z_fine = z_fine + gate_c2f * delta_fine
-        return z_coarse, z_fine  
+        return z_coarse, z_fine
 
 
 class FFB6DStyleConvTimeStackSNN(nn.Module):
@@ -589,6 +554,7 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
         coarse_dilation_base: int = 2,
         fine_dilation_base: int = 1,
         fusion_gate_init: float = -3.0,
+        fusion_norm_type: str = "gn",
     ):
         super().__init__()
         if len(coarse_kernel_list) != len(fine_kernel_list):
@@ -634,6 +600,7 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
                 detach_reset=detach_reset,
                 backend=backend,
                 gate_init=fusion_gate_init,
+                fusion_norm_type=fusion_norm_type,
             )
             for _ in range(len(coarse_kernel_list))
         ])
@@ -767,6 +734,53 @@ class SpikingFFN(nn.Module):
         return x
 
 
+
+class SharedWeightSpikingFFN(nn.Module):
+    """FFN with shared Linear weights but direction-specific BN/LIF states.
+
+    This mirrors the inter-attention design: the dense computation weights are
+    shared between the two directions, while stateful spike normalization is
+    kept separate to avoid membrane-state crosstalk.
+    """
+    def __init__(
+        self,
+        emb_size: int,
+        expansion: int,
+        dropout: float,
+        tau: float,
+        detach_reset: bool,
+        backend: str,
+    ):
+        super().__init__()
+        d_ff = expansion * emb_size
+        self.fc1 = nn.Linear(emb_size, d_ff)
+        self.fc2 = nn.Linear(d_ff, emb_size)
+        self.drop = nn.Dropout(dropout)
+
+        self.bn1_dir1 = TokenBatchNorm(d_ff)
+        self.bn1_dir2 = TokenBatchNorm(d_ff)
+        self.lif1_dir1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.lif1_dir2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        self.bn2_dir1 = TokenBatchNorm(emb_size)
+        self.bn2_dir2 = TokenBatchNorm(emb_size)
+
+    def forward_dir1(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.fc1(x)
+        x = self.lif1_dir1(self.bn1_dir1(x))
+        x = self.drop(x)
+        x = self.fc2(x)
+        x = self.bn2_dir1(x)
+        return x
+
+    def forward_dir2(self, x: torch.Tensor) -> torch.Tensor:
+        x = self.fc1(x)
+        x = self.lif1_dir2(self.bn1_dir2(x))
+        x = self.drop(x)
+        x = self.fc2(x)
+        x = self.bn2_dir2(x)
+        return x
+
+
 class IntraAttnBlockSNN(nn.Module):
     """
     Structure-preserving intra-branch block.
@@ -850,10 +864,10 @@ class InterAttnBlockSNN(nn.Module):
         self.beta12 = nn.Parameter(torch.tensor(1.0))
         self.beta21 = nn.Parameter(torch.tensor(1.0))
 
-        self.ffn1 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
-        self.ffn2 = SpikingFFN(emb_size, ffn_expansion, dropout, tau, detach_reset, backend)
-        # self.lif_ffn1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        # self.lif_ffn2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # Shared Linear weights, separate BN/LIF states per direction.
+        self.shared_ffn = SharedWeightSpikingFFN(
+            emb_size, ffn_expansion, dropout, tau, detach_reset, backend
+        )
 
     def forward(self, x1: torch.Tensor, x2: torch.Tensor):
         # Direction 1: branch1 attends to branch2.
@@ -867,12 +881,12 @@ class InterAttnBlockSNN(nn.Module):
         out2, _ = self.shared_mha(q2, k1, v1)
         y2 = self.norm2a(x2 + self.beta21 * out2)
 
-        y1 = self.norm1b(y1 + self.ffn1(y1))
-        y2 = self.norm2b(y2 + self.ffn2(y2))
+        y1 = self.norm1b(y1 + self.shared_ffn.forward_dir1(y1))
+        y2 = self.norm2b(y2 + self.shared_ffn.forward_dir2(y2))
         return y1, y2
 
 
-class DSAINet_SNN_PLIF(nn.Module):
+class DSAINet_SNN(nn.Module):
     def __init__(
         self,
         n_classes: int,
@@ -898,7 +912,9 @@ class DSAINet_SNN_PLIF(nn.Module):
         use_channel_gate: bool = True,
         channel_gate_hidden: int = 64,
         channel_gate_init: float = 0.0,
+        channel_gate_dropout: float = 0.10,
         fusion_gate_init: float = -3.0,
+        fusion_norm_type: str = "gn",
         # intra/inter
         intra_ffn_expansion: int = 2,
         inter_ffn_expansion: int = 2,
@@ -949,6 +965,8 @@ class DSAINet_SNN_PLIF(nn.Module):
                 emb_size=emb_size,
                 hidden_dim=channel_gate_hidden,
                 init_scale=channel_gate_init,
+                dropout=channel_gate_dropout,
+                use_relative_stats=True,
             )
         else:
             self.channel_gate = None
@@ -970,6 +988,7 @@ class DSAINet_SNN_PLIF(nn.Module):
             coarse_dilation_base=2,
             fine_dilation_base=1,
             fusion_gate_init=fusion_gate_init,
+            fusion_norm_type=fusion_norm_type,
         )
 
         if big_residual:
@@ -997,7 +1016,10 @@ class DSAINet_SNN_PLIF(nn.Module):
 
         # Original DSAINet token attention pooling is retained as readout.
         self.token_attn = nn.Linear(emb_size, 1)
-        self.classifier = nn.Linear(2 * emb_size, n_classes)
+        self.classifier = nn.Sequential(
+            nn.Dropout(cls_dropout),
+            nn.Linear(2 * emb_size, n_classes),
+        )
 
     def forward_features(self, x: torch.Tensor):
         # x: (B,1,C,T)
@@ -1043,6 +1065,5 @@ class DSAINet_SNN_PLIF(nn.Module):
         return self.classifier(feat)
 
 
-# Drop-in aliases
-DSAINet_SNN = DSAINet_SNN_PLIF
-DSAINet = DSAINet_SNN_PLIF
+# Drop-in alias
+DSAINet = DSAINet_SNN
