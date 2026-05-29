@@ -243,9 +243,11 @@ class PatchEmbeddingSNN(nn.Module):
         # h keeps explicit channel information before the EEGNet-like
         # spatial convolution collapses C -> 1. It is used by the optional
         # channel side gate in DSAINet_SNN.forward_features().
-        h = self.bn1(self.temporal1(x))                 # (B,f1,C,T)
+        h = self.temporal1(x)                 # (B,f1,C,T)
+        # h = self.bn1(self.temporal1(x))                 # (B,f1,C,T)
         x = self.lif1(h)
-        x = self.bn2(self.spatial(x))                   # (B,f2,1,T)
+        x = self.spatial(x)                   # (B,f2,1,T)
+        # x = self.bn2(self.spatial(x))                   # (B,f2,1,T)
         x = self.pool1(x)
         x = self.lif2(x)
         x = self.bn3(self.temporal2(x))
@@ -278,7 +280,7 @@ class TokenProjectionSNN(nn.Module):
     ):
         super().__init__()
         self.proj = nn.Linear(in_dim, emb_size) if in_dim != emb_size else nn.Identity()
-        self.bn = TokenBatchNorm(emb_size)
+        # self.bn = TokenBatchNorm(emb_size)
         self.pos = PositionalEncoding(emb_size, length=pos_len, dropout=dropout)
         self.lif = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.emb_size = emb_size
@@ -286,7 +288,7 @@ class TokenProjectionSNN(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B,N,in_dim)
         x = self.proj(x)
-        x = self.bn(x)
+        # x = self.bn(x)
         x = x * math.sqrt(self.emb_size)
         x = self.pos(x)
         # x = self.lif(x)
@@ -491,8 +493,8 @@ class CrossBranchGatedFusionSNN(nn.Module):
 
         self.gate_f2c = nn.Parameter(torch.tensor(float(gate_init)))
         self.gate_c2f = nn.Parameter(torch.tensor(float(gate_init)))
-        self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        # self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
     def forward(self, z_coarse: torch.Tensor, z_fine: torch.Tensor):
         # Use the pre-fusion features from both branches, then update them
@@ -503,10 +505,10 @@ class CrossBranchGatedFusionSNN(nn.Module):
         gate_f2c = torch.sigmoid(self.gate_f2c)
         gate_c2f = torch.sigmoid(self.gate_c2f)
 
-        z_coarse = self.lif_coarse(z_coarse + gate_f2c * delta_coarse)
-        z_fine = self.lif_fine(z_fine + gate_c2f * delta_fine)
-        # z_coarse = z_coarse + gate_f2c * delta_coarse
-        # z_fine = z_fine + gate_c2f * delta_fine
+        # z_coarse = self.lif_coarse(z_coarse + gate_f2c * delta_coarse)
+        # z_fine = self.lif_fine(z_fine + gate_c2f * delta_fine)
+        z_coarse = z_coarse + gate_f2c * delta_coarse
+        z_fine = z_fine + gate_c2f * delta_fine
         return z_coarse, z_fine  
 
 
@@ -585,16 +587,21 @@ class FFB6DStyleConvTimeStackSNN(nn.Module):
             )
             for _ in range(len(coarse_kernel_list))
         ])
+        self.lif_coarse = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
+        self.lif_fine = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
     def forward(self, x: torch.Tensor):
         z_coarse = x
         z_fine = x
-        for coarse_layer, fine_layer, fusion_layer in zip(
+        for i, (coarse_layer, fine_layer, fusion_layer) in enumerate(zip(
             self.coarse_layers, self.fine_layers, self.fusion_layers
-        ):
+        )):
             z_coarse = coarse_layer(z_coarse)
             z_fine = fine_layer(z_fine)
             z_coarse, z_fine = fusion_layer(z_coarse, z_fine)
+            if i < len(self.coarse_layers) - 1:
+                z_coarse = self.lif_coarse(z_coarse)
+                z_fine = self.lif_fine(z_fine)
         return z_coarse, z_fine
 
 
@@ -809,8 +816,8 @@ class DSAINet_SNN(nn.Module):
             else:
                 self.register_buffer("alpha1", torch.tensor(1.0), persistent=False)
                 self.register_buffer("alpha2", torch.tensor(1.0), persistent=False)
-            self.lif_big1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-            self.lif_big2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+            # self.lif_big1 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+            # self.lif_big2 = TemporalLIF(tau, detach_reset, backend, time_dim=1)
 
         self.intra_1 = nn.ModuleList([
             IntraAttnBlockSNN(emb_size, heads, attn_dropout, intra_ffn_expansion, tau, detach_reset, backend)
@@ -843,11 +850,13 @@ class DSAINet_SNN(nn.Module):
         a2 = z2.transpose(1, 2)                      # (B,N,E), fine branch
 
         if self.big_residual:
-            a1 = self.lif_big1(a1 + self.alpha1 * a0)
-            a2 = self.lif_big2(a2 + self.alpha2 * a0)
-        else:
-            a1 = self.lif_big1(a0)
-            a2 = self.lif_big2(a0)  
+            a1 = a1 + self.alpha1 * a0
+            a2 = a2 + self.alpha2 * a0
+            # a1 = self.lif_big1(a1 + self.alpha1 * a0)
+            # a2 = self.lif_big2(a2 + self.alpha2 * a0)
+        # else:
+        #     a1 = self.lif_big1(a1)
+        #     a2 = self.lif_big2(a2)  
 
         for i in range(self.attn_depth):
             a1 = self.intra_1[i](a1)
