@@ -224,18 +224,17 @@ class PatchEmbeddingSNN(nn.Module):
         self.temporal1 = nn.Conv2d(1, f1, (1, kernel_size), padding="same", bias=False)
         self.bn1 = nn.BatchNorm2d(f1)
         # self.lif1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif1 = nn.ELU()
+        self.elu = nn.ELU()
 
         self.spatial = nn.Conv2d(f1, f2, (number_channel, 1), groups=f1, padding="valid", bias=False)
         self.bn2 = nn.BatchNorm2d(f2)
         # self.lif2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        self.lif2 = nn.ELU()
+        self.elu2 = nn.ELU()
 
         self.pool1 = nn.AvgPool2d((1, pooling_size1))
         self.temporal2 = nn.Conv2d(f2, f2, (1, 16), padding="same", bias=False)
         self.bn3 = nn.BatchNorm2d(f2)
         self.lif3 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
-        # self.lif3 = nn.ELU()
 
         self.pool2 = nn.AvgPool2d((1, pooling_size2))
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
@@ -245,11 +244,11 @@ class PatchEmbeddingSNN(nn.Module):
         # channel side gate in DSAINet_SNN.forward_features().
         h = self.temporal1(x)                 # (B,f1,C,T)
         # h = self.bn1(self.temporal1(x))                 # (B,f1,C,T)
-        x = self.lif1(h)
+        x = self.elu1(h)
         x = self.spatial(x)                   # (B,f2,1,T)
         # x = self.bn2(self.spatial(x))                   # (B,f2,1,T)
         x = self.pool1(x)
-        x = self.lif2(x)
+        x = self.elu2(x)
         x = self.bn3(self.temporal2(x))
         x = self.pool2(x)
         x = self.lif3(x)
@@ -282,7 +281,7 @@ class TokenProjectionSNN(nn.Module):
         self.proj = nn.Linear(in_dim, emb_size) if in_dim != emb_size else nn.Identity()
         # self.bn = TokenBatchNorm(emb_size)
         self.pos = PositionalEncoding(emb_size, length=pos_len, dropout=dropout)
-        self.lif = TemporalLIF(tau, detach_reset, backend, time_dim=1)
+        # self.lif = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.emb_size = emb_size
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -291,7 +290,6 @@ class TokenProjectionSNN(nn.Module):
         # x = self.bn(x)
         x = x * math.sqrt(self.emb_size)
         x = self.pos(x)
-        # x = self.lif(x)
         return x  # (B,N,E), spike state
 
 
@@ -341,7 +339,7 @@ class ConvTimeLayerSNN(nn.Module):
         # Spike-normalize the layer input before the first temporal convolution.
         # This makes the ConvTime branch consume spike-like inputs, while the
         # residual path remains continuous/information-preserving.
-        self.bn_in = nn.BatchNorm1d(emb_size)
+        # self.bn_in = nn.BatchNorm1d(emb_size)
         self.lif_in = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         # First depthwise dilated temporal convolution.
@@ -353,7 +351,7 @@ class ConvTimeLayerSNN(nn.Module):
             groups=emb_size,
             bias=False,
         )
-        self.bn_dw1 = nn.BatchNorm1d(emb_size)
+        # self.bn_dw1 = nn.BatchNorm1d(emb_size)
         self.lif_dw1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         d_ff = expansion * emb_size
@@ -362,7 +360,7 @@ class ConvTimeLayerSNN(nn.Module):
         # lightweight grouped design. Fall back to dense pointwise if needed.
         pw_groups = 4 if emb_size % 4 == 0 and d_ff % 4 == 0 else 1
         self.pw1 = nn.Conv1d(emb_size, d_ff, 1, groups=pw_groups, bias=False)
-        self.bn_pw1 = nn.BatchNorm1d(d_ff)
+        # self.bn_pw1 = nn.BatchNorm1d(d_ff)
         self.lif_pw1 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         # Second depthwise dilated temporal convolution, making the block closer
@@ -375,11 +373,11 @@ class ConvTimeLayerSNN(nn.Module):
             groups=d_ff,
             bias=False,
         )
-        self.bn_dw2 = nn.BatchNorm1d(d_ff)
+        # self.bn_dw2 = nn.BatchNorm1d(d_ff)
         self.lif_dw2 = TemporalLIF(tau, detach_reset, backend, time_dim=-1)
 
         self.pw2 = nn.Conv1d(d_ff, emb_size, 1, groups=pw_groups, bias=False)
-        self.bn_pw2 = nn.BatchNorm1d(emb_size)
+        self.bn_pw = nn.BatchNorm1d(emb_size)
 
         # Keep residual initially exactly identity for stable SNN optimization.
         # The branch input is spike-normalized by bn_in/lif_in; we do not apply
@@ -405,19 +403,20 @@ class ConvTimeLayerSNN(nn.Module):
         residual = x
         target_len = x.shape[-1]
 
-        x_spk = self.lif_in(self.bn_in(x))
+        x_spk = self.lif_in(x)
+        # x_spk = self.lif_in(self.bn_in(x))
 
         y = self.dw1(x_spk)
         y = self._match_time_length(y, target_len)
-        y = self.lif_dw1(self.bn_dw1(y))
+        y = self.lif_dw1(y)
 
-        y = self.lif_pw1(self.bn_pw1(self.pw1(y)))
+        y = self.lif_pw1(self.pw1(y))
 
         y = self.dw2(y)
         y = self._match_time_length(y, target_len)
-        y = self.lif_dw2(self.bn_dw2(y))
+        y = self.lif_dw2(y)
 
-        y = self.bn_pw2(self.pw2(y))
+        y = self.bn_pw(self.pw2(y))
         return residual + self.alpha * y
 
 
@@ -646,17 +645,12 @@ class SpikeInputMultiheadAttention(nn.Module):
         self.lif_q = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.lif_k = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.lif_v = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.spike_value = spike_value
         self.mha = nn.MultiheadAttention(emb_size, heads, dropout=dropout, batch_first=True)
 
     def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
         q = self.lif_q(self.norm_q(query))
         k = self.lif_k(self.norm_k(key))
-        if self.spike_value:
-            v = self.lif_v(self.norm_v(value))
-        else:
-            # Useful ablation: spike Q/K as event selectors but keep V continuous.
-            v = self.norm_v(value)
+        v = self.lif_v(self.norm_v(value))
         return self.mha(q, k, v)
 
 
@@ -677,7 +671,6 @@ class QKVSpikePreprocess(nn.Module):
         tau: float = 2.0,
         detach_reset: bool = True,
         backend: str = "cupy",
-        spike_value: bool = True,
     ):
         super().__init__()
         self.norm_q = TokenBatchNorm(emb_size)
@@ -686,16 +679,11 @@ class QKVSpikePreprocess(nn.Module):
         self.lif_q = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.lif_k = TemporalLIF(tau, detach_reset, backend, time_dim=1)
         self.lif_v = TemporalLIF(tau, detach_reset, backend, time_dim=1)
-        self.spike_value = spike_value
 
     def forward(self, query: torch.Tensor, key: torch.Tensor, value: torch.Tensor):
         q = self.lif_q(self.norm_q(query))
         k = self.lif_k(self.norm_k(key))
-        if self.spike_value:
-            v = self.lif_v(self.norm_v(value))
-        else:
-            # Useful ablation: spike Q/K as event selectors but keep V continuous.
-            v = self.norm_v(value)
+        v = self.lif_v(self.norm_v(value))
         return q, k, v
 
 
@@ -750,7 +738,6 @@ class IntraAttnBlockSNN(nn.Module):
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
-            spike_value=True,
         )
         self.norm1 = nn.LayerNorm(emb_size)
         self.norm2 = nn.LayerNorm(emb_size)
@@ -792,14 +779,12 @@ class InterAttnBlockSNN(nn.Module):
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
-            spike_value=True,
         )
         self.spike21 = QKVSpikePreprocess(
             emb_size,
             tau=tau,
             detach_reset=detach_reset,
             backend=backend,
-            spike_value=True,
         )
         self.shared_mha = nn.MultiheadAttention(emb_size, heads, dropout=0.0, batch_first=True)
 
